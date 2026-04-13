@@ -1,0 +1,40 @@
+package com.locmns.locmns_backend.model;
+
+import com.fasterxml.jackson.annotation.JsonView;
+import com.locmns.locmns_backend.view.EmpruntView;
+import com.locmns.locmns_backend.view.PromotionView;
+import com.locmns.locmns_backend.view.UtilisateurView;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.util.List;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+
+public class Promotion {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonView({PromotionView.class,UtilisateurView.class})
+    protected Integer id;
+
+    @Column(nullable = false,unique = true,length = 50)
+    @Size(max = 50)
+    @NotBlank
+    @JsonView({EmpruntView.class, PromotionView.class, UtilisateurView.class})
+    protected String libelle;
+
+    // Une promotion contient plusieurs utilisateurs
+    @OneToMany(mappedBy = "promotion")
+    @JsonView(PromotionView.class)
+    private List<Utilisateur> utilisateurs;
+
+}
