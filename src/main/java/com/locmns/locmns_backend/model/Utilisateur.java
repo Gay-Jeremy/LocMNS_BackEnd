@@ -45,5 +45,4 @@ public class Utilisateur {
 
     @OneToMany(mappedBy = "utilisateur")
     private List<Emprunt> emprunts;
-
 }
