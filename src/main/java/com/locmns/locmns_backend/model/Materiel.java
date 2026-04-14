@@ -26,9 +26,9 @@ public class Materiel {
     @JsonView({EmpruntView.class, MaterielView.class})
     protected Integer id;
 
+    @NotBlank(message = "Le numéro de série est obligatoire")
     @Column(nullable = false,unique = true,length = 50)
-    @Size(max = 50)
-    @NotBlank
+    @Size(min = 2, max = 100, message = "Le numéro de série doit faire entre 2 et 100 caractères")
     @JsonView({EmpruntView.class, MaterielView.class})
     protected String numSerie;
 
@@ -49,4 +49,6 @@ public class Materiel {
     @JsonView({EmpruntView.class, MaterielView.class})
     private Modele modele;
 
+    @ManyToMany(mappedBy = "materiels")
+    private List<Composant> composants;
 }

@@ -6,6 +6,8 @@ import com.locmns.locmns_backend.view.EmpruntView;
 import com.locmns.locmns_backend.view.PromotionView;
 import com.locmns.locmns_backend.view.UtilisateurView;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,12 +27,21 @@ public class Utilisateur {
     @JsonView({EmpruntView.class, UtilisateurView.class})
     protected Integer id;
 
+    @NotBlank(message = "Le nom est obligatoire")
+    @Column(nullable = false, length = 50)
+    @Size(min = 2, max = 50, message = "Le nom doit faire entre 2 et 50 caractères")
     @JsonView({EmpruntView.class, PromotionView.class, CategorieUtilisateurView.class, UtilisateurView.class})
     protected String nom;
 
+    @NotBlank(message = "Le prénom est obligatoire")
+    @Column(nullable = false, length = 50)
+    @Size(min = 2, max = 50, message = "Le prénom doit faire entre 2 et 50 caractères")
     @JsonView({EmpruntView.class, PromotionView.class,CategorieUtilisateurView.class,UtilisateurView.class})
     protected String prenom;
 
+    @NotBlank(message = "L'email est obligatoire")
+    @Column(nullable = false, unique = true, length = 100)
+    @Size(max = 100, message = "L'email ne doit pas dépasser 100 caractères")
     protected String email;
 
     @ManyToOne

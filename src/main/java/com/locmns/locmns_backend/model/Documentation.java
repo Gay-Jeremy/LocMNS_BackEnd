@@ -23,19 +23,16 @@ public class Documentation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Integer id;
 
-    @Column(nullable = false,unique = true,length = 50)
-    @Size(max = 50)
-    @NotBlank
+    @NotBlank(message = "Le titre est obligatoire")
+    @Column(nullable = false, length = 100)
+    @Size(min = 2, max = 100, message = "Le titre doit faire entre 2 et 100 caractères")
     protected String titre;
 
-    @Column(unique = true,length = 50)
-    @Size(max = 50)
-    @NotBlank
+
     protected String url;
 
     @Column(nullable = false,length = 50)
-    @Size(max = 50)
-    @NotBlank
+    @Size(max = 50, message = "Le format ne doit pas dépasser 50 caractères")
     protected String format;
 
     @ManyToOne

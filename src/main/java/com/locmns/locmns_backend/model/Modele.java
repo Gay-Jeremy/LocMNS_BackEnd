@@ -25,9 +25,9 @@ public class Modele {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Integer id;
 
+    @NotBlank(message = "Le libellé est obligatoire")
     @Column(nullable = false,unique = true,length = 50)
-    @Size(max = 50)
-    @NotBlank
+    @Size(min = 2, max = 50, message = "Le libellé doit faire entre 2 et 50 caractères")
     @JsonView({EmpruntView.class, MaterielView.class})
     protected String libelle;
 
@@ -37,5 +37,13 @@ public class Modele {
 
     @OneToMany(mappedBy = "modele")
     private List<Materiel> materiels;
+
+    @ManyToMany
+    @JoinTable(
+            name = "documentation_modele",
+            joinColumns = @JoinColumn(name = "modele_id"),
+            inverseJoinColumns = @JoinColumn(name = "documentation_id")
+    )
+    private List<Documentation> documentations;
 
 }

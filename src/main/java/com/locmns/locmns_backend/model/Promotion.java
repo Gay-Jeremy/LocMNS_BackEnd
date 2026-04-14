@@ -26,9 +26,9 @@ public class Promotion {
     @JsonView({PromotionView.class,UtilisateurView.class})
     protected Integer id;
 
+    @NotBlank(message = "Le libellé est obligatoire")
     @Column(nullable = false,unique = true,length = 50)
-    @Size(max = 50)
-    @NotBlank
+    @Size(min = 2, max = 50, message = "Le libellé doit faire entre 2 et 50 caractères")
     @JsonView({EmpruntView.class, PromotionView.class, UtilisateurView.class})
     protected String libelle;
 

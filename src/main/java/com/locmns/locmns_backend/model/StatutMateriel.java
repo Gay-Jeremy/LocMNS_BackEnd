@@ -25,9 +25,9 @@ public class StatutMateriel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Integer id;
 
-    @Column(nullable = false,unique = true,length = 50)
-    @Size(max = 50)
-    @NotBlank
+    @NotBlank(message = "Le libellé est obligatoire")
+    @Column(nullable = false, length = 50)
+    @Size(min = 2, max = 50, message = "Le libellé doit faire entre 2 et 50 caractères")
     @JsonView({MaterielView.class, StatutEmpruntView.class})
     protected String libelle;
 
