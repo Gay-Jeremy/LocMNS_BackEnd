@@ -20,14 +20,14 @@ public class ComposantController {
     protected ComposantDao composantDao;
 
     @GetMapping("/liste")
-    public List<Composant> getAll() {
+    public List<Composant> obtenirTousLesComposants() {
 
         return composantDao.findAll();
 
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Composant> get(@PathVariable int id) {
+    public ResponseEntity<Composant> obtenirComposantParId(@PathVariable int id) {
 
         Optional<Composant> optionalComposant = composantDao.findById(id);
 
@@ -40,7 +40,7 @@ public class ComposantController {
     }
 
     @PostMapping("")
-    public Composant create(@RequestBody Composant categorieToInsert) {
+    public Composant creerComposant(@RequestBody Composant categorieToInsert) {
 
         categorieToInsert.setId(null);
 
@@ -51,7 +51,7 @@ public class ComposantController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable int id) {
+    public ResponseEntity<Void> supprimerComposant(@PathVariable int id) {
 
         Optional<Composant> optionalComposant = composantDao.findById(id);
 
@@ -65,8 +65,8 @@ public class ComposantController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> update(@PathVariable int id,
-                                       @RequestBody Composant categorieToUpdate) {
+    public ResponseEntity<Void> modifierComposant(@PathVariable int id,
+                                                  @RequestBody Composant categorieToUpdate) {
 
         // On écrase l'id du json par celui en paramètre
         categorieToUpdate.setId(id);

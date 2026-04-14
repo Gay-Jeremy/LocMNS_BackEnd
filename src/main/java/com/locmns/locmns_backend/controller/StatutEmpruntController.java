@@ -22,12 +22,12 @@ public class StatutEmpruntController {
 
     @GetMapping("/liste")
     @JsonView(StatutEmpruntView.class)
-    public List<StatutEmprunt> getAll() {
+    public List<StatutEmprunt> obtenirTousLesStatutsEmprunt() {
         return statutEmpruntDao.findAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<StatutEmprunt> get(@PathVariable int id) {
+    public ResponseEntity<StatutEmprunt> obtenirStatutEmpruntParId(@PathVariable int id) {
         Optional<StatutEmprunt> optionalStatutEmprunt = statutEmpruntDao.findById(id);
         if(optionalStatutEmprunt.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -36,14 +36,14 @@ public class StatutEmpruntController {
     }
 
     @PostMapping("")
-    public StatutEmprunt create(@RequestBody StatutEmprunt statutEmpruntToInsert) {
+    public StatutEmprunt creerStatutEmprunt(@RequestBody StatutEmprunt statutEmpruntToInsert) {
         statutEmpruntToInsert.setId(null);
         statutEmpruntDao.save(statutEmpruntToInsert);
         return statutEmpruntToInsert;
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable int id) {
+    public ResponseEntity<Void> supprimerStatutEmprunt(@PathVariable int id) {
         Optional<StatutEmprunt> optionalStatutEmprunt = statutEmpruntDao.findById(id);
         if (optionalStatutEmprunt.isEmpty()) {
             return new ResponseEntity<>((HttpStatus.NOT_FOUND));
@@ -54,8 +54,8 @@ public class StatutEmpruntController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> update(@PathVariable int id,
-                                       @RequestBody StatutEmprunt statutEmpruntToUpdate) {
+    public ResponseEntity<Void> modifierStatutEmprunt(@PathVariable int id,
+                                                      @RequestBody StatutEmprunt statutEmpruntToUpdate) {
 
         statutEmpruntToUpdate.setId(id);
 

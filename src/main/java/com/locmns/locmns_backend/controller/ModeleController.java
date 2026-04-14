@@ -20,13 +20,13 @@ public class ModeleController {
     protected ModeleDao modeleDao;
 
     @GetMapping("/liste")
-    public List<Modele> getAll() {
+    public List<Modele> obtenirTousLesModeles() {
 
         return modeleDao.findAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Modele> getById(@PathVariable int id) {
+    public ResponseEntity<Modele> obtenirModeleParId(@PathVariable int id) {
 
         Optional<Modele> optionalModele = modeleDao.findById(id);
 
@@ -38,7 +38,7 @@ public class ModeleController {
     }
 
     @PostMapping("")
-    public Modele create(@RequestBody Modele modeleToInsert ) {
+    public Modele creerModele(@RequestBody Modele modeleToInsert ) {
 
         modeleToInsert.setId(null);
 
@@ -48,7 +48,7 @@ public class ModeleController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable int id) {
+    public ResponseEntity<Void> supprimerModele(@PathVariable int id) {
 
         Optional<Modele> optionalModele = modeleDao.findById(id);
 
@@ -61,7 +61,7 @@ public class ModeleController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> update (@PathVariable int id, @RequestBody Modele modeleToInsert) {
+    public ResponseEntity<Void> modifierModele(@PathVariable int id, @RequestBody Modele modeleToInsert) {
 
         Optional<Modele> optionalModele = modeleDao.findById(id);
 

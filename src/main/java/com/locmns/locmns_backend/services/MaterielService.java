@@ -29,5 +29,4 @@ public class MaterielService {
         return materielDao.materielDisponiblePeriode(dateDebut, dateFin);
     }
 
-
 }

@@ -19,13 +19,13 @@ public class DocumentationController {
     protected DocumentationDao documentationDao;
 
     @GetMapping("/liste")
-    public List<Documentation> getAll() {
+    public List<Documentation> obtenirToutesLesDocumentations() {
 
         return documentationDao.findAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Documentation> get(@PathVariable int id) {
+    public ResponseEntity<Documentation> obtenirDocumentationParId(@PathVariable int id) {
         Optional<Documentation> optionalDocumentation = documentationDao.findById(id);
         if(optionalDocumentation.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -34,14 +34,14 @@ public class DocumentationController {
     }
 
     @PostMapping("")
-    public Documentation create(@RequestBody Documentation documentationToInsert) {
+    public Documentation creerDocumentation(@RequestBody Documentation documentationToInsert) {
         documentationToInsert.setId(null);
         documentationDao.save(documentationToInsert);
         return documentationToInsert;
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable int id) {
+    public ResponseEntity<Void> supprimerDocumentation(@PathVariable int id) {
         Optional<Documentation> optionalDocumentation = documentationDao.findById(id);
         if (optionalDocumentation.isEmpty()) {
             return new ResponseEntity<>((HttpStatus.NOT_FOUND));
@@ -52,8 +52,8 @@ public class DocumentationController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> update(@PathVariable int id,
-                                       @RequestBody Documentation documentationToUpdate) {
+    public ResponseEntity<Void> modifierDocumentation(@PathVariable int id,
+                                                      @RequestBody Documentation documentationToUpdate) {
 
         documentationToUpdate.setId(id);
 

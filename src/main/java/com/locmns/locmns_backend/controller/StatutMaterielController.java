@@ -22,12 +22,12 @@ public class StatutMaterielController {
 
     @GetMapping("/liste")
     @JsonView(StatutEmpruntView.class)
-    public List<StatutMateriel> getAll() {
+    public List<StatutMateriel> obtenirTousLesStatutsMateriel() {
         return statutMaterielDao.findAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<StatutMateriel> get(@PathVariable int id) {
+    public ResponseEntity<StatutMateriel> obtenirStatutMaterielParId(@PathVariable int id) {
         Optional<StatutMateriel> optionalStatutMateriel = statutMaterielDao.findById(id);
         if(optionalStatutMateriel.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -36,14 +36,14 @@ public class StatutMaterielController {
     }
 
     @PostMapping("")
-    public StatutMateriel create(@RequestBody StatutMateriel statutMaterielToInsert) {
+    public StatutMateriel creerStatutMateriel(@RequestBody StatutMateriel statutMaterielToInsert) {
         statutMaterielToInsert.setId(null);
         statutMaterielDao.save(statutMaterielToInsert);
         return statutMaterielToInsert;
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable int id) {
+    public ResponseEntity<Void> supprimerStatutMateriel(@PathVariable int id) {
         Optional<StatutMateriel> optionalStatutMateriel = statutMaterielDao.findById(id);
         if (optionalStatutMateriel.isEmpty()) {
             return new ResponseEntity<>((HttpStatus.NOT_FOUND));
@@ -54,8 +54,8 @@ public class StatutMaterielController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> update(@PathVariable int id,
-                                       @RequestBody StatutMateriel statutMaterielToUpdate) {
+    public ResponseEntity<Void> modifierStatutMateriel(@PathVariable int id,
+                                                       @RequestBody StatutMateriel statutMaterielToUpdate) {
 
         statutMaterielToUpdate.setId(id);
 

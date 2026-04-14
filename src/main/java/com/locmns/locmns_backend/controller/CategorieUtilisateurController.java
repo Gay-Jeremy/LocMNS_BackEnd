@@ -23,7 +23,7 @@ public class CategorieUtilisateurController {
 
     @GetMapping("/liste")
     @JsonView(CategorieUtilisateurView.class)
-    public List<CategorieUtilisateur> getAll() {
+    public List<CategorieUtilisateur> obtenirToutesLesCategoriesUtilisateur() {
 
         return categorieUilisateurDao.findAll();
     }
@@ -31,7 +31,7 @@ public class CategorieUtilisateurController {
     // Récupère un utilisateur
     @GetMapping("/{id}")
 
-    public ResponseEntity<CategorieUtilisateur> get(@PathVariable int id) {
+    public ResponseEntity<CategorieUtilisateur> obtenirCategorieUtilisateurParId(@PathVariable int id) {
 
         Optional<CategorieUtilisateur> optionalCategorieUilisateur = categorieUilisateurDao.findById(id);
 
@@ -46,7 +46,7 @@ public class CategorieUtilisateurController {
     }
 
     @PostMapping("")
-    public CategorieUtilisateur create(@RequestBody CategorieUtilisateur categorieToInsert) {
+    public CategorieUtilisateur creerCategorieUtilisateur(@RequestBody CategorieUtilisateur categorieToInsert) {
 
         categorieToInsert.setId(null);
 
@@ -57,7 +57,7 @@ public class CategorieUtilisateurController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable int id) {
+    public ResponseEntity<Void> supprimerCategorieUtilisateur(@PathVariable int id) {
 
         Optional<CategorieUtilisateur> optionalCategorieUilisateur = categorieUilisateurDao.findById(id);
 
@@ -71,8 +71,8 @@ public class CategorieUtilisateurController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> update(@PathVariable int id,
-                                       @RequestBody CategorieUtilisateur categorieToUpdate) {
+    public ResponseEntity<Void> modifierCategorieUtilisateur(@PathVariable int id,
+                                                             @RequestBody CategorieUtilisateur categorieToUpdate) {
 
         // On écrase l'id du json par celui en paramètre
         categorieToUpdate.setId(id);

@@ -27,38 +27,38 @@ public class EmpruntController {
 
     @GetMapping("/liste/recent")
     @JsonView(EmpruntView.class)
-    public List<Emprunt> getTop5Emprunt() {
+    public List<Emprunt> obtenirEmpruntsRecents() {
         return empruntService.obtenirEmpruntsRecents();
     }
 
     @GetMapping("/liste/actif")
     @JsonView(EmpruntView.class)
-    public List<Emprunt> getEmpruntActif() {
+    public List<Emprunt> obtenirEmpruntActif() {
         return empruntService.obtenirEmpruntsActifs();
     }
 
     @GetMapping("/liste")
     @JsonView(EmpruntView.class)
-    public List<Emprunt> getAll() {
+    public List<Emprunt> obtenirTousLesEmprunts() {
         return empruntService.obtenirTousLesEmprunts();
     }
 
 
     @GetMapping("/liste/demande")
     @JsonView(EmpruntView.class)
-    public List<Emprunt> getEmpruntDemande() {
+    public List<Emprunt> obtenirDemandesEmprunt() {
         return empruntService.obtenirDemandesEmprunt();
     }
 
     @GetMapping("/liste/panne")
     @JsonView(EmpruntView.class)
-    public List<Emprunt> getEmpruntPanne() {
+    public List<Emprunt> obtenirPannesSignalees() {
         return empruntService.obtenirPannesSignalees();
     }
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<Emprunt> getById(@PathVariable int id) {
+    public ResponseEntity<Emprunt> obtenirEmpruntParId(@PathVariable int id) {
 
         Optional<Emprunt> optionalEmprunt = empruntDao.findById(id);
 
@@ -70,7 +70,7 @@ public class EmpruntController {
     }
 
     @PostMapping("")
-    public Emprunt create(@RequestBody Emprunt empruntToInsert) {
+    public Emprunt creerEmprunt(@RequestBody Emprunt empruntToInsert) {
 
         empruntToInsert.setId(null);
 
@@ -80,7 +80,7 @@ public class EmpruntController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable int id) {
+    public ResponseEntity<Void> supprimerEmprunt(@PathVariable int id) {
 
         Optional<Emprunt> optionalEmprunt = empruntDao.findById(id);
 
@@ -92,7 +92,7 @@ public class EmpruntController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> update(@PathVariable int id, @RequestBody Emprunt empruntToInsert ) {
+    public ResponseEntity<Void> modifierEmprunt(@PathVariable int id, @RequestBody Emprunt empruntToInsert ) {
 
         empruntToInsert.setId(id);
 

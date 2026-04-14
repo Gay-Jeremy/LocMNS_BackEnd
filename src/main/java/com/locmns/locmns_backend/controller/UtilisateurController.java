@@ -22,13 +22,13 @@ public class UtilisateurController {
 
     @GetMapping("liste")
     @JsonView( {UtilisateurView.class})
-    public List<Utilisateur> getAll() {
+    public List<Utilisateur> obtenirTousLesUtilisateurs() {
         return utilisateurDao.findAll();
     }
 
     @GetMapping("/{id}")
     @JsonView(Utilisateur.class)
-    public ResponseEntity<Utilisateur> getById(@PathVariable int id) {
+    public ResponseEntity<Utilisateur> obtenirUtilisateurParId(@PathVariable int id) {
 
         Optional<Utilisateur> optionalUtilisateur = utilisateurDao.findById(id);
 
@@ -40,7 +40,7 @@ public class UtilisateurController {
     }
 
     @PostMapping("")
-    public Utilisateur create(@RequestBody Utilisateur utilisateurToInsert) {
+    public Utilisateur creerUtilisateur(@RequestBody Utilisateur utilisateurToInsert) {
 
         utilisateurToInsert.setId(null);
 
@@ -50,7 +50,7 @@ public class UtilisateurController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable int id) {
+    public ResponseEntity<Void> supprimerUtilisateur(@PathVariable int id) {
 
         Optional<Utilisateur> optionalUtilisateur = utilisateurDao.findById(id);
 
@@ -62,7 +62,7 @@ public class UtilisateurController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> update(@PathVariable int id, @RequestBody Utilisateur utilisateurToInsert ) {
+    public ResponseEntity<Void> modifierUtilisateur(@PathVariable int id, @RequestBody Utilisateur utilisateurToInsert ) {
 
         utilisateurToInsert.setId(id);
 

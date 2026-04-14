@@ -20,13 +20,13 @@ public class CategorieModeleController {
     private CategorieModeleDao categorieModeleDao;
 
     @GetMapping("/liste")
-    public List<CategorieModele> getAll () {
+    public List<CategorieModele> obtenirToutesLesCategoriesModele() {
 
         return categorieModeleDao.findAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CategorieModele> getById (@PathVariable int id) {
+    public ResponseEntity<CategorieModele> obtenirCategorieModeleParId(@PathVariable int id) {
 
         Optional<CategorieModele> optionalCategorieModele = categorieModeleDao.findById(id);
 
@@ -39,7 +39,7 @@ public class CategorieModeleController {
     }
 
     @PostMapping("")
-    public CategorieModele create(@RequestBody CategorieModele categorieToInsert) {
+    public CategorieModele creerCategorieModele(@RequestBody CategorieModele categorieToInsert) {
 
         categorieToInsert.setId(null);
 
@@ -49,7 +49,7 @@ public class CategorieModeleController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable int id) {
+    public ResponseEntity<Void> supprimerCategorieModele(@PathVariable int id) {
 
         Optional<CategorieModele> optionalCategorieModele = categorieModeleDao.findById(id);
 
@@ -63,8 +63,8 @@ public class CategorieModeleController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> update(@PathVariable int id,
-                                       @RequestBody CategorieModele categorieToUpdate) {
+    public ResponseEntity<Void> modifierCategorieModele(@PathVariable int id,
+                                                        @RequestBody CategorieModele categorieToUpdate) {
 
         // On écrase l'id du json par celui en paramètre
         categorieToUpdate.setId(id);

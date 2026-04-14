@@ -19,12 +19,12 @@ public class SalleController {
     protected SalleDao salleDao;
 
     @GetMapping("/liste")
-    public List<Salle> getAll() {
+    public List<Salle> obtenirToutesLesSalles() {
         return salleDao.findAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Salle> get(@PathVariable int id) {
+    public ResponseEntity<Salle> obtenirSalleparId(@PathVariable int id) {
         Optional<Salle> optionalSalle = salleDao.findById(id);
         if(optionalSalle.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -33,14 +33,14 @@ public class SalleController {
     }
 
     @PostMapping("")
-    public Salle create(@RequestBody Salle salleToInsert) {
+    public Salle creerSalle(@RequestBody Salle salleToInsert) {
         salleToInsert.setId(null);
         salleDao.save(salleToInsert);
         return salleToInsert;
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable int id) {
+    public ResponseEntity<Void> supprimerSalle(@PathVariable int id) {
         Optional<Salle> optionalSalle = salleDao.findById(id);
         if (optionalSalle.isEmpty()) {
             return new ResponseEntity<>((HttpStatus.NOT_FOUND));
@@ -51,8 +51,8 @@ public class SalleController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> update(@PathVariable int id,
-                                       @RequestBody Salle salleToUpdate) {
+    public ResponseEntity<Void> modifierSalle(@PathVariable int id,
+                                              @RequestBody Salle salleToUpdate) {
 
         salleToUpdate.setId(id);
 

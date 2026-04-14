@@ -29,22 +29,23 @@ public class MaterielController {
 
     @JsonView(MaterielView.class)
     @GetMapping("/liste")
-    public List<Materiel> getAll() {
+    public List<Materiel> obtenirTousLesMateriels() {
 
         return materielService.obtenirTousLesMateriels();
     }
 
     @JsonView(MaterielView.class)
     @GetMapping("/liste/disponible")
-    public List<Materiel> getMaterielDisponible() {
+    public List<Materiel> obtenirMaterielsDisponibles() {
 
         return materielService.obtenirMaterielsDisponibles();
     }
 
+
     @JsonView(MaterielView.class)
     @GetMapping("/liste/disponible/{dateDebut}/{dateFin}")
-    public List<Materiel> getMaterielDisponiblePeriode(@PathVariable LocalDate dateDebut,
-                                                       @PathVariable LocalDate dateFin) {
+    public List<Materiel> obtenirMaterielsDisponiblesPourPeridoe(@PathVariable LocalDate dateDebut,
+                                                                 @PathVariable LocalDate dateFin) {
 
         return materielService.obtenirMaterielsDisponiblesSurPeriode(dateDebut, dateFin);
     }
@@ -53,7 +54,7 @@ public class MaterielController {
 
     @JsonView(MaterielView.class)
     @GetMapping("/{id}")
-    public ResponseEntity<Materiel> getById(@PathVariable int id) {
+    public ResponseEntity<Materiel> obtenirMaterielParId(@PathVariable int id) {
 
         Optional<Materiel> optionalMateriel = materielDao.findById(id);
 
@@ -66,7 +67,7 @@ public class MaterielController {
 
 
     @PostMapping("")
-    public Materiel create(@RequestBody Materiel materielToInsert ) {
+    public Materiel creerMateriel(@RequestBody Materiel materielToInsert ) {
 
         materielToInsert.setId(null);
 
@@ -77,7 +78,7 @@ public class MaterielController {
 
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable int id) {
+    public ResponseEntity<Void> supprimerMateriel(@PathVariable int id) {
 
         Optional<Materiel> optionalMateriel = materielDao.findById(id);
 
@@ -90,7 +91,7 @@ public class MaterielController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> update (@PathVariable int id, @RequestBody Materiel materielToInsert) {
+    public ResponseEntity<Void> modifierMateriel(@PathVariable int id, @RequestBody Materiel materielToInsert) {
 
         Optional<Materiel> optionalMateriel = materielDao.findById(id);
 

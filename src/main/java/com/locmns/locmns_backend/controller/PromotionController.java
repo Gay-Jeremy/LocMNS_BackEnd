@@ -22,12 +22,12 @@ public class PromotionController {
 
     @GetMapping("/liste")
     @JsonView(PromotionView .class)
-    public List<Promotion> getAll() {
+    public List<Promotion> obtenirToutesLesPromotions() {
         return promotionDao.findAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Promotion> get(@PathVariable int id) {
+    public ResponseEntity<Promotion> obtenirPromotionParId(@PathVariable int id) {
         Optional<Promotion> optionalPromotion = promotionDao.findById(id);
         if(optionalPromotion.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -36,14 +36,14 @@ public class PromotionController {
     }
 
     @PostMapping("")
-    public Promotion create(@RequestBody Promotion promotionToInsert) {
+    public Promotion creerPromotion(@RequestBody Promotion promotionToInsert) {
         promotionToInsert.setId(null);
         promotionDao.save(promotionToInsert);
         return promotionToInsert;
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable int id) {
+    public ResponseEntity<Void> supprimerPromotion(@PathVariable int id) {
         Optional<Promotion> optionalPromotion = promotionDao.findById(id);
         if (optionalPromotion.isEmpty()) {
             return new ResponseEntity<>((HttpStatus.NOT_FOUND));
@@ -54,8 +54,8 @@ public class PromotionController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> update(@PathVariable int id,
-                                       @RequestBody Promotion promotionToUpdate) {
+    public ResponseEntity<Void> modifierPromotion(@PathVariable int id,
+                                                  @RequestBody Promotion promotionToUpdate) {
 
         promotionToUpdate.setId(id);
 
