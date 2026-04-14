@@ -26,7 +26,7 @@ public interface MaterielDao extends JpaRepository<Materiel, Integer> {
         ON mo.id = :id
     WHERE e.id IS NULL
     """)
-    List<Materiel> materielDisponiblePeriodeParIdCategorieModele(
+    List<Materiel> retourneListeMaterielDisponiblePourPeriodeParIdCategorieModele(
             @Param("dateDebut") LocalDate dateDebut,
             @Param("dateFin") LocalDate dateFin,
             int id);

@@ -25,8 +25,8 @@ public class MaterielService {
 
     public List<Materiel> obtenirMaterielsDisponibles() { return materielDao.retourneListeMaterielDisponible(); }
 
-    public List<Materiel> obtenirMaterielsDisponiblesSurPeriodeParCategorieModele(LocalDate dateDebut, LocalDate dateFin, int id) {
-        return materielDao.materielDisponiblePeriodeParIdCategorieModele(dateDebut, dateFin, id);
+    public List<Materiel> obtenirMaterielsDisponiblesPourPeriodeParIdCategorieModele(LocalDate dateDebut, LocalDate dateFin, int id) {
+        return materielDao.retourneListeMaterielDisponiblePourPeriodeParIdCategorieModele(dateDebut, dateFin, id);
     }
 
 }
