@@ -1,7 +1,7 @@
 package com.locmns.locmns_backend.services;
 
-import com.jeremy.demo_spring_locmns.dao.MaterielDao;
-import com.jeremy.demo_spring_locmns.model.Materiel;
+import com.locmns.locmns_backend.dao.MaterielDao;
+import com.locmns.locmns_backend.model.Materiel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,18 +15,17 @@ public class MaterielService {
 
     protected final MaterielDao materielDao;
 
-    // Optional pour éviter les NullPointerException et gérer les erreurs métier
-    public Optional<Materiel> findById(Integer id) {
+    public Optional<Materiel> obtenirMaterielParId(Integer id) {
         return materielDao.findById(id);
     }
 
-    public List<Materiel> findAll() {
+    public List<Materiel> obtenirTousLesMateriels() {
         return materielDao.findAll();
     }
 
-    public List<Materiel> findDisponible() { return materielDao.retourneListeMaterielDisponible(); }
+    public List<Materiel> obtenirMaterielsDisponibles() { return materielDao.retourneListeMaterielDisponible(); }
 
-    public List<Materiel> findDisponiblePeriode(LocalDate dateDebut, LocalDate dateFin) {
+    public List<Materiel> obtenirMaterielsDisponiblesSurPeriode(LocalDate dateDebut, LocalDate dateFin) {
         return materielDao.materielDisponiblePeriode(dateDebut, dateFin);
     }
 

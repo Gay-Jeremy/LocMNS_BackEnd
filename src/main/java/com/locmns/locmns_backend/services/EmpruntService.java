@@ -6,21 +6,25 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+
 
 @Service
 @RequiredArgsConstructor
 public class EmpruntService {
 
     protected final EmpruntDao empruntDao;
+    
+    public Optional<Emprunt> obtenirEmpruntsParId(Integer id){ return empruntDao.findById(id); }
+    
+    public List<Emprunt> obtenirTousLesEmprunts(){ return empruntDao.findAll(); }
 
-    public List<Emprunt> findListeEmpruntActif(){ return empruntDao.retourneListeEmpruntActif(); }
+    public List<Emprunt> obtenirEmpruntsActifs(){ return empruntDao.retourneListeEmpruntActif(); }
 
-    public List<Emprunt> findListeEmprunt(){ return empruntDao.retourneListeDemande(); }
+    public List<Emprunt> obtenirDemandesEmprunt(){ return empruntDao.retourneListeDemandeEmprunt(); }
 
-    public List<Emprunt> findDemandeEmprunt(){ return empruntDao.retourneListeDemande(); }
+    public List<Emprunt> obtenirPannesSignalees(){ return empruntDao.retourneListePanne(); }
 
-    public List<Emprunt> findEmpruntPanne(){ return empruntDao.retourneListePanne(); }
-
-    public List<Emprunt> findEmpruntRecent(){ return empruntDao.retourneEmpruntRecent(); }
+    public List<Emprunt> obtenirEmpruntsRecents(){ return empruntDao.retourneEmpruntRecent(); }
 
 }

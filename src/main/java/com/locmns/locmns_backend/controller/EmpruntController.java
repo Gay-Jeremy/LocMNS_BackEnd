@@ -28,32 +28,32 @@ public class EmpruntController {
     @GetMapping("/liste/recent")
     @JsonView(EmpruntView.class)
     public List<Emprunt> getTop5Emprunt() {
-        return empruntService.findEmpruntRecent();
+        return empruntService.obtenirEmpruntsRecents();
     }
 
     @GetMapping("/liste/actif")
     @JsonView(EmpruntView.class)
     public List<Emprunt> getEmpruntActif() {
-        return empruntService.findListeEmpruntActif();
+        return empruntService.obtenirEmpruntsActifs();
     }
 
     @GetMapping("/liste")
     @JsonView(EmpruntView.class)
     public List<Emprunt> getAll() {
-        return empruntService.findListeEmprunt();
+        return empruntService.obtenirTousLesEmprunts();
     }
 
 
     @GetMapping("/liste/demande")
     @JsonView(EmpruntView.class)
     public List<Emprunt> getEmpruntDemande() {
-        return empruntService.findDemandeEmprunt();
+        return empruntService.obtenirDemandesEmprunt();
     }
 
     @GetMapping("/liste/panne")
     @JsonView(EmpruntView.class)
     public List<Emprunt> getEmpruntPanne() {
-        return empruntService.findEmpruntPanne();
+        return empruntService.obtenirPannesSignalees();
     }
 
 

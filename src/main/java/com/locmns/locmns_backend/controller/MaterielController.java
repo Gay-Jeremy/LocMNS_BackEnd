@@ -31,14 +31,14 @@ public class MaterielController {
     @GetMapping("/liste")
     public List<Materiel> getAll() {
 
-        return materielService.findAll();
+        return materielService.obtenirTousLesMateriels();
     }
 
     @JsonView(MaterielView.class)
     @GetMapping("/liste/disponible")
     public List<Materiel> getMaterielDisponible() {
 
-        return materielService.findDisponible();
+        return materielService.obtenirMaterielsDisponibles();
     }
 
     @JsonView(MaterielView.class)
@@ -46,7 +46,7 @@ public class MaterielController {
     public List<Materiel> getMaterielDisponiblePeriode(@PathVariable LocalDate dateDebut,
                                                        @PathVariable LocalDate dateFin) {
 
-        return materielService.findDisponiblePeriode(dateDebut, dateFin);
+        return materielService.obtenirMaterielsDisponiblesSurPeriode(dateDebut, dateFin);
     }
 
 

@@ -24,7 +24,6 @@ public interface MaterielDao extends JpaRepository<Materiel, Integer> {
        AND e.dateFin >= :dateDebut
     WHERE e.id IS NULL
     """)
-
     List<Materiel> materielDisponiblePeriode(
             @Param("dateDebut") LocalDate dateDebut,
             @Param("dateFin") LocalDate dateFin
