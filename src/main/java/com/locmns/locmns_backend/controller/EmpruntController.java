@@ -2,7 +2,14 @@ package com.locmns.locmns_backend.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.locmns.locmns_backend.dao.EmpruntDao;
+import com.locmns.locmns_backend.dao.MaterielDao;
+import com.locmns.locmns_backend.dao.StatutEmpruntDao;
+import com.locmns.locmns_backend.dao.UtilisateurDao;
+import com.locmns.locmns_backend.dto.EmpruntDto;
 import com.locmns.locmns_backend.model.Emprunt;
+import com.locmns.locmns_backend.model.Materiel;
+import com.locmns.locmns_backend.model.StatutEmprunt;
+import com.locmns.locmns_backend.model.Utilisateur;
 import com.locmns.locmns_backend.services.EmpruntService;
 import com.locmns.locmns_backend.view.EmpruntView;
 import lombok.RequiredArgsConstructor;
@@ -11,8 +18,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 
 @RestController
@@ -20,8 +30,18 @@ import java.util.Optional;
 @RequestMapping("/api/emprunts")
 @RequiredArgsConstructor
 public class EmpruntController {
+
     @Autowired
     protected EmpruntDao empruntDao;
+
+    @Autowired
+    protected MaterielDao materielDao;
+
+    @Autowired
+    protected UtilisateurDao utilisateurDao;
+
+    @Autowired
+    protected StatutEmpruntDao statutEmpruntDao;
 
     private final EmpruntService empruntService;
 
@@ -70,13 +90,23 @@ public class EmpruntController {
     }
 
     @PostMapping("")
-    public Emprunt creerEmprunt(@RequestBody Emprunt empruntToInsert) {
+    public ResponseEntity<Void> creerEmprunt(@RequestBody EmpruntDto empruntDto) {
 
-        empruntToInsert.setId(null);
+        Emprunt emprunt = new Emprunt();
 
-        empruntDao.save(empruntToInsert);
+        Materiel materiel = materielDao.findById(empruntDto.materielId()).orElseThrow();
+        Utilisateur utilisateur = utilisateurDao.findById(empruntDto.utilisateurId()).orElseThrow();
+        StatutEmprunt statutEmprunt = statutEmpruntDao.findById(1).orElseThrow();
 
-        return empruntToInsert;
+        emprunt.setUtilisateur(utilisateur);
+        emprunt.setMateriel(materiel);
+        emprunt.setDateDebut(empruntDto.dateDebut());
+        emprunt.setDateFin(empruntDto.dateFin());
+        emprunt.setStatutEmprunt(statutEmprunt);
+
+
+        empruntDao.save(emprunt);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/{id}")
