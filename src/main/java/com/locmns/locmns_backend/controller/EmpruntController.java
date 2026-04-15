@@ -96,7 +96,7 @@ public class EmpruntController {
 
         Materiel materiel = materielDao.findById(empruntDto.materielId()).orElseThrow();
         Utilisateur utilisateur = utilisateurDao.findById(empruntDto.utilisateurId()).orElseThrow();
-        StatutEmprunt statutEmprunt = statutEmpruntDao.findById(1).orElseThrow();
+        StatutEmprunt statutEmprunt = statutEmpruntDao.findById(3).orElseThrow();
 
         emprunt.setUtilisateur(utilisateur);
         emprunt.setMateriel(materiel);
