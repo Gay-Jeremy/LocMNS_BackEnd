@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 
@@ -16,7 +18,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-
+@EntityListeners(AuditingEntityListener.class)
 public class Emprunt {
 
     @Id
@@ -24,8 +26,8 @@ public class Emprunt {
     @JsonView(EmpruntView.class)
     protected Integer id;
 
-    @Column(nullable = false)
-    @NotNull
+    @CreatedDate
+    @Column(nullable = false, updatable = false)
     @JsonView(EmpruntView.class)
     protected LocalDate dateCreation;
 
