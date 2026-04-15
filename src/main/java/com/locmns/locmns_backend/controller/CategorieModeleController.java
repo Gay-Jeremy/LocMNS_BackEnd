@@ -1,7 +1,9 @@
 package com.locmns.locmns_backend.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.locmns.locmns_backend.dao.CategorieModeleDao;
 import com.locmns.locmns_backend.model.CategorieModele;
+import com.locmns.locmns_backend.view.categorieModeleView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,12 +22,14 @@ public class CategorieModeleController {
     private CategorieModeleDao categorieModeleDao;
 
     @GetMapping("/liste")
+    @JsonView(categorieModeleView.class)
     public List<CategorieModele> obtenirToutesLesCategoriesModele() {
 
         return categorieModeleDao.findAll();
     }
 
     @GetMapping("/{id}")
+    @JsonView(categorieModeleView.class)
     public ResponseEntity<CategorieModele> obtenirCategorieModeleParId(@PathVariable int id) {
 
         Optional<CategorieModele> optionalCategorieModele = categorieModeleDao.findById(id);

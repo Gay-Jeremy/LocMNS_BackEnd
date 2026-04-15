@@ -17,27 +17,27 @@ INSERT INTO categorie_modele (libelle) VALUES
 ('Routeur'),
 ('Projecteur');
 
-INSERT INTO modele (libelle) VALUES
-('Dell Latitude 5540'),
-('HP EliteBook 840 G10'),
-('Lenovo ThinkPad T14'),
-('Apple MacBook Pro 14'),
-('Dell OptiPlex 7010'),
-('HP ProDesk 600 G9'),
-('Samsung 27" S27A600'),
-('LG 24" 24MK430H'),
-('HP LaserJet Pro M404dn'),
-('Canon imageRUNNER 2630'),
-('Dell PowerEdge R750'),
-('HP ProLiant DL380'),
-('Apple iPad Pro 12.9'),
-('Samsung Galaxy Tab S9'),
-('iPhone 14 Pro'),
-('Cisco Catalyst 2960'),
-('Netgear GS308'),
-('Cisco RV340'),
-('Epson EB-L200F'),
-('BenQ MH560');
+INSERT INTO modele (libelle, categorie_modele_id) VALUES
+('Dell Latitude 5540', 1),
+('HP EliteBook 840 G10', 1),
+('Lenovo ThinkPad T14', 1),
+('Apple MacBook Pro 14', 1),
+('Dell OptiPlex 7010', 2),
+('HP ProDesk 600 G9', 2),
+('Samsung 27" S27A600', 3),
+('LG 24" 24MK430H', 3),
+('HP LaserJet Pro M404dn', 4),
+('Canon imageRUNNER 2630', 4),
+('Dell PowerEdge R750', 5),
+('HP ProLiant DL380', 5),
+('Apple iPad Pro 12.9', 6),
+('Samsung Galaxy Tab S9', 6),
+('iPhone 14 Pro', 7),
+('Cisco Catalyst 2960', 8),
+('Netgear GS308', 8),
+('Cisco RV340', 9),
+('Epson EB-L200F', 10),
+('BenQ MH560', 10);
 
 INSERT INTO documentation (titre, url, format, type_document_id) VALUES
 ('Guide installation Dell Latitude 5540', 'https://docs.dell.com/latitude-5540-install', 'PDF',  1),
@@ -63,13 +63,16 @@ INSERT INTO salle (libelle) VALUES
 
 INSERT INTO statut_materiel (libelle) VALUES
 ('Réception en cours'),
+('Panne signalée'),
 ('En maintenance'),
 ('Hors service');
 
-INSERT INTO materiel (num_serie,modele_id,salle_id,statut_materiel_id) VALUES
+INSERT INTO materiel (num_serie, modele_id, salle_id, statut_materiel_id) VALUES
 ('PC 1', 1, 3, null),
-('PC 2', 1, 3,2 ),
-('PC 3', 1, 4, null);
+('PC 2', 1, 3, 2),
+('PC 3', 1, 4, null),
+('PC 4', 1, 4, null),
+('PC 5', 1, 4, null);
 
 
 INSERT INTO composant (libelle) VALUES
@@ -125,19 +128,30 @@ INSERT INTO statut_emprunt (libelle) VALUES
 ('Prolongation Refusé'),
 ('Retour Anticipé Refusé');
 
+
 INSERT INTO emprunt (date_creation, date_debut, date_fin, date_prolongation, date_retour_anticipe, date_retour_reel, id, materiel_id, statut_emprunt_id, utilisateur_id) VALUES
-('2026-05-01','2026-05-01','2026-06-01',null,null,null,1,1,3,1),
-('2026-01-12', '2026-01-20', '2026-02-20', null,        null,         null,         2,  2, 4, 2),
-('2026-01-15', '2026-01-18', '2026-02-18', null,        null,         '2026-02-10', 3,  3, 5, 3),
-('2026-01-20', '2026-01-25', '2026-02-25', '2026-03-01',null,         null,         4,  1, 6, 1),
-('2026-02-01', '2026-02-05', '2026-03-05', null,        null,         null,         5,  2, 1, 2),
-('2026-02-10', '2026-02-12', '2026-03-12', null,        '2026-02-28', '2026-02-28', 6,  3, 5, 3),
-('2026-02-15', '2026-02-20', '2026-03-20', null,        null,         null,         7,  1, 4, 2),
-('2026-03-01', '2026-03-05', '2026-04-05', '2026-04-20',null,         null,         8,  2, 6, 1),
-('2026-03-10', '2026-03-15', '2026-04-15', null,        null,         '2026-04-01', 9,  3, 5, 3),
-('2026-03-20', '2026-03-25', '2026-04-25', null,        null,         null,         10, 1, 1, 2);
+-- PC 1 : emprunté sur la période, statut ACCEPTÉ (id=3) → EXCLU
+('2026-05-01','2026-05-10','2026-05-20', null, null, null, 1, 1, 3, 1),
 
+-- PC 2 : emprunté sur la période, statut REFUSÉ (id=2) → INCLUS (car != 2 est faux, statut=2)
+('2026-05-01','2026-05-10','2026-05-20', null, null, null, 2, 2, 2, 1),
 
+-- PC 3 : emprunté MAIS date_retour_reel renseigné → INCLUS (déjà rendu)
+('2026-05-01','2026-05-10','2026-05-20', null, null, '2026-05-15', 3, 3, 3, 1),
+
+-- PC 4 : emprunté hors période (après) → INCLUS
+('2026-05-01','2026-05-25','2026-06-05', null, null, null, 4, 4, 3, 1),
+-- PC 1 : 2ème emprunt → chevauchement partiel gauche (commence avant, finit pendant)
+('2026-05-01','2026-05-08','2026-05-13', null, null, null, 5, 1, 3, 2),
+
+-- PC 3 : ré-emprunté après son retour (ne doit pas bloquer)
+('2026-05-16','2026-05-16','2026-05-30', null, null, null, 6, 3, 1, 2),
+
+-- PC 4 : emprunté avec statut "Demande en cours" sur la période → EXCLU (statut 1 != 2)
+('2026-05-01','2026-05-12','2026-05-18', null, null, null, 7, 4, 1, 1),
+
+-- PC 5 : emprunt dont la borne exacte touche la période (retour le 12 mai, demande le 12 mai)
+('2026-05-01','2026-05-05','2026-05-12', null, null, null, 8, 5, 3, 1);
 
 INSERT INTO droit_emprunt_categorie_utilisateur_categorie_modele (peut_emprunter,categorie_modele_id, categorie_utilisateur_id) VALUES
 (true, 1, 1),

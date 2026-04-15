@@ -18,16 +18,18 @@ public interface MaterielDao extends JpaRepository<Materiel, Integer> {
 
     @Query("""
     SELECT m FROM Materiel m
-    LEFT JOIN m.emprunts e
-       ON e.dateRetourReel IS NULL
-       AND e.dateDebut <= :dateFin
-       AND e.dateFin >= :dateDebut
-    LEFT JOIN m.modele mo
-        ON mo.id = :id
-    WHERE e.id IS NULL
+    WHERE m.modele.categorieModele.id = :id
+    AND m.statutMateriel.id IS NULL
+    AND m.id NOT IN (
+        SELECT e.materiel.id FROM Emprunt e
+        WHERE e.dateRetourReel IS NULL
+        AND e.dateDebut <= :dateFin
+        AND e.dateFin >= :dateDebut
+        AND e.statutEmprunt.id != 2
+        )
     """)
     List<Materiel> retourneListeMaterielDisponiblePourPeriodeParIdCategorieModele(
             @Param("dateDebut") LocalDate dateDebut,
             @Param("dateFin") LocalDate dateFin,
-            int id);
+            @Param("id") int id);
 }

@@ -11,13 +11,13 @@ import java.util.List;
 @Repository
 public interface EmpruntDao extends JpaRepository<Emprunt, Integer> {
 
-    @Query("SELECT e FROM Emprunt e JOIN e.statutEmprunt st WHERE st.libelle = 'Accepté'")
+    @Query("SELECT e FROM Emprunt e WHERE e.statutEmprunt.libelle = 'Accepté'")
     List<Emprunt> retourneListeEmpruntActif();
 
     @Query("SELECT e FROM Emprunt e WHERE e.statutEmprunt.libelle LIKE 'Demande%'")
     List<Emprunt> retourneListeDemandeEmprunt();
 
-    @Query ("SELECT e FROM Emprunt e JOIN e.statutEmprunt st WHERE e.dateCreation > CURRENT_DATE AND st.libelle ='Accepté' ORDER BY e.dateCreation")
+    @Query ("SELECT e FROM Emprunt e WHERE e.dateCreation > CURRENT_DATE AND e.statutEmprunt.libelle ='Accepté' ORDER BY e.dateCreation")
     List<Emprunt> retourneEmpruntRecent();
 
     @Query("SELECT e FROM Emprunt e WHERE e.statutEmprunt.libelle LIKE 'Panne%'")
