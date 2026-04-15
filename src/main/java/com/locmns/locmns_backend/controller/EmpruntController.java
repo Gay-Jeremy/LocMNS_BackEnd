@@ -104,7 +104,6 @@ public class EmpruntController {
         emprunt.setDateFin(empruntDto.dateFin());
         emprunt.setStatutEmprunt(statutEmprunt);
 
-
         empruntDao.save(emprunt);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

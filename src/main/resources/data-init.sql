@@ -129,29 +129,31 @@ INSERT INTO statut_emprunt (libelle) VALUES
 ('Retour Anticipé Refusé');
 
 
-INSERT INTO emprunt (date_creation, date_debut, date_fin, date_prolongation, date_retour_anticipe, date_retour_reel, id, materiel_id, statut_emprunt_id, utilisateur_id) VALUES
+INSERT INTO emprunt (date_creation, date_debut, date_fin, date_prolongation, date_retour_anticipe, date_retour_reel, materiel_id, statut_emprunt_id, utilisateur_id) VALUES
 -- PC 1 : emprunté sur la période, statut ACCEPTÉ (id=3) → EXCLU
-('2026-05-01','2026-05-10','2026-05-20', null, null, null, 1, 1, 3, 1),
+('2026-05-01','2026-05-10','2026-05-20', null, null, null, 1, 3, 1),
 
 -- PC 2 : emprunté sur la période, statut REFUSÉ (id=2) → INCLUS (car != 2 est faux, statut=2)
-('2026-05-01','2026-05-10','2026-05-20', null, null, null, 2, 2, 2, 1),
+('2026-05-01','2026-05-10','2026-05-20', null, null, null, 2, 2, 1),
 
 -- PC 3 : emprunté MAIS date_retour_reel renseigné → INCLUS (déjà rendu)
-('2026-05-01','2026-05-10','2026-05-20', null, null, '2026-05-15', 3, 3, 3, 1),
+('2026-05-01','2026-05-10','2026-05-20', null, null, '2026-05-15', 3, 3, 1),
 
 -- PC 4 : emprunté hors période (après) → INCLUS
-('2026-05-01','2026-05-25','2026-06-05', null, null, null, 4, 4, 3, 1),
+('2026-05-01','2026-05-25','2026-06-05', null, null, null, 4, 3, 1),
 -- PC 1 : 2ème emprunt → chevauchement partiel gauche (commence avant, finit pendant)
-('2026-05-01','2026-05-08','2026-05-13', null, null, null, 5, 1, 3, 2),
+('2026-05-01','2026-05-08','2026-05-13', null, null, null, 1, 3, 2),
 
 -- PC 3 : ré-emprunté après son retour (ne doit pas bloquer)
-('2026-05-16','2026-05-16','2026-05-30', null, null, null, 6, 3, 1, 2),
+('2026-05-16','2026-05-16','2026-05-30', null, null, null, 3, 1, 2),
 
 -- PC 4 : emprunté avec statut "Demande en cours" sur la période → EXCLU (statut 1 != 2)
-('2026-05-01','2026-05-12','2026-05-18', null, null, null, 7, 4, 1, 1),
+('2026-05-01','2026-05-12','2026-05-18', null, null, null, 4, 1, 1),
 
 -- PC 5 : emprunt dont la borne exacte touche la période (retour le 12 mai, demande le 12 mai)
-('2026-05-01','2026-05-05','2026-05-12', null, null, null, 8, 5, 3, 1);
+('2026-05-01','2026-05-05','2026-05-12', null, null, null, 5, 3, 1);
+
+
 
 INSERT INTO droit_emprunt_categorie_utilisateur_categorie_modele (peut_emprunter,categorie_modele_id, categorie_utilisateur_id) VALUES
 (true, 1, 1),
