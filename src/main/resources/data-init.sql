@@ -155,7 +155,7 @@ INSERT INTO emprunt (date_creation, date_debut, date_fin, date_prolongation, dat
 
 
 
-INSERT INTO droit_emprunt_categorie_utilisateur_categorie_modele (peut_emprunter,categorie_modele_id, categorie_utilisateur_id) VALUES
+INSERT INTO droit_emprunt(peut_emprunter,categorie_modele_id, categorie_utilisateur_id) VALUES
 (true, 1, 1),
 (true, 1, 2),
 (true, 1, 3);
