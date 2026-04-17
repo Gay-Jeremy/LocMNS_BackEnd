@@ -2,6 +2,7 @@ package com.locmns.locmns_backend.model;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.locmns.locmns_backend.view.EmpruntView;
+import com.locmns.locmns_backend.view.MaterielView;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -23,12 +24,12 @@ public class Emprunt {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonView(EmpruntView.class)
+    @JsonView({EmpruntView.class, MaterielView.class})
     protected Integer id;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
-    @JsonView(EmpruntView.class)
+    @JsonView({EmpruntView.class, MaterielView.class})
     protected LocalDate dateCreation;
 
     @Column(nullable = false)

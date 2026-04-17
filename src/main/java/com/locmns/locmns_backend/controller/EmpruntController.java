@@ -78,6 +78,7 @@ public class EmpruntController {
 
 
     @GetMapping("/{id}")
+    @JsonView(EmpruntView.class)
     public ResponseEntity<Emprunt> obtenirEmpruntParId(@PathVariable int id) {
 
         Optional<Emprunt> optionalEmprunt = empruntDao.findById(id);

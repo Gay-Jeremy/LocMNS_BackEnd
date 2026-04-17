@@ -35,6 +35,7 @@ public class Materiel {
 
 
     @OneToMany(mappedBy = "materiel")
+    @JsonView(MaterielView.class)
     private List<Emprunt> emprunts;
 
     @ManyToOne

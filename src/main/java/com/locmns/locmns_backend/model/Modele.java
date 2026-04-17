@@ -24,7 +24,7 @@ public class Modele {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonView(categorieModeleView.class)
+    @JsonView({categorieModeleView.class, MaterielView.class})
     protected Integer id;
 
     @NotBlank(message = "Le libellé est obligatoire")
@@ -35,6 +35,7 @@ public class Modele {
 
     @ManyToOne
     @JoinColumn(name = "categorie_modele_id")
+    @JsonView({MaterielView.class, EmpruntView.class})
     private CategorieModele categorieModele;
 
     @OneToMany(mappedBy = "modele")
