@@ -6,6 +6,7 @@ import com.locmns.locmns_backend.view.MaterielView;
 import com.locmns.locmns_backend.view.CategorieModeleView;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
