@@ -2,6 +2,7 @@ package com.locmns.locmns_backend.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,7 +29,8 @@ public class Documentation {
     @Size(min = 2, max = 100, message = "Le titre doit faire entre 2 et 100 caractères")
     protected String titre;
 
-
+    @NotBlank(message = "L'URL est obligatoire")
+    @Size(max = 255, message = "L'URL ne doit pas dépasser 255 caractères")
     protected String url;
 
     @Column(nullable = false,length = 50)
@@ -36,6 +38,7 @@ public class Documentation {
     protected String format;
 
     @ManyToOne
+    @NotNull(message = "Le type de document est obligatoire")
     @JoinColumn(name = "type_document_id")
     private TypeDocument typeDocument;
 

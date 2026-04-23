@@ -8,6 +8,7 @@ import com.locmns.locmns_backend.view.UtilisateurView;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -34,17 +35,17 @@ public class Utilisateur {
 
     @NotBlank(groups = {OnCreate.class},message = "Le nom est obligatoire")
     @Column(nullable = false, length = 50)
-    @Size(min = 2, max = 50,groups = {OnCreate.class}, message = "Le nom doit faire entre 2 et 50 caractères")
+    @Size(min = 2, max = 50,groups = {OnCreate.class, OnUpdate.class}, message = "Le nom doit faire entre 2 et 50 caractères")
     @JsonView({EmpruntView.class, PromotionView.class, CategorieUtilisateurView.class, UtilisateurView.class})
     protected String nom;
 
     @NotBlank(groups = {OnCreate.class},message = "Le prénom est obligatoire")
     @Column(nullable = false, length = 50)
-    @Size(min = 2, max = 50,groups = {OnCreate.class}, message = "Le prénom doit faire entre 2 et 50 caractères")
+    @Size(min = 2, max = 50,groups = {OnCreate.class, OnUpdate.class}, message = "Le prénom doit faire entre 2 et 50 caractères")
     @JsonView({EmpruntView.class, PromotionView.class,CategorieUtilisateurView.class,UtilisateurView.class})
     protected String prenom;
 
-    @NotBlank(message = "L'email est obligatoire")
+    @NotBlank(groups ={OnCreate.class}, message = "L'email est obligatoire")
     @Column(nullable = false, unique = true, length = 100)
     @Size(max = 100,groups = {OnCreate.class}, message = "L'email ne doit pas dépasser 100 caractères")
     @Email(groups = {OnCreate.class}, message = "L'email est mal formé")
@@ -59,6 +60,7 @@ public class Utilisateur {
     private Promotion promotion;
 
     @ManyToOne
+    @NotNull(groups = {OnCreate.class, OnUpdate.class}, message = "La catégorie utilisateur est obligatoire")
     @JoinColumn(name = "categorie_utilisateur_id")
     @JsonView(EmpruntView.class)
     private CategorieUtilisateur categorieUtilisateur;

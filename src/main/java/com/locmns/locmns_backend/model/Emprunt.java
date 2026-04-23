@@ -52,16 +52,19 @@ public class Emprunt {
     protected LocalDate dateRetourAnticipe;
 
     @ManyToOne
+    @NotNull(message = "L'utilisateur est obligatoire")
     @JoinColumn(name = "utilisateur_id")
     @JsonView(EmpruntView.class)
     private Utilisateur utilisateur;
 
     @ManyToOne
+    @NotNull(message = "Le statut est obligatoire")
     @JoinColumn(name = "statut_emprunt_id")
     @JsonView(EmpruntView.class)
     private StatutEmprunt statutEmprunt;
 
     @ManyToOne
+    @NotNull(message = "Le matériel est obligatoire")
     @JoinColumn(name = "materiel_id")
     @JsonView(EmpruntView.class)
     private Materiel materiel;

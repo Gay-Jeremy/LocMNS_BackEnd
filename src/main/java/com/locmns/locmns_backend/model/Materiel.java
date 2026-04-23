@@ -5,6 +5,7 @@ import com.locmns.locmns_backend.view.EmpruntView;
 import com.locmns.locmns_backend.view.MaterielView;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -38,6 +39,7 @@ public class Materiel {
     private List<Emprunt> emprunts;
 
     @ManyToOne
+    @NotNull(message = "Le statut du matériel est obligatoire")
     @JoinColumn(name = "statut_materiel_id")
     @JsonView(MaterielView.class)
     private StatutMateriel statutMateriel;
@@ -47,6 +49,7 @@ public class Materiel {
     private Salle salle;
 
     @ManyToOne
+    @NotNull(message = "Le modèle est obligatoire")
     @JoinColumn(name = "modele_id")
     @JsonView({EmpruntView.class, MaterielView.class})
     private Modele modele;

@@ -1,6 +1,8 @@
 package com.locmns.locmns_backend.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.io.Serializable;
@@ -19,6 +21,8 @@ public class CaracteristiqueMaterielComposant {
     @Id
     private Integer composantId;
 
+    @NotBlank(message = "La valeur est obligatoire")
+    @Size(max = 100, message = "La valeur ne doit pas dépasser 100 caractères")
     private String valeur;
 
     @ManyToOne

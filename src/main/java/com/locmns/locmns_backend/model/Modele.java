@@ -34,6 +34,7 @@ public class Modele {
     protected String libelle;
 
     @ManyToOne
+    @NotNull(message = "La catégorie du modèle est obligatoire")
     @JoinColumn(name = "categorie_modele_id")
     @JsonView({MaterielView.class, EmpruntView.class})
     private CategorieModele categorieModele;
