@@ -21,14 +21,14 @@ public class UtilisateurController {
     @Autowired
     protected UtilisateurDao utilisateurDao;
 
-    @GetMapping("liste")
+    @GetMapping("/liste")
     @JsonView( {UtilisateurView.class})
     public List<Utilisateur> obtenirTousLesUtilisateurs() {
         return utilisateurDao.findAll();
     }
 
     @GetMapping("/{id}")
-    @JsonView(Utilisateur.class)
+    @JsonView(UtilisateurView.class)
     public ResponseEntity<Utilisateur> obtenirUtilisateurParId(@PathVariable int id) {
 
         Optional<Utilisateur> optionalUtilisateur = utilisateurDao.findById(id);

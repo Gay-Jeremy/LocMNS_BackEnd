@@ -22,10 +22,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MaterielController {
 
-    @Autowired
-    protected MaterielDao materielDao;
+    private final MaterielDao materielDao;
 
-    protected final MaterielService materielService;
+    private final MaterielService materielService;
 
     @JsonView(MaterielView.class)
     @GetMapping("/liste")
@@ -93,6 +92,8 @@ public class MaterielController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> modifierMateriel(@PathVariable int id, @RequestBody Materiel materielToInsert) {
+
+        materielToInsert.setId(id);
 
         Optional<Materiel> optionalMateriel = materielDao.findById(id);
 

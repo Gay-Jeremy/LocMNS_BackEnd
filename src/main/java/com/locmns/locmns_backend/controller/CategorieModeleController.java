@@ -3,7 +3,7 @@ package com.locmns.locmns_backend.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.locmns.locmns_backend.dao.CategorieModeleDao;
 import com.locmns.locmns_backend.model.CategorieModele;
-import com.locmns.locmns_backend.view.categorieModeleView;
+import com.locmns.locmns_backend.view.CategorieModeleView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,21 +15,21 @@ import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
-@RequestMapping("/api/categorie_modele")
+@RequestMapping("/api/categories_modele")
 public class CategorieModeleController {
 
     @Autowired
     private CategorieModeleDao categorieModeleDao;
 
     @GetMapping("/liste")
-    @JsonView(categorieModeleView.class)
+    @JsonView(CategorieModeleView.class)
     public List<CategorieModele> obtenirToutesLesCategoriesModele() {
 
         return categorieModeleDao.findAll();
     }
 
     @GetMapping("/{id}")
-    @JsonView(categorieModeleView.class)
+    @JsonView(CategorieModeleView.class)
     public ResponseEntity<CategorieModele> obtenirCategorieModeleParId(@PathVariable int id) {
 
         Optional<CategorieModele> optionalCategorieModele = categorieModeleDao.findById(id);
@@ -38,7 +38,6 @@ public class CategorieModeleController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        categorieModeleDao.findById(id);
         return new ResponseEntity<>(optionalCategorieModele.get(), HttpStatus.OK);
     }
 

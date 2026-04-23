@@ -5,6 +5,7 @@ import com.locmns.locmns_backend.model.Emprunt;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,8 +24,11 @@ public class EmpruntService {
 
     public List<Emprunt> obtenirDemandesEmprunt(){ return empruntDao.retourneListeDemandeEmprunt(); }
 
+    public List<Emprunt> obtenirEmpruntsRecents() {
+        return empruntDao.retourneEmpruntRecent(LocalDate.now().minusDays(30));
+    }
+
     public List<Emprunt> obtenirPannesSignalees(){ return empruntDao.retourneListePanne(); }
 
-    public List<Emprunt> obtenirEmpruntsRecents(){ return empruntDao.retourneEmpruntRecent(); }
 
 }

@@ -3,7 +3,6 @@ package com.locmns.locmns_backend.model;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.locmns.locmns_backend.view.EmpruntView;
 import com.locmns.locmns_backend.view.MaterielView;
-import com.locmns.locmns_backend.view.categorieModeleView;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -40,6 +39,7 @@ public class Materiel {
 
     @ManyToOne
     @JoinColumn(name = "statut_materiel_id")
+    @JsonView(MaterielView.class)
     private StatutMateriel statutMateriel;
 
     @ManyToOne
@@ -50,7 +50,4 @@ public class Materiel {
     @JoinColumn(name = "modele_id")
     @JsonView({EmpruntView.class, MaterielView.class})
     private Modele modele;
-
-    @ManyToMany(mappedBy = "materiels")
-    private List<Composant> composants;
 }

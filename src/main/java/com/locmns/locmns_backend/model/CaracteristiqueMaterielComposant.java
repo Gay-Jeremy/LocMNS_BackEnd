@@ -1,10 +1,7 @@
 package com.locmns.locmns_backend.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serializable;
 
@@ -25,17 +22,20 @@ public class CaracteristiqueMaterielComposant {
     private String valeur;
 
     @ManyToOne
-    @MapsId ("materielId" )
-    @JoinColumn (name = "materiel_id" )
+    @JoinColumn (name = "materiel_id", insertable = false, updatable = false )
     private Materiel materiel ;
 
     @ManyToOne
-    @MapsId ("composantId" )
-    @JoinColumn (name = "composant_id" )
+    @JoinColumn (name = "composant_id", insertable = false, updatable = false )
     private Composant composant ;
 
 
     @Embeddable
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @EqualsAndHashCode
     public static class CleCaracteristique implements Serializable {
 
         @Column(name = "materiel_id")

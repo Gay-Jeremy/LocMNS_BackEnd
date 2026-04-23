@@ -3,7 +3,7 @@ package com.locmns.locmns_backend.model;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.locmns.locmns_backend.view.EmpruntView;
 import com.locmns.locmns_backend.view.MaterielView;
-import com.locmns.locmns_backend.view.categorieModeleView;
+import com.locmns.locmns_backend.view.CategorieModeleView;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -24,13 +24,13 @@ public class Modele {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonView({categorieModeleView.class, MaterielView.class})
+    @JsonView({CategorieModeleView.class, MaterielView.class})
     protected Integer id;
 
     @NotBlank(message = "Le libellé est obligatoire")
     @Column(nullable = false,unique = true,length = 50)
     @Size(min = 2, max = 50, message = "Le libellé doit faire entre 2 et 50 caractères")
-    @JsonView({EmpruntView.class, MaterielView.class, categorieModeleView.class})
+    @JsonView({EmpruntView.class, MaterielView.class, CategorieModeleView.class})
     protected String libelle;
 
     @ManyToOne

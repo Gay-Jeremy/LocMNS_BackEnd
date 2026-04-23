@@ -15,7 +15,7 @@ import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
-@RequestMapping("/api/droit_emprunt")
+@RequestMapping("/api/droits_emprunt")
 public class DroitEmpruntController {
     
     @Autowired
@@ -28,11 +28,27 @@ public class DroitEmpruntController {
         return droitEmpruntDao.findAll();
     }
 
-    @GetMapping("/{id_categorie_modele}")
+    @GetMapping("/{id_categorie_utilisateur}")
     @JsonView(DroitEmpruntView.class)
-    public List<DroitEmprunt> obtenirTousLesDroitsEmpruntParIdCategorieModele(@PathVariable int id_categorie_modele) {
+    public List<DroitEmprunt> obtenirTousLesDroitsEmpruntParIdCategorieUtilisateur(@PathVariable int id_categorie_utilisateur) {
 
-        return droitEmpruntDao.findByCategorieUtilisateurId(id_categorie_modele);
+        return droitEmpruntDao.findByCategorieUtilisateurId(id_categorie_utilisateur);
+    }
+
+    @PostMapping("")
+    public ResponseEntity<Void> creerDroitEmprunt(@RequestBody DroitEmprunt droitEmpruntToInsert) {
+        droitEmpruntDao.save(droitEmpruntToInsert);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @DeleteMapping("/{categorieUtilisateurId}/{categorieModeleId}")
+    public ResponseEntity<Void> supprimerDroitEmprunt(@PathVariable int categorieUtilisateurId,
+                                                      @PathVariable int categorieModeleId) {
+        DroitEmprunt.CleDroitEmpruntCategorieUtilisateurCategorieModele cle =
+                new DroitEmprunt.CleDroitEmpruntCategorieUtilisateurCategorieModele();
+
+        droitEmpruntDao.deleteById(cle);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 

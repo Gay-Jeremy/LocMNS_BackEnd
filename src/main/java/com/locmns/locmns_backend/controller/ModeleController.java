@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
-@RequestMapping("/api/modele")
+@RequestMapping("/api/modeles")
 public class ModeleController {
 
     @Autowired
@@ -62,6 +62,8 @@ public class ModeleController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> modifierModele(@PathVariable int id, @RequestBody Modele modeleToInsert) {
+
+        modeleToInsert.setId(id);
 
         Optional<Modele> optionalModele = modeleDao.findById(id);
 

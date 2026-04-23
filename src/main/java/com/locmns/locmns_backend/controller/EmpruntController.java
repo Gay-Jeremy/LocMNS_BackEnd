@@ -18,11 +18,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
+
 import java.util.List;
 import java.util.Optional;
 
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 
 @RestController
@@ -31,17 +30,13 @@ import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 @RequiredArgsConstructor
 public class EmpruntController {
 
-    @Autowired
-    protected EmpruntDao empruntDao;
+    private final EmpruntDao empruntDao;
 
-    @Autowired
-    protected MaterielDao materielDao;
+    private final MaterielDao materielDao;
 
-    @Autowired
-    protected UtilisateurDao utilisateurDao;
+    private final UtilisateurDao utilisateurDao;
 
-    @Autowired
-    protected StatutEmpruntDao statutEmpruntDao;
+    private final StatutEmpruntDao statutEmpruntDao;
 
     private final EmpruntService empruntService;
 

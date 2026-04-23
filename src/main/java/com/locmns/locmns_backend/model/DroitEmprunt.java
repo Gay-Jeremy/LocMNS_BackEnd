@@ -3,10 +3,7 @@ package com.locmns.locmns_backend.model;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.locmns.locmns_backend.view.DroitEmpruntView;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serializable;
 
@@ -30,19 +27,21 @@ public class DroitEmprunt {
     private boolean peutEmprunter;
 
     @ManyToOne
-    @MapsId("categorieUtilisateurId" )
-    @JoinColumn(name = "categorie_utilisateur_id" )
+    @JoinColumn(name = "categorie_utilisateur_id", insertable = false, updatable = false )
     @JsonView(DroitEmpruntView.class)
     private CategorieUtilisateur categorieUtilisateur ;
 
     @ManyToOne
-    @MapsId ("categorieModeleId" )
-    @JoinColumn (name = "categorie_Modele_id" )
+    @JoinColumn (name = "categorie_Modele_id", insertable = false, updatable = false )
     @JsonView(DroitEmpruntView.class)
     private CategorieModele categorieModele ;
 
-
     @Embeddable
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @EqualsAndHashCode
     public static class CleDroitEmpruntCategorieUtilisateurCategorieModele implements Serializable {
 
         @Column(name = "categorie_utilisateur_id")

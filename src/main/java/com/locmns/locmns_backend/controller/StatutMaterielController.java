@@ -3,7 +3,9 @@ package com.locmns.locmns_backend.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.locmns.locmns_backend.dao.StatutMaterielDao;
 import com.locmns.locmns_backend.model.StatutMateriel;
+import com.locmns.locmns_backend.view.MaterielView;
 import com.locmns.locmns_backend.view.StatutEmpruntView;
+import com.locmns.locmns_backend.view.StatutMaterielView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,14 +16,14 @@ import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
-@RequestMapping("/api/statut_materiel")
+@RequestMapping("/api/statust_materiel")
 public class StatutMaterielController {
 
     @Autowired
     protected StatutMaterielDao statutMaterielDao;
 
     @GetMapping("/liste")
-    @JsonView(StatutEmpruntView.class)
+    @JsonView({MaterielView.class, StatutMaterielView.class})
     public List<StatutMateriel> obtenirTousLesStatutsMateriel() {
         return statutMaterielDao.findAll();
     }

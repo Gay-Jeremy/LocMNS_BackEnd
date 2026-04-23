@@ -1,4 +1,4 @@
 package com.locmns.locmns_backend.view;
 
-public class categorieModeleView {
+public class CategorieModeleView {
 }

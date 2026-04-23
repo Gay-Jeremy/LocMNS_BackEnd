@@ -50,6 +50,9 @@ public class Utilisateur {
     @Email(groups = {OnCreate.class}, message = "L'email est mal formé")
     protected String email;
 
+    @Column(length = 255)
+    protected String password;
+
     @ManyToOne
     @JoinColumn(name = "promotion_id") // clé étrangère de la table PROMOTION
     @JsonView({EmpruntView.class, UtilisateurView.class, PromotionView.class})

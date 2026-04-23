@@ -37,12 +37,4 @@ public class Composant {
 
     private List<CategorieModele> categoriesModeles = new ArrayList<>();
 
-    @ManyToMany
-    @JoinTable(
-            name = "composant_materiel",
-            joinColumns = @JoinColumn(name = "composant_id"),
-            inverseJoinColumns = @JoinColumn(name = "materiel_id")
-    )
-    private List<Materiel> materiels;
-
 }
