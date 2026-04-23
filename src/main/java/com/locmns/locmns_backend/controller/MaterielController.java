@@ -6,6 +6,7 @@ import com.locmns.locmns_backend.dao.MaterielDao;
 import com.locmns.locmns_backend.model.Materiel;
 import com.locmns.locmns_backend.services.MaterielService;
 import com.locmns.locmns_backend.view.MaterielView;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -67,7 +68,7 @@ public class MaterielController {
 
 
     @PostMapping("")
-    public Materiel creerMateriel(@RequestBody Materiel materielToInsert ) {
+    public Materiel creerMateriel(@RequestBody @Valid Materiel materielToInsert ) {
 
         materielToInsert.setId(null);
 
@@ -91,7 +92,7 @@ public class MaterielController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> modifierMateriel(@PathVariable int id, @RequestBody Materiel materielToInsert) {
+    public ResponseEntity<Void> modifierMateriel(@PathVariable int id, @RequestBody @Valid Materiel materielToInsert) {
 
         materielToInsert.setId(id);
 

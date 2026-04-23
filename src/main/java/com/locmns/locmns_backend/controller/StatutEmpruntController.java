@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.locmns.locmns_backend.dao.StatutEmpruntDao;
 import com.locmns.locmns_backend.model.StatutEmprunt;
 import com.locmns.locmns_backend.view.StatutEmpruntView;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +37,7 @@ public class StatutEmpruntController {
     }
 
     @PostMapping("")
-    public StatutEmprunt creerStatutEmprunt(@RequestBody StatutEmprunt statutEmpruntToInsert) {
+    public StatutEmprunt creerStatutEmprunt(@RequestBody @Valid StatutEmprunt statutEmpruntToInsert) {
         statutEmpruntToInsert.setId(null);
         statutEmpruntDao.save(statutEmpruntToInsert);
         return statutEmpruntToInsert;
@@ -55,7 +56,7 @@ public class StatutEmpruntController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> modifierStatutEmprunt(@PathVariable int id,
-                                                      @RequestBody StatutEmprunt statutEmpruntToUpdate) {
+                                                      @RequestBody @Valid StatutEmprunt statutEmpruntToUpdate) {
 
         statutEmpruntToUpdate.setId(id);
 

@@ -12,6 +12,7 @@ import com.locmns.locmns_backend.model.StatutEmprunt;
 import com.locmns.locmns_backend.model.Utilisateur;
 import com.locmns.locmns_backend.services.EmpruntService;
 import com.locmns.locmns_backend.view.EmpruntView;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -86,7 +87,7 @@ public class EmpruntController {
     }
 
     @PostMapping("")
-    public ResponseEntity<Void> creerEmprunt(@RequestBody EmpruntDto empruntDto) {
+    public ResponseEntity<Void> creerEmprunt(@RequestBody @Valid EmpruntDto empruntDto) {
 
         Emprunt emprunt = new Emprunt();
 
@@ -117,7 +118,7 @@ public class EmpruntController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> modifierEmprunt(@PathVariable int id, @RequestBody Emprunt empruntToInsert ) {
+    public ResponseEntity<Void> modifierEmprunt(@PathVariable int id, @RequestBody @Valid Emprunt empruntToInsert ) {
 
         empruntToInsert.setId(id);
 

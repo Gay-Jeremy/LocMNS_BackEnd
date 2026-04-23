@@ -2,6 +2,7 @@ package com.locmns.locmns_backend.controller;
 
 import com.locmns.locmns_backend.dao.DocumentationDao;
 import com.locmns.locmns_backend.model.Documentation;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +35,7 @@ public class DocumentationController {
     }
 
     @PostMapping("")
-    public Documentation creerDocumentation(@RequestBody Documentation documentationToInsert) {
+    public Documentation creerDocumentation(@RequestBody @Valid Documentation documentationToInsert) {
         documentationToInsert.setId(null);
         documentationDao.save(documentationToInsert);
         return documentationToInsert;
@@ -53,7 +54,7 @@ public class DocumentationController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> modifierDocumentation(@PathVariable int id,
-                                                      @RequestBody Documentation documentationToUpdate) {
+                                                      @RequestBody @Valid Documentation documentationToUpdate) {
 
         documentationToUpdate.setId(id);
 

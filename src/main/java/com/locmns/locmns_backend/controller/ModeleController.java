@@ -3,6 +3,7 @@ package com.locmns.locmns_backend.controller;
 
 import com.locmns.locmns_backend.dao.ModeleDao;
 import com.locmns.locmns_backend.model.Modele;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +39,7 @@ public class ModeleController {
     }
 
     @PostMapping("")
-    public Modele creerModele(@RequestBody Modele modeleToInsert ) {
+    public Modele creerModele(@RequestBody @Valid Modele modeleToInsert ) {
 
         modeleToInsert.setId(null);
 
@@ -61,7 +62,7 @@ public class ModeleController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> modifierModele(@PathVariable int id, @RequestBody Modele modeleToInsert) {
+    public ResponseEntity<Void> modifierModele(@PathVariable int id, @RequestBody @Valid Modele modeleToInsert) {
 
         modeleToInsert.setId(id);
 

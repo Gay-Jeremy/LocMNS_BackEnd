@@ -2,6 +2,7 @@ package com.locmns.locmns_backend.controller;
 
 import com.locmns.locmns_backend.dao.TypeDocumentDao;
 import com.locmns.locmns_backend.model.TypeDocument;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +33,7 @@ public class TypeDocumentController {
     }
 
     @PostMapping("")
-    public TypeDocument creerTypeDocument(@RequestBody TypeDocument typeDocumentToInsert) {
+    public TypeDocument creerTypeDocument(@RequestBody @Valid TypeDocument typeDocumentToInsert) {
         typeDocumentToInsert.setId(null);
         typeDocumentDao.save(typeDocumentToInsert);
         return typeDocumentToInsert;
@@ -48,7 +49,7 @@ public class TypeDocumentController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> modifierTypeDocument(@PathVariable int id,
-                                                     @RequestBody TypeDocument typeDocumentToUpdate) {
+                                                     @RequestBody @Valid TypeDocument typeDocumentToUpdate) {
         typeDocumentToUpdate.setId(id);
         Optional<TypeDocument> opt = typeDocumentDao.findById(id);
         if (opt.isEmpty()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);

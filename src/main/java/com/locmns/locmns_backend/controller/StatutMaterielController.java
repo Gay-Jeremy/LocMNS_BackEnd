@@ -6,6 +6,7 @@ import com.locmns.locmns_backend.model.StatutMateriel;
 import com.locmns.locmns_backend.view.MaterielView;
 import com.locmns.locmns_backend.view.StatutEmpruntView;
 import com.locmns.locmns_backend.view.StatutMaterielView;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +39,7 @@ public class StatutMaterielController {
     }
 
     @PostMapping("")
-    public StatutMateriel creerStatutMateriel(@RequestBody StatutMateriel statutMaterielToInsert) {
+    public StatutMateriel creerStatutMateriel(@RequestBody @Valid StatutMateriel statutMaterielToInsert) {
         statutMaterielToInsert.setId(null);
         statutMaterielDao.save(statutMaterielToInsert);
         return statutMaterielToInsert;
@@ -57,7 +58,7 @@ public class StatutMaterielController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> modifierStatutMateriel(@PathVariable int id,
-                                                       @RequestBody StatutMateriel statutMaterielToUpdate) {
+                                                       @RequestBody @Valid StatutMateriel statutMaterielToUpdate) {
 
         statutMaterielToUpdate.setId(id);
 

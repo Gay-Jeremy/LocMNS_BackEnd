@@ -2,6 +2,7 @@ package com.locmns.locmns_backend.controller;
 
 import com.locmns.locmns_backend.dao.SalleDao;
 import com.locmns.locmns_backend.model.Salle;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +34,7 @@ public class SalleController {
     }
 
     @PostMapping("")
-    public Salle creerSalle(@RequestBody Salle salleToInsert) {
+    public Salle creerSalle(@RequestBody @Valid Salle salleToInsert) {
         salleToInsert.setId(null);
         salleDao.save(salleToInsert);
         return salleToInsert;
@@ -52,7 +53,7 @@ public class SalleController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> modifierSalle(@PathVariable int id,
-                                              @RequestBody Salle salleToUpdate) {
+                                              @RequestBody @Valid Salle salleToUpdate) {
 
         salleToUpdate.setId(id);
 

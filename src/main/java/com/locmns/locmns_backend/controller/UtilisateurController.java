@@ -63,7 +63,7 @@ public class UtilisateurController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> modifierUtilisateur(@PathVariable int id, @RequestBody Utilisateur utilisateurToInsert ) {
+    public ResponseEntity<Void> modifierUtilisateur(@PathVariable int id, @RequestBody @Validated(Utilisateur.OnUpdate.class) Utilisateur utilisateurToInsert ) {
 
         utilisateurToInsert.setId(id);
 

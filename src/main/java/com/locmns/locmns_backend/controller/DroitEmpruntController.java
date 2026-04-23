@@ -5,6 +5,7 @@ import com.locmns.locmns_backend.dao.DroitEmpruntDao;
 import com.locmns.locmns_backend.model.Documentation;
 import com.locmns.locmns_backend.model.DroitEmprunt;
 import com.locmns.locmns_backend.view.DroitEmpruntView;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +37,7 @@ public class DroitEmpruntController {
     }
 
     @PostMapping("")
-    public ResponseEntity<Void> creerDroitEmprunt(@RequestBody DroitEmprunt droitEmpruntToInsert) {
+    public ResponseEntity<Void> creerDroitEmprunt(@RequestBody @Valid DroitEmprunt droitEmpruntToInsert) {
         droitEmpruntDao.save(droitEmpruntToInsert);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

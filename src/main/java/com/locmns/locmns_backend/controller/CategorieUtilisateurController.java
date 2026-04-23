@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.locmns.locmns_backend.dao.CategorieUtilisateurDao;
 import com.locmns.locmns_backend.model.CategorieUtilisateur;
 import com.locmns.locmns_backend.view.CategorieUtilisateurView;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,7 +47,7 @@ public class CategorieUtilisateurController {
     }
 
     @PostMapping("")
-    public CategorieUtilisateur creerCategorieUtilisateur(@RequestBody CategorieUtilisateur categorieToInsert) {
+    public CategorieUtilisateur creerCategorieUtilisateur(@RequestBody @Valid CategorieUtilisateur categorieToInsert) {
 
         categorieToInsert.setId(null);
 
@@ -72,7 +73,7 @@ public class CategorieUtilisateurController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> modifierCategorieUtilisateur(@PathVariable int id,
-                                                             @RequestBody CategorieUtilisateur categorieToUpdate) {
+                                                             @RequestBody @Valid CategorieUtilisateur categorieToUpdate) {
 
         // On écrase l'id du json par celui en paramètre
         categorieToUpdate.setId(id);

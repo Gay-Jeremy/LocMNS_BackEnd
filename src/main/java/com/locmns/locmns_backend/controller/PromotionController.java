@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.locmns.locmns_backend.dao.PromotionDao;
 import com.locmns.locmns_backend.model.Promotion;
 import com.locmns.locmns_backend.view.PromotionView;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +37,7 @@ public class PromotionController {
     }
 
     @PostMapping("")
-    public Promotion creerPromotion(@RequestBody Promotion promotionToInsert) {
+    public Promotion creerPromotion(@RequestBody @Valid Promotion promotionToInsert) {
         promotionToInsert.setId(null);
         promotionDao.save(promotionToInsert);
         return promotionToInsert;
@@ -55,7 +56,7 @@ public class PromotionController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> modifierPromotion(@PathVariable int id,
-                                                  @RequestBody Promotion promotionToUpdate) {
+                                                  @RequestBody @Valid Promotion promotionToUpdate) {
 
         promotionToUpdate.setId(id);
 

@@ -3,6 +3,7 @@ package com.locmns.locmns_backend.controller;
 
 import com.locmns.locmns_backend.dao.ComposantDao;
 import com.locmns.locmns_backend.model.Composant;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +41,7 @@ public class ComposantController {
     }
 
     @PostMapping("")
-    public Composant creerComposant(@RequestBody Composant categorieToInsert) {
+    public Composant creerComposant(@RequestBody @Valid Composant categorieToInsert) {
 
         categorieToInsert.setId(null);
 
@@ -66,7 +67,7 @@ public class ComposantController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> modifierComposant(@PathVariable int id,
-                                                  @RequestBody Composant categorieToUpdate) {
+                                                  @RequestBody @Valid Composant categorieToUpdate) {
 
         // On écrase l'id du json par celui en paramètre
         categorieToUpdate.setId(id);
