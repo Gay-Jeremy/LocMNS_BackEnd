@@ -89,19 +89,7 @@ public class EmpruntController {
     @PostMapping("")
     public ResponseEntity<Void> creerEmprunt(@RequestBody @Valid EmpruntDto empruntDto) {
 
-        Emprunt emprunt = new Emprunt();
-
-        Materiel materiel = materielDao.findById(empruntDto.materielId()).orElseThrow();
-        Utilisateur utilisateur = utilisateurDao.findById(empruntDto.utilisateurId()).orElseThrow();
-        StatutEmprunt statutEmprunt = statutEmpruntDao.findById(3).orElseThrow();
-
-        emprunt.setUtilisateur(utilisateur);
-        emprunt.setMateriel(materiel);
-        emprunt.setDateDebut(empruntDto.dateDebut());
-        emprunt.setDateFin(empruntDto.dateFin());
-        emprunt.setStatutEmprunt(statutEmprunt);
-
-        empruntDao.save(emprunt);
+        empruntService.creerEmprunt(empruntDto);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
