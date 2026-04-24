@@ -52,6 +52,16 @@ public class EmpruntService {
             throw new MetierException("La date de fin doit être après la date de début");
         }
 
+        // Vérification dateDebut >= aujourd'hui
+        if (empruntDto.dateDebut().isBefore(LocalDate.now())) {
+            throw new MetierException("La date de début ne peut pas être dans le passé");
+        }
+
+        // Vérification dateFin >= aujourd'hui
+        if (empruntDto.dateFin().isBefore(LocalDate.now())) {
+            throw new MetierException("La date de fin ne peut pas être dans le passé");
+        }
+
         // Vérification que le matériel existe
         Materiel materiel = materielDao.findById(empruntDto.materielId())
                 .orElseThrow(() -> new MetierException("Matériel introuvable"));
