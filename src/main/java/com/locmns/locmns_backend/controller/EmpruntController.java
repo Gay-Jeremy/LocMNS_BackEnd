@@ -31,14 +31,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class EmpruntController {
 
-    private final EmpruntDao empruntDao;
-
-    private final MaterielDao materielDao;
-
-    private final UtilisateurDao utilisateurDao;
-
-    private final StatutEmpruntDao statutEmpruntDao;
-
     private final EmpruntService empruntService;
 
     @GetMapping("/liste/recent")
@@ -77,7 +69,7 @@ public class EmpruntController {
     @JsonView(EmpruntView.class)
     public ResponseEntity<Emprunt> obtenirEmpruntParId(@PathVariable int id) {
 
-        Optional<Emprunt> optionalEmprunt = empruntDao.findById(id);
+        Optional<Emprunt> optionalEmprunt = empruntService.obtenirEmpruntsParId(id);
 
         if (optionalEmprunt.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -95,29 +87,15 @@ public class EmpruntController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> supprimerEmprunt(@PathVariable int id) {
-
-        Optional<Emprunt> optionalEmprunt = empruntDao.findById(id);
-
-        if (optionalEmprunt.isEmpty())
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
-        empruntDao.deleteById(id);
+        empruntService.supprimerEmprunt(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> modifierEmprunt(@PathVariable int id, @RequestBody @Valid Emprunt empruntToInsert ) {
-
-        empruntToInsert.setId(id);
-
-        Optional<Emprunt> optionalEmprunt = empruntDao.findById(id);
-
-        if (optionalEmprunt.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        empruntDao.save(empruntToInsert);
+    public ResponseEntity<Void> modifierEmprunt(@PathVariable int id, @RequestBody @Valid Emprunt empruntToInsert) {
+        empruntService.modifierEmprunt(id, empruntToInsert);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
 
 }

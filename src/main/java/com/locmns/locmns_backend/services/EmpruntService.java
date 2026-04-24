@@ -6,6 +6,7 @@ import com.locmns.locmns_backend.dao.StatutEmpruntDao;
 import com.locmns.locmns_backend.dao.UtilisateurDao;
 import com.locmns.locmns_backend.dto.EmpruntDto;
 import com.locmns.locmns_backend.exception.MetierException;
+import com.locmns.locmns_backend.exception.RessourceIntrouvableException;
 import com.locmns.locmns_backend.model.Emprunt;
 import com.locmns.locmns_backend.model.Materiel;
 import com.locmns.locmns_backend.model.StatutEmprunt;
@@ -43,6 +44,21 @@ public class EmpruntService {
     }
 
     public List<Emprunt> obtenirPannesSignalees(){ return empruntDao.retourneListePanne(); }
+
+    public void supprimerEmprunt(Integer id) {
+        if (!empruntDao.existsById(id)) {
+            throw new RessourceIntrouvableException("Emprunt introuvable");
+        }
+        empruntDao.deleteById(id);
+    }
+
+    public void modifierEmprunt(Integer id, Emprunt emprunt) {
+        if (!empruntDao.existsById(id)) {
+            throw new RessourceIntrouvableException("Emprunt introuvable");
+        }
+        emprunt.setId(id);
+        empruntDao.save(emprunt);
+    }
 
 
     public void creerEmprunt(EmpruntDto empruntDto) {
