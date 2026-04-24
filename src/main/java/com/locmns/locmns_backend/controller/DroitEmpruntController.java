@@ -46,10 +46,16 @@ public class DroitEmpruntController {
     public ResponseEntity<Void> supprimerDroitEmprunt(@PathVariable int categorieUtilisateurId,
                                                       @PathVariable int categorieModeleId) {
         DroitEmprunt.CleDroitEmpruntCategorieUtilisateurCategorieModele cle =
-                new DroitEmprunt.CleDroitEmpruntCategorieUtilisateurCategorieModele();
+                new DroitEmprunt.CleDroitEmpruntCategorieUtilisateurCategorieModele(categorieUtilisateurId,
+                        categorieModeleId);
+
+        if (!droitEmpruntDao.existsById(cle)) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
 
         droitEmpruntDao.deleteById(cle);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
     }
 
 
