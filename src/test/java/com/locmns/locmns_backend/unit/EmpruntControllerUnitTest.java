@@ -1,6 +1,7 @@
 package com.locmns.locmns_backend.unit;
 
 import com.locmns.locmns_backend.controller.EmpruntController;
+import com.locmns.locmns_backend.exception.RessourceIntrouvableException;
 import com.locmns.locmns_backend.mock.MockEmpruntDao;
 import com.locmns.locmns_backend.model.Emprunt;
 import com.locmns.locmns_backend.services.EmpruntService;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class EmpruntControllerUnitTest {
 
@@ -20,7 +22,7 @@ public class EmpruntControllerUnitTest {
     public void init() {
         mockEmpruntDao = new MockEmpruntDao();
         EmpruntService empruntService = new EmpruntService(mockEmpruntDao, null, null, null);
-        empruntController = new EmpruntController(mockEmpruntDao, null, null, null, empruntService);
+        empruntController = new EmpruntController(empruntService);
     }
 
     // ── obtenirEmpruntParId ───────────────────────────────
@@ -46,9 +48,10 @@ public class EmpruntControllerUnitTest {
     }
 
     @Test
-    public void supprimerEmpruntInexistant_devrait_Retourner404() {
-        ResponseEntity<Void> reponse = empruntController.supprimerEmprunt(99);
-        assertEquals(HttpStatus.NOT_FOUND, reponse.getStatusCode());
+    public void supprimerEmpruntInexistant_devrait_lancerException() {
+        assertThrows(RessourceIntrouvableException.class, () -> {
+            empruntController.supprimerEmprunt(99);
+        });
     }
 
     // ── modifierEmprunt ───────────────────────────────────
@@ -61,9 +64,11 @@ public class EmpruntControllerUnitTest {
     }
 
     @Test
-    public void modifierEmpruntInexistant_devrait_Retourner404() {
+    public void modifierEmpruntInexistant_devrait_lancerException() {
         Emprunt emprunt = new Emprunt();
-        ResponseEntity<Void> reponse = empruntController.modifierEmprunt(99, emprunt);
-        assertEquals(HttpStatus.NOT_FOUND, reponse.getStatusCode());
+
+        assertThrows(RessourceIntrouvableException.class, () -> {
+            empruntController.modifierEmprunt(99, emprunt);
+        });
     }
 }

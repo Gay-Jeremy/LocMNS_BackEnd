@@ -24,6 +24,7 @@ public class GlobalExceptionInterceptor {
         }
         return errors;
     }
+
     @ExceptionHandler(DataIntegrityViolationException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public Map<String, String> constraintViolationDatabase(DataIntegrityViolationException ex) {
@@ -34,5 +35,12 @@ public class GlobalExceptionInterceptor {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> metierExceptionInterceptor(MetierException ex) {
         return Map.of("erreur", ex.getMessage());
+    }
+
+    @ExceptionHandler(RessourceIntrouvableException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Map<String, String> ressourceIntrouvableInterceptor(RessourceIntrouvableException ex) {
+        return Map.of("erreur", ex.getMessage());
+
     }
 }
