@@ -39,7 +39,6 @@ public class Materiel {
     private List<Emprunt> emprunts;
 
     @ManyToOne
-    @NotNull(message = "Le statut du matériel est obligatoire")
     @JoinColumn(name = "statut_materiel_id")
     @JsonView(MaterielView.class)
     private StatutMateriel statutMateriel;
