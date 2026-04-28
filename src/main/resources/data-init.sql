@@ -124,20 +124,19 @@ INSERT INTO statut_emprunt (libelle) VALUES
 ('Accepté'),
 ('Demande Prolongation'),
 ('Demande Retour Anticipé'),
-('Panne Signalé'),
 ('Prolongation Refusé'),
 ('Retour Anticipé Refusé');
 
 
 INSERT INTO emprunt (date_creation, date_debut, date_fin, date_prolongation, date_retour_anticipe, date_retour_reel, materiel_id, statut_emprunt_id, utilisateur_id) VALUES
 -- PC 1 : emprunté sur la période, statut ACCEPTÉ (id=3) → EXCLU
-('2026-05-01','2026-05-10','2026-05-20', null, null, null, 1, 3, 1),
+('2026-05-01','2026-05-10','2026-04-20', null, null, null, 1, 3, 1),
 
 -- PC 2 : emprunté sur la période, statut REFUSÉ (id=2) → INCLUS (car != 2 est faux, statut=2)
-('2026-05-01','2026-05-10','2026-05-20', null, null, null, 2, 2, 1),
+('2026-05-01','2026-05-10','2026-04-20', null, null, null, 2, 2, 1),
 
 -- PC 3 : emprunté MAIS date_retour_reel renseigné → INCLUS (déjà rendu)
-('2026-05-01','2026-05-10','2026-05-20', null, null, '2026-05-15', 3, 3, 1),
+('2026-05-01','2026-05-10','2026-04-20', null, null, '2026-05-15', 3, 3, 1),
 
 -- PC 4 : emprunté hors période (après) → INCLUS
 ('2026-05-01','2026-05-25','2026-06-05', null, null, null, 4, 3, 1),

@@ -51,6 +51,13 @@ public class MaterielController {
         return materielService.obtenirMaterielsDisponiblesPourPeriodeParIdCategorieModele(dateDebut, dateFin, id);
     }
 
+    @JsonView(MaterielView.class)
+    @GetMapping("/liste/panne_signalee")
+    public List<Materiel> obtenirListeMaterielPanneSignalee() {
+        return materielDao.retourneListeMaterielPanneSignales();
+    }
+
+
 
 
     @JsonView(MaterielView.class)
