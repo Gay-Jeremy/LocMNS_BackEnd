@@ -22,6 +22,7 @@ public interface EmpruntDao extends JpaRepository<Emprunt, Integer> {
     List<Emprunt> retourneEmpruntRecent(@Param("dateDebut") LocalDate dateDebut);
 ;
 
-    @Query("SELECT e FROM Emprunt e WHERE e.statutEmprunt.libelle LIKE 'Panne%'")
-    List<Emprunt> retourneListePanne();
+    @Query("FROM Emprunt e WHERE e.dateFin < CURRENT_DATE AND e.dateRetourReel IS NULL AND e.statutEmprunt.libelle NOT IN ('Demande en cours', 'Refusé') ")
+    List<Emprunt> retourneEmpruntEnRetard();
+
 }

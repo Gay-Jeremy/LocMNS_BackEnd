@@ -58,11 +58,9 @@ public class EmpruntController {
         return empruntService.obtenirDemandesEmprunt();
     }
 
-    @GetMapping("/liste/panne")
+    @GetMapping("liste/retard")
     @JsonView(EmpruntView.class)
-    public List<Emprunt> obtenirPannesSignalees() {
-        return empruntService.obtenirPannesSignalees();
-    }
+    public List<Emprunt> obtenirEmpruntEnRetard() {return empruntService.obtenirListeEmpruntEnRetard();}
 
 
     @GetMapping("/{id}")

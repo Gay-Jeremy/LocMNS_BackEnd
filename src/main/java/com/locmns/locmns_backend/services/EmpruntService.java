@@ -43,7 +43,9 @@ public class EmpruntService {
         return empruntDao.retourneEmpruntRecent(LocalDate.now().minusDays(30));
     }
 
-    public List<Emprunt> obtenirPannesSignalees(){ return empruntDao.retourneListePanne(); }
+    public List<Emprunt> obtenirListeEmpruntEnRetard () {
+        return  empruntDao.retourneEmpruntEnRetard();
+    }
 
     public void supprimerEmprunt(Integer id) {
         if (!empruntDao.existsById(id)) {

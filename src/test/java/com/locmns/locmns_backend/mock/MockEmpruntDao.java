@@ -15,7 +15,7 @@ import java.util.function.Function;
 
 public class MockEmpruntDao implements EmpruntDao {
 
-    // La seule méthode qui nous intéresse — les autres sont vides
+
     @Override
     public Optional<Emprunt> findById(Integer id) {
         if (id == 1) {
@@ -23,7 +23,7 @@ public class MockEmpruntDao implements EmpruntDao {
             emprunt.setId(1);
             return Optional.of(emprunt);
         }
-        return Optional.empty(); // id inexistant → vide
+        return Optional.empty();
     }
 
     @Override
@@ -53,7 +53,7 @@ public class MockEmpruntDao implements EmpruntDao {
     public List<Emprunt> retourneEmpruntRecent(LocalDate dateDebut) { return List.of(); }
 
     @Override
-    public List<Emprunt> retourneListePanne() { return List.of(); }
+    public List<Emprunt> retourneEmpruntEnRetard() { return List.of(); }
 
     // ── Méthodes JpaRepository obligatoires ────────────
 
