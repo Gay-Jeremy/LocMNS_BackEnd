@@ -55,6 +55,11 @@ public class MockEmpruntDao implements EmpruntDao {
     @Override
     public List<Emprunt> retourneEmpruntEnRetard() { return List.of(); }
 
+    @Override
+    public List<Emprunt> retourneHistoriqueEmprunt() {
+        return List.of();
+    }
+
     // ── Méthodes JpaRepository obligatoires ────────────
 
     @Override public void flush() {}

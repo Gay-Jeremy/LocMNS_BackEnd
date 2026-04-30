@@ -47,6 +47,12 @@ public class EmpruntService {
         return  empruntDao.retourneEmpruntEnRetard();
     }
 
+    public List<Emprunt> obtenirHistoriqueEmprunt () {
+        return  empruntDao.retourneHistoriqueEmprunt();
+    }
+
+
+
     public void supprimerEmprunt(Integer id) {
         if (!empruntDao.existsById(id)) {
             throw new RessourceIntrouvableException("Emprunt introuvable");

@@ -25,4 +25,7 @@ public interface EmpruntDao extends JpaRepository<Emprunt, Integer> {
     @Query("FROM Emprunt e WHERE e.dateFin < CURRENT_DATE AND e.dateRetourReel IS NULL AND e.statutEmprunt.libelle NOT IN ('Demande en cours', 'Refusé') ")
     List<Emprunt> retourneEmpruntEnRetard();
 
+    @Query("FROM Emprunt e WHERE e.dateFin < CURRENT_DATE OR e.statutEmprunt.libelle ='Refusé'")
+    List<Emprunt> retourneHistoriqueEmprunt();
+
 }
