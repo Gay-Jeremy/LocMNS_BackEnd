@@ -120,8 +120,8 @@ INSERT INTO utilisateur (nom, prenom, email,categorie_utilisateur_id,promotion_i
 
 INSERT INTO statut_emprunt (libelle) VALUES
 ('Demande en cours'),
-('Refusé'),
-('Accepté'),
+('Refuser'),
+('Accepter'),
 ('Demande Prolongation'),
 ('Demande Retour Anticipé'),
 ('Prolongation Refusé'),

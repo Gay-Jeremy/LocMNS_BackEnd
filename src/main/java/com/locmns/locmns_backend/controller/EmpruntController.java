@@ -6,6 +6,7 @@ import com.locmns.locmns_backend.dao.MaterielDao;
 import com.locmns.locmns_backend.dao.StatutEmpruntDao;
 import com.locmns.locmns_backend.dao.UtilisateurDao;
 import com.locmns.locmns_backend.dto.EmpruntDto;
+import com.locmns.locmns_backend.dto.StatutDto;
 import com.locmns.locmns_backend.model.Emprunt;
 import com.locmns.locmns_backend.model.Materiel;
 import com.locmns.locmns_backend.model.StatutEmprunt;
@@ -96,6 +97,14 @@ public class EmpruntController {
     @PutMapping("/{id}")
     public ResponseEntity<Void> modifierEmprunt(@PathVariable int id, @RequestBody @Valid Emprunt empruntToInsert) {
         empruntService.modifierEmprunt(id, empruntToInsert);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PutMapping("/{id}/statut")
+    public ResponseEntity<Void> modifierStatutEmprunt(
+            @PathVariable int id,
+            @RequestBody StatutDto statutDTO) {
+        empruntService.modifierStatutEmprunt(id, statutDTO.getStatutId());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

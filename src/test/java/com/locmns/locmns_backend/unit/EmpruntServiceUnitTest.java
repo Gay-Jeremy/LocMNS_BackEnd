@@ -81,7 +81,7 @@ public class EmpruntServiceUnitTest {
         when(materielDao.retourneListeMaterielDisponiblePourPeriodeParIdCategorieModele(
                 any(), any(), eq(1)
         )).thenReturn(List.of(materielDisponible));
-        when(statutEmpruntDao.findById(3)).thenReturn(Optional.of(statutEmprunt));
+        when(statutEmpruntDao.findById(1)).thenReturn(Optional.of(statutEmprunt));
 
         // Act
         assertDoesNotThrow(() -> empruntService.creerEmprunt(dto));

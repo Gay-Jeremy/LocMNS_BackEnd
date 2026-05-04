@@ -68,6 +68,17 @@ public class EmpruntService {
         empruntDao.save(emprunt);
     }
 
+    public void modifierStatutEmprunt(int empruntId, int statutId) {
+        Emprunt emprunt = empruntDao.findById(empruntId)
+                .orElseThrow(() -> new RessourceIntrouvableException("Emprunt non trouvé : " + empruntId));
+
+        StatutEmprunt statutEmprunt = statutEmpruntDao.findById(statutId)
+                .orElseThrow(() -> new RessourceIntrouvableException("Statut non trouvé : " + statutId));
+
+        emprunt.setStatutEmprunt(statutEmprunt);
+        empruntDao.save(emprunt);
+    }
+
 
     public void creerEmprunt(EmpruntDto empruntDto) {
 
@@ -107,7 +118,7 @@ public class EmpruntService {
             throw new MetierException("Ce matériel n'est pas disponible sur cette période");
         }
 
-        StatutEmprunt statutEmprunt = statutEmpruntDao.findById(3)
+        StatutEmprunt statutEmprunt = statutEmpruntDao.findById(1)
                 .orElseThrow(() -> new MetierException("Statut emprunt introuvable"));
 
         Emprunt emprunt = new Emprunt();

@@ -27,6 +27,14 @@ public class StatutEmpruntController {
         return statutEmpruntDao.findAll();
     }
 
+    @GetMapping("/liste/decision")
+    @JsonView(StatutEmpruntView.class)
+    public List<StatutEmprunt> obtenirToutesLesDecisions() {
+        return statutEmpruntDao.retourneDecisionEmprunt();
+    }
+
+
+
     @GetMapping("/{id}")
     public ResponseEntity<StatutEmprunt> obtenirStatutEmpruntParId(@PathVariable int id) {
         Optional<StatutEmprunt> optionalStatutEmprunt = statutEmpruntDao.findById(id);
