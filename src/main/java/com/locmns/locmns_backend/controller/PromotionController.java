@@ -5,6 +5,7 @@ import com.locmns.locmns_backend.dao.PromotionDao;
 import com.locmns.locmns_backend.model.Promotion;
 import com.locmns.locmns_backend.view.PromotionView;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +17,10 @@ import java.util.Optional;
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api/promotions")
+@RequiredArgsConstructor
 public class PromotionController {
 
-    @Autowired
-    protected PromotionDao promotionDao;
+    private final PromotionDao promotionDao;
 
     @GetMapping("/liste")
     @JsonView(PromotionView .class)

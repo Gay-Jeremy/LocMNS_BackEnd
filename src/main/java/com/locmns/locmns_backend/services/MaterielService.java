@@ -1,8 +1,17 @@
 package com.locmns.locmns_backend.services;
 
 import com.locmns.locmns_backend.dao.MaterielDao;
+import com.locmns.locmns_backend.dao.ModeleDao;
+import com.locmns.locmns_backend.dao.SalleDao;
+import com.locmns.locmns_backend.dao.StatutMaterielDao;
+import com.locmns.locmns_backend.dto.MaterielDto;
+import com.locmns.locmns_backend.exception.MetierException;
 import com.locmns.locmns_backend.model.Materiel;
+import com.locmns.locmns_backend.model.Modele;
+import com.locmns.locmns_backend.model.Salle;
+import com.locmns.locmns_backend.model.StatutMateriel;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -13,7 +22,13 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MaterielService {
 
-    protected final MaterielDao materielDao;
+    private final MaterielDao materielDao;
+
+    private final ModeleDao modeleDao;
+
+    private final StatutMaterielDao statutMaterielDao;
+
+    private final SalleDao salleDao;
 
     public Optional<Materiel> obtenirMaterielParId(Integer id) {
         return materielDao.findById(id);
@@ -25,8 +40,45 @@ public class MaterielService {
 
     public List<Materiel> obtenirMaterielsDisponibles() { return materielDao.retourneListeMaterielDisponible(); }
 
+    public List<Materiel> obtenirListeMaterielPanneSignalee() { return materielDao.retourneListeMaterielPanneSignales(); }
+
     public List<Materiel> obtenirMaterielsDisponiblesPourPeriodeParIdCategorieModele(LocalDate dateDebut, LocalDate dateFin, int id) {
         return materielDao.retourneListeMaterielDisponiblePourPeriodeParIdCategorieModele(dateDebut, dateFin, id);
     }
+
+    public Materiel creerMateriel(MaterielDto materielDto) {
+
+
+        if (materielDao.rechercheMaterielParNumSerie(materielDto.numSerie()).isPresent()) {
+            throw new MetierException("Un matériel avec le numéro de série '" + materielDto.numSerie() + "' existe déjà");
+        }
+
+
+        Modele modele = modeleDao.findById(materielDto.modeleId())
+                .orElseThrow(() -> new MetierException("Le modèle avec l'id " + materielDto.modeleId() + " est introuvable"));
+
+
+        StatutMateriel statutMateriel = null;
+        if (materielDto.statutMaterielId() != null) {
+            statutMateriel = statutMaterielDao.findById(materielDto.statutMaterielId())
+                    .orElseThrow(() -> new MetierException("Le statut matériel avec l'id " + materielDto.statutMaterielId() + " est introuvable"));
+        }
+
+
+        Salle salle = null;
+        if (materielDto.salleId() != null) {
+            salle = salleDao.findById(materielDto.salleId())
+                    .orElseThrow(() -> new MetierException("La salle avec l'id " + materielDto.salleId() + " est introuvable"));
+        }
+
+        Materiel materiel = new Materiel();
+        materiel.setNumSerie(materielDto.numSerie());
+        materiel.setModele(modele);
+        materiel.setStatutMateriel(statutMateriel);
+        materiel.setSalle(salle);
+
+        return materielDao.save(materiel);
+    }
+
 
 }

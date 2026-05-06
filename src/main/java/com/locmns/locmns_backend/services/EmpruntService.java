@@ -80,7 +80,7 @@ public class EmpruntService {
     }
 
 
-    public void creerEmprunt(EmpruntDto empruntDto) {
+    public Emprunt creerEmprunt(EmpruntDto empruntDto) {
 
         // Vérification dateFin > dateDebut
         if (!empruntDto.dateFin().isAfter(empruntDto.dateDebut())) {
@@ -128,7 +128,7 @@ public class EmpruntService {
         emprunt.setDateFin(empruntDto.dateFin());
         emprunt.setStatutEmprunt(statutEmprunt);
 
-        empruntDao.save(emprunt);
+        return empruntDao.save(emprunt);
     }
 
 }

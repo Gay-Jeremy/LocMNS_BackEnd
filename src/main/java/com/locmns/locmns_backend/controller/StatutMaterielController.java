@@ -7,6 +7,7 @@ import com.locmns.locmns_backend.view.MaterielView;
 import com.locmns.locmns_backend.view.StatutEmpruntView;
 import com.locmns.locmns_backend.view.StatutMaterielView;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +19,10 @@ import java.util.Optional;
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api/statust_materiel")
+@RequiredArgsConstructor
 public class StatutMaterielController {
 
-    @Autowired
-    protected StatutMaterielDao statutMaterielDao;
+    private final StatutMaterielDao statutMaterielDao;
 
     @GetMapping("/liste")
     @JsonView({MaterielView.class, StatutMaterielView.class})

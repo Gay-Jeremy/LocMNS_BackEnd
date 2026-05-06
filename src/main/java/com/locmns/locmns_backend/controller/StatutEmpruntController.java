@@ -5,6 +5,7 @@ import com.locmns.locmns_backend.dao.StatutEmpruntDao;
 import com.locmns.locmns_backend.model.StatutEmprunt;
 import com.locmns.locmns_backend.view.StatutEmpruntView;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +17,10 @@ import java.util.Optional;
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api/statuts_emprunt")
+@RequiredArgsConstructor
 public class StatutEmpruntController {
 
-    @Autowired
-    protected StatutEmpruntDao statutEmpruntDao;
+    private final StatutEmpruntDao statutEmpruntDao;
 
     @GetMapping("/liste")
     @JsonView(StatutEmpruntView.class)

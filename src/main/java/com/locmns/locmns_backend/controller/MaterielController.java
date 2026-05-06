@@ -3,6 +3,7 @@ package com.locmns.locmns_backend.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.locmns.locmns_backend.dao.MaterielDao;
+import com.locmns.locmns_backend.dto.MaterielDto;
 import com.locmns.locmns_backend.model.Materiel;
 import com.locmns.locmns_backend.services.MaterielService;
 import com.locmns.locmns_backend.view.MaterielView;
@@ -54,7 +55,7 @@ public class MaterielController {
     @JsonView(MaterielView.class)
     @GetMapping("/liste/panne_signalee")
     public List<Materiel> obtenirListeMaterielPanneSignalee() {
-        return materielDao.retourneListeMaterielPanneSignales();
+        return materielService.obtenirListeMaterielPanneSignalee();
     }
 
 
@@ -64,7 +65,7 @@ public class MaterielController {
     @GetMapping("/{id}")
     public ResponseEntity<Materiel> obtenirMaterielParId(@PathVariable int id) {
 
-        Optional<Materiel> optionalMateriel = materielDao.findById(id);
+        Optional<Materiel> optionalMateriel = materielService.obtenirMaterielParId(id);
 
         if (optionalMateriel.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -75,13 +76,11 @@ public class MaterielController {
 
 
     @PostMapping("")
-    public Materiel creerMateriel(@RequestBody @Valid Materiel materielToInsert ) {
+    public ResponseEntity<Materiel>creerMateriel(@RequestBody @Valid MaterielDto materielDto ) {
 
-        materielToInsert.setId(null);
+        Materiel materiel = materielService.creerMateriel(materielDto);
+        return new ResponseEntity<>(materiel, HttpStatus.CREATED);
 
-        materielDao.save(materielToInsert);
-
-        return materielToInsert;
     }
 
 

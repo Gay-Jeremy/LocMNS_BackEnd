@@ -3,6 +3,7 @@ package com.locmns.locmns_backend.controller;
 import com.locmns.locmns_backend.dao.DocumentationDao;
 import com.locmns.locmns_backend.model.Documentation;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,10 +15,10 @@ import java.util.Optional;
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api/documentations")
+@RequiredArgsConstructor
 public class DocumentationController {
 
-    @Autowired
-    protected DocumentationDao documentationDao;
+    private final DocumentationDao documentationDao;
 
     @GetMapping("/liste")
     public List<Documentation> obtenirToutesLesDocumentations() {

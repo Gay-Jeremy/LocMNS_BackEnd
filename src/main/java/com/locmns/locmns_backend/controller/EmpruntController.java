@@ -82,10 +82,9 @@ public class EmpruntController {
     }
 
     @PostMapping("")
-    public ResponseEntity<Void> creerEmprunt(@RequestBody @Valid EmpruntDto empruntDto) {
-
-        empruntService.creerEmprunt(empruntDto);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<Emprunt> creerEmprunt(@RequestBody @Valid EmpruntDto empruntDto) {
+        Emprunt emprunt = empruntService.creerEmprunt(empruntDto);
+        return new ResponseEntity<>(emprunt,HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")

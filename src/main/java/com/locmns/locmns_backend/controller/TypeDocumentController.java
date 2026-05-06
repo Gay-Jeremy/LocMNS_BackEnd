@@ -3,6 +3,7 @@ package com.locmns.locmns_backend.controller;
 import com.locmns.locmns_backend.dao.TypeDocumentDao;
 import com.locmns.locmns_backend.model.TypeDocument;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +16,10 @@ import java.util.Optional;
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api/types_document")
+@RequiredArgsConstructor
 public class TypeDocumentController {
 
-    @Autowired
-    private TypeDocumentDao typeDocumentDao;
+    private final TypeDocumentDao typeDocumentDao;
 
     @GetMapping("/liste")
     public List<TypeDocument> obtenirTousLesTypesDocument() {

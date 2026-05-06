@@ -5,6 +5,7 @@ import com.locmns.locmns_backend.dao.CategorieUtilisateurDao;
 import com.locmns.locmns_backend.model.CategorieUtilisateur;
 import com.locmns.locmns_backend.view.CategorieUtilisateurView;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,10 +18,10 @@ import java.util.Optional;
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api/categories_utilisateur")
+@RequiredArgsConstructor
 public class CategorieUtilisateurController {
 
-    @Autowired
-    protected CategorieUtilisateurDao categorieUilisateurDao;
+    private final CategorieUtilisateurDao categorieUilisateurDao;
 
     @GetMapping("/liste")
     @JsonView(CategorieUtilisateurView.class)

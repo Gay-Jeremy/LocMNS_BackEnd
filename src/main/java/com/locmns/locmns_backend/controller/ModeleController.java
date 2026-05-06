@@ -4,6 +4,7 @@ package com.locmns.locmns_backend.controller;
 import com.locmns.locmns_backend.dao.ModeleDao;
 import com.locmns.locmns_backend.model.Modele;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +16,10 @@ import java.util.Optional;
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api/modeles")
+@RequiredArgsConstructor
 public class ModeleController {
 
-    @Autowired
-    protected ModeleDao modeleDao;
+    private ModeleDao modeleDao;
 
     @GetMapping("/liste")
     public List<Modele> obtenirTousLesModeles() {

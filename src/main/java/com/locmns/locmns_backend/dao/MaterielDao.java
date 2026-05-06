@@ -36,4 +36,6 @@ public interface MaterielDao extends JpaRepository<Materiel, Integer> {
 
     @Query("SELECT m FROM Materiel m WHERE m.statutMateriel.libelle LIKE 'Panne%'")
     List<Materiel> retourneListeMaterielPanneSignales();
+
+    Optional<Materiel> rechercheMaterielParNumSerie(String numSerie);
 }
