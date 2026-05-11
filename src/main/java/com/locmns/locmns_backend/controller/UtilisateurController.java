@@ -5,7 +5,6 @@ import com.locmns.locmns_backend.dao.UtilisateurDao;
 import com.locmns.locmns_backend.model.Utilisateur;
 import com.locmns.locmns_backend.view.UtilisateurView;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;

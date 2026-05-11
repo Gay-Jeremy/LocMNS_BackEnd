@@ -1,22 +1,13 @@
 package com.locmns.locmns_backend.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.locmns.locmns_backend.constants.CodeStatutEmprunt;
-import com.locmns.locmns_backend.dao.EmpruntDao;
-import com.locmns.locmns_backend.dao.MaterielDao;
-import com.locmns.locmns_backend.dao.StatutEmpruntDao;
-import com.locmns.locmns_backend.dao.UtilisateurDao;
 import com.locmns.locmns_backend.dto.EmpruntDto;
 import com.locmns.locmns_backend.dto.StatutDto;
 import com.locmns.locmns_backend.model.Emprunt;
-import com.locmns.locmns_backend.model.Materiel;
-import com.locmns.locmns_backend.model.StatutEmprunt;
-import com.locmns.locmns_backend.model.Utilisateur;
 import com.locmns.locmns_backend.services.EmpruntService;
 import com.locmns.locmns_backend.view.EmpruntView;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
