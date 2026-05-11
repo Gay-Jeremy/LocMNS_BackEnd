@@ -15,5 +15,5 @@ public interface StatutEmpruntDao extends JpaRepository<StatutEmprunt, Integer> 
     @Query("FROM StatutEmprunt st WHERE st.libelle IN ('Accepter', 'Refuser' )")
     List<StatutEmprunt> retourneDecisionEmprunt();
 
-    Optional<StatutEmprunt> findByCode(CodeStatutEmprunt code);
+    Optional<StatutEmprunt> findByCode(String code);
 }

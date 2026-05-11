@@ -26,7 +26,7 @@ public interface MaterielDao extends JpaRepository<Materiel, Integer> {
         WHERE e.dateRetourReel IS NULL
         AND e.dateDebut <= :dateFin
         AND e.dateFin >= :dateDebut
-        AND e.statutEmprunt.id != 2
+        AND e.statutEmprunt.code NOT IN ('REFUSE', 'TERMINE')
         )
     """)
     List<Materiel> retourneListeMaterielDisponiblePourPeriodeParIdCategorieModele(

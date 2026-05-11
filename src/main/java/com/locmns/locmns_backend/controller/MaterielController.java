@@ -44,12 +44,13 @@ public class MaterielController {
 
 
     @JsonView(MaterielView.class)
-    @GetMapping("/liste/disponible/{dateDebut}/{dateFin}/{id}")
-    public List<Materiel> obtenirMaterielsDisponiblesPourPeriodeParIdCategorieModele(@PathVariable LocalDate dateDebut,
-                                                                                     @PathVariable LocalDate dateFin,
-                                                                                     @PathVariable int id) {
+    @GetMapping("/liste/disponible/categorie")
+    public List<Materiel> obtenirMateriels(
+            @RequestParam LocalDate dateDebut,
+            @RequestParam LocalDate dateFin,
+            @RequestParam int categorieModeleId) {
 
-        return materielService.obtenirMaterielsDisponiblesPourPeriodeParIdCategorieModele(dateDebut, dateFin, id);
+        return materielService.obtenirMaterielsDisponiblesPourPeriodeParIdCategorieModele(dateDebut, dateFin, categorieModeleId);
     }
 
     @JsonView(MaterielView.class)

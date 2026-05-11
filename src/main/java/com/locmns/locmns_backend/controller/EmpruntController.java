@@ -82,6 +82,7 @@ public class EmpruntController {
         return new ResponseEntity<>(optionalEmprunt.get(), HttpStatus.OK);
     }
 
+    @JsonView(EmpruntView.class)
     @PostMapping("")
     public ResponseEntity<Emprunt> creerEmprunt(@RequestBody @Valid EmpruntDto empruntDto) {
         Emprunt emprunt = empruntService.creerEmprunt(empruntDto);

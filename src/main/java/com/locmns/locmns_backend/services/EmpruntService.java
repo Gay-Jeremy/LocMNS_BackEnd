@@ -33,7 +33,7 @@ public class EmpruntService {
     private  final StatutEmpruntDao statutEmpruntDao;
     
     public Optional<Emprunt> obtenirEmpruntsParId(Integer id){ return empruntDao.findById(id); }
-    
+
     public List<Emprunt> obtenirTousLesEmprunts(){ return empruntDao.findAll(); }
 
     public List<Emprunt> obtenirEmpruntsActifs(){ return empruntDao.retourneListeEmpruntActif(CodeStatutEmprunt.ACCEPTE.name()); }
@@ -113,13 +113,13 @@ public class EmpruntService {
                 );
 
         boolean materielDisponible = disponibles.stream()
-                .anyMatch(m -> m.getId() == empruntDto.materielId());
+                .anyMatch(m -> m.getId().equals(empruntDto.materielId()));
 
         if (!materielDisponible) {
             throw new MetierException("Ce matériel n'est pas disponible sur cette période");
         }
 
-        StatutEmprunt statutEmprunt = statutEmpruntDao.findByCode(CodeStatutEmprunt.DEMANDE_EN_COURS)
+        StatutEmprunt statutEmprunt = statutEmpruntDao.findByCode(CodeStatutEmprunt.DEMANDE_EN_COURS.name())
                 .orElseThrow(() -> new MetierException("Statut emprunt introuvable"));
 
         Emprunt emprunt = new Emprunt();
