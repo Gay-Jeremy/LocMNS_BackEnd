@@ -33,6 +33,9 @@ public class StatutMateriel {
     @JsonView({MaterielView.class, StatutMaterielView.class})
     protected String libelle;
 
+    @Column(unique=true, updatable=false)
+    private String code;
+
     @OneToMany(mappedBy = "statutMateriel")
     private List<Materiel> materiels;
 }

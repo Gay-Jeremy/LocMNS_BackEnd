@@ -44,7 +44,7 @@ public class MockEmpruntDao implements EmpruntDao {
     // ── Méthodes custom du DAO ──────────────────────────
 
     @Override
-    public List<Emprunt> retourneListeEmpruntActif() { return List.of(); }
+    public List<Emprunt> retourneListeEmpruntActif(String code) { return List.of(); }
 
     @Override
     public List<Emprunt> retourneListeDemandeEmprunt() { return List.of(); }

@@ -12,20 +12,20 @@ import java.util.List;
 @Repository
 public interface EmpruntDao extends JpaRepository<Emprunt, Integer> {
 
-    @Query("SELECT e FROM Emprunt e WHERE e.statutEmprunt.libelle = 'Accepter'")
-    List<Emprunt> retourneListeEmpruntActif();
+    @Query("SELECT e FROM Emprunt e WHERE e.statutEmprunt.code= :code ")
+    List<Emprunt> retourneListeEmpruntActif(@Param("code") String code);
 
-    @Query("SELECT e FROM Emprunt e WHERE e.statutEmprunt.libelle LIKE 'Demande%'")
+    @Query("SELECT e FROM Emprunt e WHERE e.statutEmprunt.code IN ('DEMANDE_EN_COURS', 'DEMANDE_PROLONGATION', 'DEMANDE_RETOUR_ANTICIPE')")
     List<Emprunt> retourneListeDemandeEmprunt();
 
-    @Query("SELECT e FROM Emprunt e WHERE e.dateCreation >= :dateDebut AND e.statutEmprunt.libelle = 'Accepter' ORDER BY e.dateCreation DESC")
+    @Query("SELECT e FROM Emprunt e WHERE e.dateCreation >= :dateDebut AND e.statutEmprunt.code = 'ACCEPTE' ORDER BY e.dateCreation DESC")
     List<Emprunt> retourneEmpruntRecent(@Param("dateDebut") LocalDate dateDebut);
 ;
 
-    @Query("FROM Emprunt e WHERE e.dateFin < CURRENT_DATE AND e.dateRetourReel IS NULL AND e.statutEmprunt.libelle NOT IN ('Demande en cours', 'Refuser') ")
+    @Query("SELECT e FROM Emprunt e WHERE e.dateFin < CURRENT_DATE AND e.dateRetourReel IS NULL AND e.statutEmprunt.code NOT IN ('DEMANDE_EN_COURS', 'REFUSE')")
     List<Emprunt> retourneEmpruntEnRetard();
 
-    @Query("FROM Emprunt e WHERE e.dateFin < CURRENT_DATE OR e.statutEmprunt.libelle ='Refuser' ORDER BY e.dateFin ASC")
+    @Query("SELECT e FROM Emprunt e WHERE e.dateFin < CURRENT_DATE OR e.statutEmprunt.code = 'REFUSE' ORDER BY e.dateFin ASC")
     List<Emprunt> retourneHistoriqueEmprunt();
 
 

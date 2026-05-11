@@ -1,6 +1,7 @@
 package com.locmns.locmns_backend.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.locmns.locmns_backend.constants.CodeStatutEmprunt;
 import com.locmns.locmns_backend.dao.EmpruntDao;
 import com.locmns.locmns_backend.dao.MaterielDao;
 import com.locmns.locmns_backend.dao.StatutEmpruntDao;

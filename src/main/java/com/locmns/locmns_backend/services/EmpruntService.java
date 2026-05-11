@@ -1,5 +1,6 @@
 package com.locmns.locmns_backend.services;
 
+import com.locmns.locmns_backend.constants.CodeStatutEmprunt;
 import com.locmns.locmns_backend.dao.EmpruntDao;
 import com.locmns.locmns_backend.dao.MaterielDao;
 import com.locmns.locmns_backend.dao.StatutEmpruntDao;
@@ -35,7 +36,7 @@ public class EmpruntService {
     
     public List<Emprunt> obtenirTousLesEmprunts(){ return empruntDao.findAll(); }
 
-    public List<Emprunt> obtenirEmpruntsActifs(){ return empruntDao.retourneListeEmpruntActif(); }
+    public List<Emprunt> obtenirEmpruntsActifs(){ return empruntDao.retourneListeEmpruntActif(CodeStatutEmprunt.ACCEPTE.name()); }
 
     public List<Emprunt> obtenirDemandesEmprunt(){ return empruntDao.retourneListeDemandeEmprunt(); }
 
@@ -118,7 +119,7 @@ public class EmpruntService {
             throw new MetierException("Ce matériel n'est pas disponible sur cette période");
         }
 
-        StatutEmprunt statutEmprunt = statutEmpruntDao.findById(1)
+        StatutEmprunt statutEmprunt = statutEmpruntDao.findByCode(CodeStatutEmprunt.DEMANDE_EN_COURS)
                 .orElseThrow(() -> new MetierException("Statut emprunt introuvable"));
 
         Emprunt emprunt = new Emprunt();

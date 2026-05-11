@@ -31,6 +31,9 @@ public class StatutEmprunt {
     @JsonView({EmpruntView.class, StatutEmpruntView.class})
     protected String libelle;
 
+    @Column(nullable = false, unique = true, updatable = false)
+    private String code;
+
     @OneToMany(mappedBy = "statutEmprunt")
     private List<Emprunt> emprunts;
 }

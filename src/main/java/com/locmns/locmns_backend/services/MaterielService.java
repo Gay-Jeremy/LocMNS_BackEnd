@@ -49,7 +49,7 @@ public class MaterielService {
     public Materiel creerMateriel(MaterielDto materielDto) {
 
 
-        if (materielDao.rechercheMaterielParNumSerie(materielDto.numSerie()).isPresent()) {
+        if (materielDao.findByNumSerie(materielDto.numSerie()).isPresent()) {
             throw new MetierException("Un matériel avec le numéro de série '" + materielDto.numSerie() + "' existe déjà");
         }
 

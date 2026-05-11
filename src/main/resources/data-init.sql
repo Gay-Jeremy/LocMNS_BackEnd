@@ -118,14 +118,14 @@ INSERT INTO utilisateur (nom, prenom, email,categorie_utilisateur_id,promotion_i
 ('Bernard', 'Lucas', 'lucas.bernard@entreprise.fr', 3, 3);
 
 
-INSERT INTO statut_emprunt (libelle) VALUES
-('Demande en cours'),
-('Refuser'),
-('Accepter'),
-('Demande Prolongation'),
-('Demande Retour Anticipé'),
-('Prolongation Refusé'),
-('Retour Anticipé Refusé');
+INSERT INTO statut_emprunt (libelle,code) VALUES
+('Demande en cours','DEMANDE_EN_COURS'),
+('Refuser','REFUSE'),
+('Accepter','ACCEPTE'),
+('Demande Prolongation','DEMANDE_PROLONGATION'),
+('Demande Retour Anticipé','DEMANDE_RETOUR_ANTICIPE'),
+('Prolongation Refusé', 'PROLONGATION_REFUSE'),
+('Retour Anticipé Refusé', 'DEMANDE_RETOUR_ANTICIPE_REFUSE');
 
 
 INSERT INTO emprunt (date_creation, date_debut, date_fin, date_prolongation, date_retour_anticipe, date_retour_reel, materiel_id, statut_emprunt_id, utilisateur_id) VALUES
