@@ -31,28 +31,28 @@ public class Utilisateur {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonView({EmpruntView.class, UtilisateurView.class})
-    protected Integer id;
+    private Integer id;
 
     @NotBlank(groups = {OnCreate.class},message = "Le nom est obligatoire")
     @Column(nullable = false, length = 50)
     @Size(min = 2, max = 50,groups = {OnCreate.class, OnUpdate.class}, message = "Le nom doit faire entre 2 et 50 caractères")
     @JsonView({EmpruntView.class, PromotionView.class, CategorieUtilisateurView.class, UtilisateurView.class})
-    protected String nom;
+    private String nom;
 
     @NotBlank(groups = {OnCreate.class},message = "Le prénom est obligatoire")
     @Column(nullable = false, length = 50)
     @Size(min = 2, max = 50,groups = {OnCreate.class, OnUpdate.class}, message = "Le prénom doit faire entre 2 et 50 caractères")
     @JsonView({EmpruntView.class, PromotionView.class,CategorieUtilisateurView.class,UtilisateurView.class})
-    protected String prenom;
+    private String prenom;
 
     @NotBlank(groups ={OnCreate.class}, message = "L'email est obligatoire")
     @Column(nullable = false, unique = true, length = 100)
     @Size(max = 100,groups = {OnCreate.class}, message = "L'email ne doit pas dépasser 100 caractères")
     @Email(groups = {OnCreate.class}, message = "L'email est mal formé")
-    protected String email;
+    private String email;
 
     @Column(length = 255)
-    protected String password;
+    private String password;
 
     @ManyToOne
     @JoinColumn(name = "promotion_id") // clé étrangère de la table PROMOTION

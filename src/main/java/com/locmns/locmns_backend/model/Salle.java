@@ -20,12 +20,12 @@ public class Salle {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected Integer id;
+    private Integer id;
 
     @NotBlank(message = "Le libellé est obligatoire")
     @Column(nullable = false,unique = true,length = 50)
     @Size(min = 2, max = 50, message = "Le libellé doit faire entre 2 et 50 caractères")
-    protected String libelle;
+    private String libelle;
 
     @OneToMany(mappedBy = "salle")
     private List<Materiel> materiels;

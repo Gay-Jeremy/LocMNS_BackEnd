@@ -22,20 +22,20 @@ public class Documentation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected Integer id;
+    private Integer id;
 
     @NotBlank(message = "Le titre est obligatoire")
     @Column(nullable = false, length = 100)
     @Size(min = 2, max = 100, message = "Le titre doit faire entre 2 et 100 caractères")
-    protected String titre;
+    private String titre;
 
     @NotBlank(message = "L'URL est obligatoire")
     @Size(max = 255, message = "L'URL ne doit pas dépasser 255 caractères")
-    protected String url;
+    private String url;
 
     @Column(nullable = false,length = 50)
     @Size(max = 50, message = "Le format ne doit pas dépasser 50 caractères")
-    protected String format;
+    private String format;
 
     @ManyToOne
     @NotNull(message = "Le type de document est obligatoire")

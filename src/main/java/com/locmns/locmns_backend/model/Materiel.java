@@ -25,13 +25,13 @@ public class Materiel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonView({EmpruntView.class, MaterielView.class})
-    protected Integer id;
+    private Integer id;
 
     @NotBlank(message = "Le numéro de série est obligatoire")
     @Column(nullable = false,unique = true,length = 50)
     @Size(min = 2, max = 100, message = "Le numéro de série doit faire entre 2 et 100 caractères")
     @JsonView({EmpruntView.class, MaterielView.class})
-    protected String numSerie;
+    private String numSerie;
 
 
     @OneToMany(mappedBy = "materiel")

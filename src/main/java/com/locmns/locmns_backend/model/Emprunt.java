@@ -25,31 +25,31 @@ public class Emprunt {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonView({EmpruntView.class, MaterielView.class})
-    protected Integer id;
+    private Integer id;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
     @JsonView({EmpruntView.class, MaterielView.class})
-    protected LocalDate dateCreation;
+    private LocalDate dateCreation;
 
     @Column(nullable = false)
     @NotNull
     @JsonView(EmpruntView.class)
-    protected LocalDate dateDebut;
+    private LocalDate dateDebut;
 
     @Column(nullable = false)
     @NotNull
     @JsonView(EmpruntView.class)
-    protected LocalDate dateFin;
+    private LocalDate dateFin;
 
 
-    protected LocalDate dateRetourReel;
+    private LocalDate dateRetourReel;
 
 
-    protected LocalDate dateProlongation;
+    private LocalDate dateProlongation;
 
 
-    protected LocalDate dateRetourAnticipe;
+    private LocalDate dateRetourAnticipe;
 
     @ManyToOne
     @NotNull(message = "L'utilisateur est obligatoire")
