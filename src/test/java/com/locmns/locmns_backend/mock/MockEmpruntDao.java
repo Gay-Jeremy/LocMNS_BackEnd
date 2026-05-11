@@ -47,7 +47,7 @@ public class MockEmpruntDao implements EmpruntDao {
     public List<Emprunt> retourneListeEmpruntActif(String code) { return List.of(); }
 
     @Override
-    public List<Emprunt> retourneListeDemandeEmprunt() { return List.of(); }
+    public List<Emprunt> retourneListeDemandeEmprunt(List<String> code) { return List.of(); }
 
     @Override
     public List<Emprunt> retourneEmpruntRecent(LocalDate dateDebut) { return List.of(); }

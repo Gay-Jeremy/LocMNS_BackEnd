@@ -75,13 +75,12 @@ public class EmpruntServiceUnitTest {
     @Test
     public void creerEmpruntAvecDonneesValides_devrait_Reussir() {
 
-        // Arrange — on dit aux mocks quoi retourner
         when(materielDao.findById(1)).thenReturn(Optional.of(materielDisponible));
         when(utilisateurDao.findById(1)).thenReturn(Optional.of(utilisateur));
         when(materielDao.retourneListeMaterielDisponiblePourPeriodeParIdCategorieModele(
                 any(), any(), eq(1)
         )).thenReturn(List.of(materielDisponible));
-        when(statutEmpruntDao.findById(1)).thenReturn(Optional.of(statutEmprunt));
+        when(statutEmpruntDao.findByCode("DEMANDE_EN_COURS")).thenReturn(Optional.of(statutEmprunt));
 
         // Act
         assertDoesNotThrow(() -> empruntService.creerEmprunt(dto));
