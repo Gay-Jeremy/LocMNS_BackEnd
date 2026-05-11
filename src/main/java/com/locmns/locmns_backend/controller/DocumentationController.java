@@ -1,6 +1,6 @@
 package com.locmns.locmns_backend.controller;
 
-import com.locmns.locmns_backend.dao.DocumentationDao;
+import com.locmns.locmns_backend.repository.DocumentationDao;
 import com.locmns.locmns_backend.model.Documentation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

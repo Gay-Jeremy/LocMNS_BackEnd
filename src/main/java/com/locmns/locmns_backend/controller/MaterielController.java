@@ -2,7 +2,7 @@ package com.locmns.locmns_backend.controller;
 
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.locmns.locmns_backend.dao.MaterielDao;
+import com.locmns.locmns_backend.repository.MaterielDao;
 import com.locmns.locmns_backend.dto.MaterielDto;
 import com.locmns.locmns_backend.model.Materiel;
 import com.locmns.locmns_backend.services.MaterielService;

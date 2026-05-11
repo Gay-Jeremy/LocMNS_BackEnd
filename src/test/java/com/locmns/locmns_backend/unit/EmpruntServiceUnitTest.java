@@ -1,9 +1,9 @@
 package com.locmns.locmns_backend.unit;
 
-import com.locmns.locmns_backend.dao.EmpruntDao;
-import com.locmns.locmns_backend.dao.MaterielDao;
-import com.locmns.locmns_backend.dao.StatutEmpruntDao;
-import com.locmns.locmns_backend.dao.UtilisateurDao;
+import com.locmns.locmns_backend.repository.EmpruntDao;
+import com.locmns.locmns_backend.repository.MaterielDao;
+import com.locmns.locmns_backend.repository.StatutEmpruntDao;
+import com.locmns.locmns_backend.repository.UtilisateurDao;
 import com.locmns.locmns_backend.dto.EmpruntDto;
 import com.locmns.locmns_backend.exception.MetierException;
 import com.locmns.locmns_backend.model.*;

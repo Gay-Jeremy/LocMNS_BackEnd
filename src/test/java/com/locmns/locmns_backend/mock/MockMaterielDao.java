@@ -1,6 +1,6 @@
 package com.locmns.locmns_backend.mock;
 
-import com.locmns.locmns_backend.dao.MaterielDao;
+import com.locmns.locmns_backend.repository.MaterielDao;
 import com.locmns.locmns_backend.model.Materiel;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;

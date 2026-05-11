@@ -1,7 +1,7 @@
 package com.locmns.locmns_backend.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.locmns.locmns_backend.dao.CategorieModeleDao;
+import com.locmns.locmns_backend.repository.CategorieModeleDao;
 import com.locmns.locmns_backend.model.CategorieModele;
 import com.locmns.locmns_backend.view.CategorieModeleView;
 import jakarta.validation.Valid;

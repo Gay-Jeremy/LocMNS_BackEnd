@@ -1,7 +1,7 @@
 package com.locmns.locmns_backend.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.locmns.locmns_backend.dao.PromotionDao;
+import com.locmns.locmns_backend.repository.PromotionDao;
 import com.locmns.locmns_backend.model.Promotion;
 import com.locmns.locmns_backend.view.PromotionView;
 import jakarta.validation.Valid;

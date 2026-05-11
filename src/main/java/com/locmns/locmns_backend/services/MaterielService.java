@@ -1,9 +1,9 @@
 package com.locmns.locmns_backend.services;
 
-import com.locmns.locmns_backend.dao.MaterielDao;
-import com.locmns.locmns_backend.dao.ModeleDao;
-import com.locmns.locmns_backend.dao.SalleDao;
-import com.locmns.locmns_backend.dao.StatutMaterielDao;
+import com.locmns.locmns_backend.repository.MaterielDao;
+import com.locmns.locmns_backend.repository.ModeleDao;
+import com.locmns.locmns_backend.repository.SalleDao;
+import com.locmns.locmns_backend.repository.StatutMaterielDao;
 import com.locmns.locmns_backend.dto.MaterielDto;
 import com.locmns.locmns_backend.exception.MetierException;
 import com.locmns.locmns_backend.model.Materiel;
@@ -11,7 +11,6 @@ import com.locmns.locmns_backend.model.Modele;
 import com.locmns.locmns_backend.model.Salle;
 import com.locmns.locmns_backend.model.StatutMateriel;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;

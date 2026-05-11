@@ -1,4 +1,4 @@
-package com.locmns.locmns_backend.dao;
+package com.locmns.locmns_backend.repository;
 
 import com.locmns.locmns_backend.model.TypeDocument;
 import org.springframework.data.jpa.repository.JpaRepository;

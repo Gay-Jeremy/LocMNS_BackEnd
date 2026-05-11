@@ -1,6 +1,6 @@
 package com.locmns.locmns_backend.mock;
 
-import com.locmns.locmns_backend.dao.EmpruntDao;
+import com.locmns.locmns_backend.repository.EmpruntDao;
 import com.locmns.locmns_backend.model.Emprunt;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;

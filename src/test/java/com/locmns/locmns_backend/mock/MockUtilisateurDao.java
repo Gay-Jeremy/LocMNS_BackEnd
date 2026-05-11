@@ -1,6 +1,6 @@
 package com.locmns.locmns_backend.mock;
 
-import com.locmns.locmns_backend.dao.UtilisateurDao;
+import com.locmns.locmns_backend.repository.UtilisateurDao;
 import com.locmns.locmns_backend.model.Utilisateur;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;

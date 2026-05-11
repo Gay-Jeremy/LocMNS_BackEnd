@@ -1,6 +1,5 @@
-package com.locmns.locmns_backend.dao;
+package com.locmns.locmns_backend.repository;
 
-import com.locmns.locmns_backend.constants.CodeStatutEmprunt;
 import com.locmns.locmns_backend.model.StatutEmprunt;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
