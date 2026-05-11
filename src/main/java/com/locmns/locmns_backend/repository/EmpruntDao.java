@@ -15,8 +15,8 @@ public interface EmpruntDao extends JpaRepository<Emprunt, Integer> {
     @Query("SELECT e FROM Emprunt e WHERE e.statutEmprunt.code= :code ")
     List<Emprunt> retourneListeEmpruntActif(@Param("code") String code);
 
-    @Query("SELECT e FROM Emprunt e WHERE e.statutEmprunt.code IN ('DEMANDE_EN_COURS', 'DEMANDE_PROLONGATION', 'DEMANDE_RETOUR_ANTICIPE')")
-    List<Emprunt> retourneListeDemandeEmprunt();
+    @Query("SELECT e FROM Emprunt e WHERE e.statutEmprunt.code IN :codes")
+    List<Emprunt> retourneListeDemandeEmprunt(@Param("codes") List<String> codes);
 
     @Query("SELECT e FROM Emprunt e WHERE e.dateCreation >= :dateDebut AND e.statutEmprunt.code = 'ACCEPTE' ORDER BY e.dateCreation DESC")
     List<Emprunt> retourneEmpruntRecent(@Param("dateDebut") LocalDate dateDebut);

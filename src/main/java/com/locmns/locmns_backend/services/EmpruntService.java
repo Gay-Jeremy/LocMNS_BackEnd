@@ -39,7 +39,15 @@ public class EmpruntService {
 
     public List<Emprunt> obtenirEmpruntsActifs(){ return empruntDao.retourneListeEmpruntActif(CodeStatutEmprunt.ACCEPTE.name()); }
 
-    public List<Emprunt> obtenirDemandesEmprunt(){ return empruntDao.retourneListeDemandeEmprunt(); }
+    public List<Emprunt> obtenirDemandesEmprunt(){
+
+        List<String> codes = List.of(
+                CodeStatutEmprunt.DEMANDE_EN_COURS.name(),
+                CodeStatutEmprunt.DEMANDE_PROLONGATION.name(),
+                CodeStatutEmprunt.DEMANDE_RETOUR_ANTICIPE.name()
+        );
+
+        return empruntDao.retourneListeDemandeEmprunt(codes); }
 
     public List<Emprunt> obtenirEmpruntsRecents() {
         return empruntDao.retourneEmpruntRecent(LocalDate.now().minusDays(30));
