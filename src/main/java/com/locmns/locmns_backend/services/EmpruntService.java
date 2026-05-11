@@ -12,6 +12,7 @@ import com.locmns.locmns_backend.model.Emprunt;
 import com.locmns.locmns_backend.model.Materiel;
 import com.locmns.locmns_backend.model.StatutEmprunt;
 import com.locmns.locmns_backend.model.Utilisateur;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -61,11 +62,22 @@ public class EmpruntService {
         empruntDao.deleteById(id);
     }
 
-    public void modifierEmprunt(Integer id, Emprunt emprunt) {
-        if (!empruntDao.existsById(id)) {
-            throw new RessourceIntrouvableException("Emprunt introuvable");
-        }
-        emprunt.setId(id);
+    public void modifierEmprunt(Integer id, EmpruntDto empruntDto) {
+
+        Emprunt emprunt = empruntDao.findById(id)
+                .orElseThrow(() -> new RessourceIntrouvableException("Emprunt introuvable"));
+
+        Materiel materiel = materielDao.findById(empruntDto.materielId())
+                .orElseThrow(() -> new MetierException("Matériel introuvable"));
+
+        Utilisateur utilisateur = utilisateurDao.findById(empruntDto.utilisateurId())
+                .orElseThrow(() -> new MetierException("Utilisateur introuvable"));
+
+        emprunt.setMateriel(materiel);
+        emprunt.setUtilisateur(utilisateur);
+        emprunt.setDateDebut(empruntDto.dateDebut());
+        emprunt.setDateFin(empruntDto.dateFin());
+
         empruntDao.save(emprunt);
     }
 
@@ -80,7 +92,7 @@ public class EmpruntService {
         empruntDao.save(emprunt);
     }
 
-
+    @Transactional
     public Emprunt creerEmprunt(EmpruntDto empruntDto) {
 
         // Vérification dateFin > dateDebut

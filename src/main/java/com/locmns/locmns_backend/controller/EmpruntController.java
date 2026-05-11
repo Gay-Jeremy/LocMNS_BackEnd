@@ -96,8 +96,8 @@ public class EmpruntController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> modifierEmprunt(@PathVariable int id, @RequestBody @Valid Emprunt empruntToInsert) {
-        empruntService.modifierEmprunt(id, empruntToInsert);
+    public ResponseEntity<Void> modifierEmprunt(@PathVariable int id, @RequestBody @Valid EmpruntDto empruntDto) {
+        empruntService.modifierEmprunt(id, empruntDto);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
