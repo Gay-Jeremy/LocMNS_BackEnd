@@ -51,6 +51,7 @@ public class Emprunt {
 
     private LocalDate dateRetourAnticipe;
 
+    @JsonView(EmpruntView.class)
     private String note;
 
     @ManyToOne

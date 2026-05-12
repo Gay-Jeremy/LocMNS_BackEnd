@@ -61,11 +61,11 @@ INSERT INTO salle (libelle) VALUES
 ('Comptabilité'),
 ('Ressources humaines');
 
-INSERT INTO statut_materiel (libelle) VALUES
-('Réception en cours'),
-('Panne signalée'),
-('En maintenance'),
-('Hors service');
+INSERT INTO statut_materiel (libelle,code) VALUES
+('Réception en cours', 'RECEPTION_EN_COURS'),
+('Panne signalée', 'PANNE_SIGNALEE'),
+('En maintenance', 'EN_MAINTENANCE'),
+('Hors service', 'HORS_SERVICE');
 
 INSERT INTO materiel (num_serie, modele_id, salle_id, statut_materiel_id) VALUES
 ('PC 1', 1, 3, null),
