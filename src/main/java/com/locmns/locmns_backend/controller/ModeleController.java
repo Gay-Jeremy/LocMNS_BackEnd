@@ -1,8 +1,10 @@
 package com.locmns.locmns_backend.controller;
 
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.locmns.locmns_backend.repository.ModeleDao;
 import com.locmns.locmns_backend.model.Modele;
+import com.locmns.locmns_backend.view.ModeleView;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,14 +20,22 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ModeleController {
 
-    private ModeleDao modeleDao;
+    private final ModeleDao modeleDao;
 
+    @JsonView(ModeleView.class)
     @GetMapping("/liste")
     public List<Modele> obtenirTousLesModeles() {
 
         return modeleDao.findAll();
     }
 
+    @JsonView(ModeleView.class)
+    @GetMapping("/liste/categorie/{categorieModeleId}")
+    public List<Modele> obtenirLesModelesParIdCategorieModele(@PathVariable int categorieModeleId) {
+        return modeleDao.findByCategorieModeleId(categorieModeleId);
+    }
+
+    @JsonView(ModeleView.class)
     @GetMapping("/{id}")
     public ResponseEntity<Modele> obtenirModeleParId(@PathVariable int id) {
 
@@ -38,6 +48,7 @@ public class ModeleController {
         return new ResponseEntity<>(optionalModele.get(), HttpStatus.OK);
     }
 
+    @JsonView(ModeleView.class)
     @PostMapping("")
     public Modele creerModele(@RequestBody @Valid Modele modeleToInsert ) {
 
@@ -75,6 +86,4 @@ public class ModeleController {
         modeleDao.save(modeleToInsert);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
-
 }
