@@ -2,8 +2,8 @@ package com.locmns.locmns_backend.dto;
 
 public class StatutDto {
 
-    private int statutId;
+    private Integer statutId;
 
-    public int getStatutId() { return statutId; }
-    public void setStatutId(int statutId) { this.statutId = statutId; }
+    public Integer getStatutId() { return statutId; }
+    public void setStatutId(Integer statutId) { this.statutId = statutId; }
 }

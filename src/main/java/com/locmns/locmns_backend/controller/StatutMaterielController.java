@@ -16,14 +16,14 @@ import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
-@RequestMapping("/api/statust_materiel")
+@RequestMapping("/api/statuts_materiel")
 @RequiredArgsConstructor
 public class StatutMaterielController {
 
     private final StatutMaterielDao statutMaterielDao;
 
     @GetMapping("/liste")
-    @JsonView({MaterielView.class, StatutMaterielView.class})
+    @JsonView({ StatutMaterielView.class})
     public List<StatutMateriel> obtenirTousLesStatutsMateriel() {
         return statutMaterielDao.findAll();
     }

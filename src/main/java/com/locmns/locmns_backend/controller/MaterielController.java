@@ -2,6 +2,7 @@ package com.locmns.locmns_backend.controller;
 
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.locmns.locmns_backend.dto.StatutDto;
 import com.locmns.locmns_backend.repository.MaterielDao;
 import com.locmns.locmns_backend.dto.MaterielDto;
 import com.locmns.locmns_backend.model.Materiel;
@@ -59,8 +60,6 @@ public class MaterielController {
     }
 
 
-
-
     @JsonView(MaterielView.class)
     @GetMapping("/{id}")
     public ResponseEntity<Materiel> obtenirMaterielParId(@PathVariable int id) {
@@ -109,6 +108,14 @@ public class MaterielController {
         }
 
         materielDao.save(materielToInsert);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PutMapping("/{id}/statut")
+    public ResponseEntity<Void> modifierStatutMateriel(
+            @PathVariable Integer id,
+            @RequestBody StatutDto statutDTO) {
+        materielService.modifierStatutMateriel(id, statutDTO.getStatutId());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

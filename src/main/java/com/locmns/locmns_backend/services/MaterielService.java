@@ -1,15 +1,13 @@
 package com.locmns.locmns_backend.services;
 
+import com.locmns.locmns_backend.exception.RessourceIntrouvableException;
+import com.locmns.locmns_backend.model.*;
 import com.locmns.locmns_backend.repository.MaterielDao;
 import com.locmns.locmns_backend.repository.ModeleDao;
 import com.locmns.locmns_backend.repository.SalleDao;
 import com.locmns.locmns_backend.repository.StatutMaterielDao;
 import com.locmns.locmns_backend.dto.MaterielDto;
 import com.locmns.locmns_backend.exception.MetierException;
-import com.locmns.locmns_backend.model.Materiel;
-import com.locmns.locmns_backend.model.Modele;
-import com.locmns.locmns_backend.model.Salle;
-import com.locmns.locmns_backend.model.StatutMateriel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -77,6 +75,23 @@ public class MaterielService {
         materiel.setSalle(salle);
 
         return materielDao.save(materiel);
+    }
+
+    public void modifierStatutMateriel(Integer materielId, Integer statutId) {
+
+        Materiel materiel = materielDao.findById(materielId)
+                .orElseThrow(() -> new RessourceIntrouvableException("Materiel non trouvé : " + materielId));
+
+        // null = statut "Disponible" → on efface le statut
+        if (statutId == null) {
+            materiel.setStatutMateriel(null);
+        } else {
+            StatutMateriel statutMateriel = statutMaterielDao.findById(statutId)
+                    .orElseThrow(() -> new RessourceIntrouvableException("Statut non trouvé : " + statutId));
+            materiel.setStatutMateriel(statutMateriel);
+        }
+
+        materielDao.save(materiel);
     }
 
 
