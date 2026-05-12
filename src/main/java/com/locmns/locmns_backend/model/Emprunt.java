@@ -51,6 +51,8 @@ public class Emprunt {
 
     private LocalDate dateRetourAnticipe;
 
+    private String note;
+
     @ManyToOne
     @NotNull(message = "L'utilisateur est obligatoire")
     @JoinColumn(name = "utilisateur_id")
@@ -68,5 +70,7 @@ public class Emprunt {
     @JoinColumn(name = "materiel_id")
     @JsonView(EmpruntView.class)
     private Materiel materiel;
+
+
 
 }

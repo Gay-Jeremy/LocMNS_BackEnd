@@ -86,6 +86,7 @@ public class EmpruntService {
         emprunt.setUtilisateur(utilisateur);
         emprunt.setDateDebut(empruntDto.dateDebut());
         emprunt.setDateFin(empruntDto.dateFin());
+        emprunt.setNote(empruntDto.note());
 
         empruntDao.save(emprunt);
     }
@@ -149,6 +150,7 @@ public class EmpruntService {
         emprunt.setDateDebut(empruntDto.dateDebut());
         emprunt.setDateFin(empruntDto.dateFin());
         emprunt.setStatutEmprunt(statutEmprunt);
+        emprunt.setNote(empruntDto.note());
 
         return empruntDao.save(emprunt);
     }

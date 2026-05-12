@@ -75,7 +75,8 @@ public class EmpruntControllerUnitTest {
                 LocalDate.now(),
                 LocalDate.now().plusDays(7),
                 1,
-                1
+                1,
+                ""
         );
         ResponseEntity<Void> reponse = empruntController.modifierEmprunt(1, empruntDto);
         assertEquals(HttpStatus.NO_CONTENT, reponse.getStatusCode());
@@ -87,7 +88,8 @@ public class EmpruntControllerUnitTest {
                 LocalDate.now(),
                 LocalDate.now().plusDays(7),
                 1,
-                1
+                1,
+                ""
         );
 
         assertThrows(RessourceIntrouvableException.class, () -> {

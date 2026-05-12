@@ -66,7 +66,8 @@ public class EmpruntServiceUnitTest {
                 LocalDate.now(),
                 LocalDate.now().plusDays(7),
                 1,
-                1
+                1,
+                ""
         );
     }
 
@@ -97,7 +98,8 @@ public class EmpruntServiceUnitTest {
                 LocalDate.now().plusDays(7), // dateDebut après dateFin
                 LocalDate.now(),
                 1,
-                1
+                1,
+                ""
         );
 
         MetierException exception = assertThrows(
@@ -114,7 +116,8 @@ public class EmpruntServiceUnitTest {
                 LocalDate.now().minusDays(1), // hier
                 LocalDate.now().plusDays(7),
                 1,
-                1
+                1,
+                ""
         );
 
         MetierException exception = assertThrows(
@@ -131,7 +134,8 @@ public class EmpruntServiceUnitTest {
                 LocalDate.now().minusDays(5),
                 LocalDate.now().minusDays(1), // aussi dans le passé
                 1,
-                1
+                1,
+                ""
         );
 
         MetierException exception = assertThrows(
@@ -154,7 +158,8 @@ public class EmpruntServiceUnitTest {
                 LocalDate.now(),
                 LocalDate.now().plusDays(7),
                 99, // id inexistant
-                1
+                1,
+                ""
         );
 
         MetierException exception = assertThrows(
@@ -174,7 +179,8 @@ public class EmpruntServiceUnitTest {
                 LocalDate.now(),
                 LocalDate.now().plusDays(7),
                 1,
-                99 // id inexistant
+                99, // id inexistant
+                ""
         );
 
         MetierException exception = assertThrows(
