@@ -28,7 +28,25 @@ public class GlobalExceptionInterceptor {
     @ExceptionHandler(DataIntegrityViolationException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public Map<String, String> constraintViolationDatabase(DataIntegrityViolationException ex) {
-        return Map.of("Erreur", "Erreur de contrainte dans la base de données");
+
+        String message = ex.getMostSpecificCause().getMessage();
+        if (message != null) {
+
+            if (message.contains("categorie_modele_libelle_key")) {
+                return Map.of("erreur", "Cette catégorie existe déjà");
+            }
+            if (message.contains("modele_libelle_key")) {
+                return Map.of("erreur", "Ce modèle existe déjà");
+            }
+            if (message.contains("num_serie")) {
+                return Map.of("erreur", "Ce numéro de série existe déjà");
+            }
+            if (message.contains("utilisateur_email_key")) {
+                return Map.of("erreur", "Cet email est déjà utilisé");
+            }
+        }
+
+        return Map.of("erreur", "Cette valeur existe déjà en base de données");
     }
 
     @ExceptionHandler(MetierException.class)

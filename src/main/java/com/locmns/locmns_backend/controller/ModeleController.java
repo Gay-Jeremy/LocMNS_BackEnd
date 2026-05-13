@@ -2,8 +2,10 @@ package com.locmns.locmns_backend.controller;
 
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.locmns.locmns_backend.dto.ModeleDto;
 import com.locmns.locmns_backend.repository.ModeleDao;
 import com.locmns.locmns_backend.model.Modele;
+import com.locmns.locmns_backend.services.ModeleService;
 import com.locmns.locmns_backend.view.ModeleView;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,8 @@ import java.util.Optional;
 public class ModeleController {
 
     private final ModeleDao modeleDao;
+
+    private final ModeleService modeleService;
 
     @JsonView(ModeleView.class)
     @GetMapping("/liste")
@@ -50,13 +54,9 @@ public class ModeleController {
 
     @JsonView(ModeleView.class)
     @PostMapping("")
-    public Modele creerModele(@RequestBody @Valid Modele modeleToInsert ) {
-
-        modeleToInsert.setId(null);
-
-        modeleDao.save(modeleToInsert);
-
-        return modeleToInsert;
+    public ResponseEntity<Modele> creerModele(@RequestBody @Valid ModeleDto modeleDto) {
+        Modele modele = modeleService.creerModele(modeleDto);
+        return new ResponseEntity<>(modele, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")

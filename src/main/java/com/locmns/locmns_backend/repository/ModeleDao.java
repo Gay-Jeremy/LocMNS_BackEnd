@@ -10,4 +10,5 @@ import java.util.List;
 public interface ModeleDao extends JpaRepository<Modele, Integer> {
 
     List<Modele> findByCategorieModeleId(int categorieModeleId);
+    boolean existsByLibelle(String libelle);
 }
