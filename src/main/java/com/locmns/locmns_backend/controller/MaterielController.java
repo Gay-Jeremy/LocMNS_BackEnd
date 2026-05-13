@@ -73,7 +73,7 @@ public class MaterielController {
         return new ResponseEntity<>(optionalMateriel.get(), HttpStatus.OK);
     }
 
-
+    @JsonView(MaterielView.class)
     @PostMapping("")
     public ResponseEntity<Materiel>creerMateriel(@RequestBody @Valid MaterielDto materielDto ) {
 
@@ -96,6 +96,7 @@ public class MaterielController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @JsonView(MaterielView.class)
     @PutMapping("/{id}")
     public ResponseEntity<Void> modifierMateriel(@PathVariable int id, @RequestBody @Valid Materiel materielToInsert) {
 
