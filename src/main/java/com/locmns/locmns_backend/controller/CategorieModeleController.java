@@ -47,9 +47,9 @@ public class CategorieModeleController {
 
         categorieToInsert.setId(null);
 
-        categorieModeleDao.save(categorieToInsert);
+        CategorieModele NouvelleCategorie = categorieModeleDao.save(categorieToInsert);
         
-        return categorieToInsert;
+        return NouvelleCategorie;
     }
 
     @DeleteMapping("/{id}")
