@@ -112,10 +112,10 @@ INSERT INTO promotion (libelle) VALUES
 ('BUT Informatique 3ème année');
 
 
-INSERT INTO utilisateur (nom, prenom, email,categorie_utilisateur_id,promotion_id) VALUES
-('Dupont', 'Jean', 'jean.dupont@entreprise.fr', 1, 1),
-('Martin', 'Sophie', 'sophie.martin@entreprise.fr', 2, 2),
-('Bernard', 'Lucas', 'lucas.bernard@entreprise.fr', 3, 3);
+INSERT INTO utilisateur (nom, prenom, email,categorie_utilisateur_id,promotion_id, password) VALUES
+('Dupont', 'Jean', 'jean.dupont@entreprise.fr', 1, 1,'$2a$10$N6SDVhhWyff0judQiQpZDOrV8HtUYbNOcP0IgG1BRg3mR5YhDvgA2'),
+('Martin', 'Sophie', 'sophie.martin@entreprise.fr', 2, 2, '$2a$10$N6SDVhhWyff0judQiQpZDOrV8HtUYbNOcP0IgG1BRg3mR5YhDvgA2'),
+('Bernard', 'Lucas', 'lucas.bernard@entreprise.fr', 3, 3, '$2a$10$N6SDVhhWyff0judQiQpZDOrV8HtUYbNOcP0IgG1BRg3mR5YhDvgA2');
 
 
 INSERT INTO statut_emprunt (libelle,code) VALUES
