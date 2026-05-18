@@ -41,13 +41,12 @@ public class UtilisateurController {
     }
 
     @PostMapping("")
-    public Utilisateur creerUtilisateur(@RequestBody @Validated(Utilisateur.OnCreate.class) Utilisateur utilisateurToInsert) {
-
-        utilisateurToInsert.setId(null);
+    public ResponseEntity<Utilisateur> creerUtilisateur(
+            @RequestBody @Validated(Utilisateur.OnCreate.class) Utilisateur utilisateurToInsert) {
 
         utilisateurDao.save(utilisateurToInsert);
 
-        return utilisateurToInsert;
+        return new ResponseEntity<>(utilisateurToInsert, HttpStatus.CREATED) ;
     }
 
     @DeleteMapping("/{id}")
