@@ -37,10 +37,12 @@ public class PromotionController {
     }
 
     @PostMapping("")
-    public Promotion creerPromotion(@RequestBody @Valid Promotion promotionToInsert) {
-        promotionToInsert.setId(null);
+    public ResponseEntity<Promotion>  creerPromotion(
+            @RequestBody @Valid Promotion promotionToInsert) {
+
         promotionDao.save(promotionToInsert);
-        return promotionToInsert;
+
+        return new ResponseEntity<>(promotionToInsert, HttpStatus.CREATED) ;
     }
 
     @DeleteMapping("/{id}")

@@ -34,10 +34,11 @@ public class SalleController {
     }
 
     @PostMapping("")
-    public Salle creerSalle(@RequestBody @Valid Salle salleToInsert) {
-        salleToInsert.setId(null);
+    public ResponseEntity<Salle> creerSalle(@RequestBody @Valid Salle salleToInsert) {
+
         salleDao.save(salleToInsert);
-        return salleToInsert;
+
+        return new ResponseEntity<>(salleToInsert, HttpStatus.CREATED) ;
     }
 
     @DeleteMapping("/{id}")

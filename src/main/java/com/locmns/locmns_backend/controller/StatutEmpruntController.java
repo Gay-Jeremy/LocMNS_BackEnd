@@ -45,10 +45,12 @@ public class StatutEmpruntController {
     }
 
     @PostMapping("")
-    public StatutEmprunt creerStatutEmprunt(@RequestBody @Valid StatutEmprunt statutEmpruntToInsert) {
-        statutEmpruntToInsert.setId(null);
+    public ResponseEntity<StatutEmprunt>  creerStatutEmprunt(
+            @RequestBody @Valid StatutEmprunt statutEmpruntToInsert) {
+
         statutEmpruntDao.save(statutEmpruntToInsert);
-        return statutEmpruntToInsert;
+
+        return new ResponseEntity<>(statutEmpruntToInsert, HttpStatus.CREATED) ;
     }
 
     @DeleteMapping("/{id}")

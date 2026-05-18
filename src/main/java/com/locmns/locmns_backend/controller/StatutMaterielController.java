@@ -38,10 +38,12 @@ public class StatutMaterielController {
     }
 
     @PostMapping("")
-    public StatutMateriel creerStatutMateriel(@RequestBody @Valid StatutMateriel statutMaterielToInsert) {
-        statutMaterielToInsert.setId(null);
+    public ResponseEntity<StatutMateriel>  creerStatutMateriel(
+            @RequestBody @Valid StatutMateriel statutMaterielToInsert) {
+
         statutMaterielDao.save(statutMaterielToInsert);
-        return statutMaterielToInsert;
+
+        return new ResponseEntity<>(statutMaterielToInsert, HttpStatus.CREATED) ;
     }
 
     @DeleteMapping("/{id}")

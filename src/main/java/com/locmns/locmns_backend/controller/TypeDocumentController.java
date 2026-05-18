@@ -32,10 +32,12 @@ public class TypeDocumentController {
     }
 
     @PostMapping("")
-    public TypeDocument creerTypeDocument(@RequestBody @Valid TypeDocument typeDocumentToInsert) {
-        typeDocumentToInsert.setId(null);
+    public ResponseEntity<TypeDocument>  creerTypeDocument(
+            @RequestBody @Valid TypeDocument typeDocumentToInsert) {
+
         typeDocumentDao.save(typeDocumentToInsert);
-        return typeDocumentToInsert;
+
+        return new ResponseEntity<>(typeDocumentToInsert, HttpStatus.CREATED) ;
     }
 
     @DeleteMapping("/{id}")
