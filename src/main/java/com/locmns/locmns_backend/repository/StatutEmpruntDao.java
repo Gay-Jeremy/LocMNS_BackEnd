@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface StatutEmpruntDao extends JpaRepository<StatutEmprunt, Integer> {
 
-    @Query("FROM StatutEmprunt st WHERE st.libelle IN ('Accepter', 'Refuser' )")
+    @Query("FROM StatutEmprunt st WHERE st.code IN ('ACCEPTE', 'REFUSER' )")
     List<StatutEmprunt> retourneDecisionEmprunt();
 
     Optional<StatutEmprunt> findByCode(String code);
