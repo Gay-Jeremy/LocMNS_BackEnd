@@ -63,4 +63,9 @@ public class MockUtilisateurDao implements UtilisateurDao {
     @Override public void deleteAll() {}
     @Override public List<Utilisateur> findAll(Sort sort) { return List.of(); }
     @Override public Page<Utilisateur> findAll(Pageable pageable) { return null; }
+
+    @Override
+    public Optional<Utilisateur> findByEmail(String email) {
+        return Optional.empty();
+    }
 }

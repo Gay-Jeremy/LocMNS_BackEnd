@@ -43,7 +43,7 @@ public class MaterielService {
         return materielDao.retourneListeMaterielDisponiblePourPeriodeParIdCategorieModele(dateDebut, dateFin, id);
     }
 
-    public Materiel creerMateriel(MaterielDto materielDto) {
+    public Materiel creerMateriel(MaterielDto materielDto, Utilisateur utilisateur) {
 
 
         if (materielDao.findByNumSerie(materielDto.numSerie()).isPresent()) {
@@ -69,6 +69,7 @@ public class MaterielService {
         }
 
         Materiel materiel = new Materiel();
+        materiel.setCreateur(utilisateur.getNom());
         materiel.setNumSerie(materielDto.numSerie());
         materiel.setModele(modele);
         materiel.setStatutMateriel(statutMateriel);

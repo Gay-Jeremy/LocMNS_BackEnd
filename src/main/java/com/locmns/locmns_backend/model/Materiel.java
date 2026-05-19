@@ -33,6 +33,8 @@ public class Materiel {
     @JsonView({EmpruntView.class, MaterielView.class})
     private String numSerie;
 
+    private String createur;
+
 
     @OneToMany(mappedBy = "materiel")
     @JsonView(MaterielView.class)
