@@ -2,6 +2,7 @@ package com.locmns.locmns_backend.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.locmns.locmns_backend.model.Utilisateur;
+import com.locmns.locmns_backend.security.UtilisateurDetails;
 import com.locmns.locmns_backend.services.UtilisateurService;
 import com.locmns.locmns_backend.view.UtilisateurView;
 import io.jsonwebtoken.Jwts;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -43,10 +46,16 @@ public class AuthController {
             @RequestBody Utilisateur utilisateur) {
 
         try {
-        authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(utilisateur.getEmail(), utilisateur.getPassword()));
+            UtilisateurDetails utilisateurDetails = (UtilisateurDetails) authenticationProvider
+                    .authenticate(new UsernamePasswordAuthenticationToken(
+                            utilisateur.getEmail(),
+                            utilisateur.getPassword()
+                    ))
+                    .getPrincipal();
 
         String jwt = Jwts.builder()
                     .setSubject(utilisateur.getEmail())
+                    .addClaims(Map.of("role", utilisateurDetails.getUtilisateur().getCategorieUtilisateur().getLibelle()))
                     .signWith(SignatureAlgorithm.HS256, "root")
                     .compact();
 
