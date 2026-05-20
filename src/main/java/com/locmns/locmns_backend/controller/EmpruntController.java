@@ -31,8 +31,12 @@ public class EmpruntController {
 
     @GetMapping("/liste/recent")
     @JsonView(EmpruntView.class)
-    public List<Emprunt> obtenirEmpruntsRecents() {
-        return empruntService.obtenirEmpruntsRecents();
+    public List<Emprunt> obtenirEmpruntsRecents(
+            @AuthenticationPrincipal UtilisateurDetails utilisateurDetails) {
+
+        Utilisateur utilisateur = utilisateurDetails.getUtilisateur();
+
+        return empruntService.obtenirEmpruntsRecentsSelonRole(utilisateur);
     }
 
     @GetMapping("/liste/actif")
@@ -62,11 +66,20 @@ public class EmpruntController {
 
     @GetMapping("/liste/retard")
     @JsonView(EmpruntView.class)
-    public List<Emprunt> obtenirEmpruntEnRetard() { return empruntService.obtenirListeEmpruntEnRetard();}
+    public List<Emprunt> obtenirEmpruntEnRetard(
+            @AuthenticationPrincipal UtilisateurDetails utilisateurDetails) {
+
+        Utilisateur utilisateur = utilisateurDetails.getUtilisateur();
+        return empruntService.obtenirListeEmpruntEnRetardSelonRole(utilisateur);
+    }
 
     @GetMapping("/historique")
     @JsonView(EmpruntView.class)
-    public List<Emprunt> obtenirHistoriqueEmprunt() { return empruntService.obtenirHistoriqueEmprunt();}
+    public List<Emprunt> obtenirHistoriqueEmprunt(
+            @AuthenticationPrincipal UtilisateurDetails utilisateurDetails) {
+
+        Utilisateur utilisateur = utilisateurDetails.getUtilisateur();
+        return empruntService.obtenirHistoriqueEmpruntSelonRole(utilisateur);}
 
 
     @GetMapping("/{id}")

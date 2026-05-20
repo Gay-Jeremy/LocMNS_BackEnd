@@ -79,20 +79,49 @@ public class EmpruntService {
     }
 
 
-
-
-
-
     public List<Emprunt> obtenirEmpruntsRecents() {
         return empruntDao.retourneEmpruntRecent(LocalDate.now().minusDays(30));
+    }
+
+    public List<Emprunt> obtenirEmpruntsRecentsSelonRole(Utilisateur utilisateur) {
+
+        String role = utilisateur.getCategorieUtilisateur().getLibelle();
+
+        if(role.equals("Administrateur")) {
+            return empruntDao.retourneEmpruntRecent(LocalDate.now().minusDays(30));
+        }
+
+        return empruntDao.retourneEmpruntRecentParEmail(LocalDate.now().minusDays(30), utilisateur.getEmail());
     }
 
     public List<Emprunt> obtenirListeEmpruntEnRetard () {
         return  empruntDao.retourneEmpruntEnRetard();
     }
 
+    public List<Emprunt> obtenirListeEmpruntEnRetardSelonRole (Utilisateur utilisateur) {
+
+        String role = utilisateur.getCategorieUtilisateur().getLibelle();
+
+        if(role.equals("Administrateur")) {
+            return  empruntDao.retourneEmpruntEnRetard();
+        }
+
+        return empruntDao.retourneEmpruntEnRetardParEmail(utilisateur.getEmail());
+    }
+
     public List<Emprunt> obtenirHistoriqueEmprunt () {
         return  empruntDao.retourneHistoriqueEmprunt();
+    }
+
+    public List<Emprunt> obtenirHistoriqueEmpruntSelonRole (Utilisateur utilisateur) {
+
+        String role = utilisateur.getCategorieUtilisateur().getLibelle();
+
+        if(role.equals("Administrateur")) {
+            return  empruntDao.retourneHistoriqueEmprunt();
+        }
+
+        return empruntDao.retourneHistoriqueEmpruntParEmail(utilisateur.getEmail());
     }
 
 

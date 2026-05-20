@@ -28,13 +28,22 @@ public interface EmpruntDao extends JpaRepository<Emprunt, Integer> {
 
     @Query("SELECT e FROM Emprunt e WHERE e.dateCreation >= :dateDebut AND e.statutEmprunt.code = 'ACCEPTE' ORDER BY e.dateCreation DESC")
     List<Emprunt> retourneEmpruntRecent(@Param("dateDebut") LocalDate dateDebut);
-;
+
+    @Query("SELECT e FROM Emprunt e WHERE e.dateCreation >= :dateDebut AND e.statutEmprunt.code = 'ACCEPTE' AND e.utilisateur.email = :email ORDER BY e.dateCreation DESC")
+    List<Emprunt> retourneEmpruntRecentParEmail(@Param("dateDebut") LocalDate dateDebut,
+                                                @Param("email") String email);
 
     @Query("SELECT e FROM Emprunt e WHERE e.dateFin < CURRENT_DATE AND e.dateRetourReel IS NULL AND e.statutEmprunt.code NOT IN ('DEMANDE_EN_COURS', 'REFUSE')")
     List<Emprunt> retourneEmpruntEnRetard();
 
+    @Query("SELECT e FROM Emprunt e WHERE e.dateFin < CURRENT_DATE AND e.dateRetourReel IS NULL AND e.statutEmprunt.code NOT IN ('DEMANDE_EN_COURS', 'REFUSE') AND e.utilisateur.email = :email")
+    List<Emprunt> retourneEmpruntEnRetardParEmail(@Param("email") String email);
+
     @Query("SELECT e FROM Emprunt e WHERE e.dateFin < CURRENT_DATE OR e.statutEmprunt.code = 'REFUSE' ORDER BY e.dateFin ASC")
     List<Emprunt> retourneHistoriqueEmprunt();
+
+    @Query("SELECT e FROM Emprunt e WHERE e.utilisateur.email = :email AND (e.dateFin < CURRENT_DATE  OR e.statutEmprunt.code = 'REFUSE') ORDER BY e.dateFin ASC")
+    List<Emprunt> retourneHistoriqueEmpruntParEmail(@Param("email") String email);
 
 
 
