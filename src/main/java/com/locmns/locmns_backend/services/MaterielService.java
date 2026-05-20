@@ -50,6 +50,19 @@ public class MaterielService {
 
     public List<Materiel> obtenirListeMaterielPanneSignalee() { return materielDao.retourneListeMaterielPanneSignales(); }
 
+    public List<Materiel> obtenirListeMaterielPanneSignaleeSelonRole(Utilisateur utilisateur) {
+
+        String role = utilisateur.getCategorieUtilisateur().getLibelle();
+
+        if (role.equals("Administrateur")) {
+            return materielDao.retourneListeMaterielPanneSignales();
+        }
+
+        return materielDao.retourneListeMaterielPanneSignalesParEmail(utilisateur.getEmail());
+    }
+
+
+
     public List<Materiel> obtenirMaterielsDisponiblesPourPeriodeParIdCategorieModele(LocalDate dateDebut, LocalDate dateFin, int id) {
         return materielDao.retourneListeMaterielDisponiblePourPeriodeParIdCategorieModele(dateDebut, dateFin, id);
     }

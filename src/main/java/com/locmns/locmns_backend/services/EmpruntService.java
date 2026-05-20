@@ -60,6 +60,29 @@ public class EmpruntService {
 
         return empruntDao.retourneListeDemandeEmprunt(codes); }
 
+    public List<Emprunt> obtenirDemandesEmpruntSelonRole(Utilisateur utilisateur) {
+
+        String role = utilisateur.getCategorieUtilisateur().getLibelle();
+
+        List<String> codes = List.of(
+                CodeStatutEmprunt.DEMANDE_EN_COURS.name(),
+                CodeStatutEmprunt.DEMANDE_PROLONGATION.name(),
+                CodeStatutEmprunt.DEMANDE_RETOUR_ANTICIPE.name()
+        );
+
+
+        if (role.equals("Administrateur")) {
+            return empruntDao.retourneListeDemandeEmprunt(codes);
+        }
+
+        return empruntDao.retourneListeDemandeEmpruntParEmail(codes, utilisateur.getEmail());
+    }
+
+
+
+
+
+
     public List<Emprunt> obtenirEmpruntsRecents() {
         return empruntDao.retourneEmpruntRecent(LocalDate.now().minusDays(30));
     }

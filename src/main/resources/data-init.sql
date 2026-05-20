@@ -141,7 +141,7 @@ INSERT INTO emprunt (date_creation, date_debut, date_fin, date_prolongation, dat
 -- PC 4 : emprunté hors période (après) → INCLUS
 ('2026-05-01','2026-05-25','2026-06-05', null, null, null, 4, 3, 1),
 -- PC 1 : 2ème emprunt → chevauchement partiel gauche (commence avant, finit pendant)
-('2026-05-01','2026-05-08','2026-05-13', null, null, null, 1, 3, 2),
+('2026-05-01','2026-05-08','2026-08-13', null, null, null, 1, 3, 2),
 
 -- PC 3 : ré-emprunté après son retour (ne doit pas bloquer)
 ('2026-05-16','2026-05-16','2026-05-30', null, null, null, 3, 1, 2),

@@ -51,6 +51,11 @@ public class MockMaterielDao implements MaterielDao {
     public List<Materiel> retourneListeMaterielPanneSignales() { return List.of(); }
 
     @Override
+    public List<Materiel> retourneListeMaterielPanneSignalesParEmail(String email) {
+        return List.of();
+    }
+
+    @Override
     public Optional<Materiel> findByNumSerie(String numSerie) { return Optional.empty(); }
 
     // ── Méthodes JpaRepository obligatoires ─────────────
