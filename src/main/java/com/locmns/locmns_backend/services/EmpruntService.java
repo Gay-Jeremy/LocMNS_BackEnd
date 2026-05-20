@@ -39,6 +39,17 @@ public class EmpruntService {
 
     public List<Emprunt> obtenirEmpruntsActifs(){ return empruntDao.retourneListeEmpruntActif(CodeStatutEmprunt.ACCEPTE.name()); }
 
+    public List<Emprunt> obtenirEmpruntSelonRole(Utilisateur utilisateur) {
+
+        String role = utilisateur.getCategorieUtilisateur().getLibelle();
+
+        if (role.equals("Administrateur")) {
+            return empruntDao.retourneListeEmpruntActif(CodeStatutEmprunt.ACCEPTE.name());
+        }
+
+        return empruntDao.retourneListeEmpruntActifParEmail(CodeStatutEmprunt.ACCEPTE.name(), utilisateur.getEmail());
+    }
+
     public List<Emprunt> obtenirDemandesEmprunt(){
 
         List<String> codes = List.of(

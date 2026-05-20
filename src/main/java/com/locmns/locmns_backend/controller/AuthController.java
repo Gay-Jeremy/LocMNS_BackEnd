@@ -54,7 +54,10 @@ public class AuthController {
 
         String jwt = Jwts.builder()
                     .setSubject(utilisateur.getEmail())
-                    .addClaims(Map.of("role", utilisateurDetails.getUtilisateur().getCategorieUtilisateur().getLibelle()))
+                    .addClaims(Map.of(
+                            "role", utilisateurDetails.getUtilisateur().getCategorieUtilisateur().getLibelle(),
+                            "nom", utilisateurDetails.getUtilisateur().getNom(),
+                            "prenom", utilisateurDetails.getUtilisateur().getPrenom()))
                     .signWith(SignatureAlgorithm.HS256, "root")
                     .compact();
 

@@ -4,12 +4,15 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.locmns.locmns_backend.dto.EmpruntDto;
 import com.locmns.locmns_backend.dto.StatutDto;
 import com.locmns.locmns_backend.model.Emprunt;
+import com.locmns.locmns_backend.model.Utilisateur;
+import com.locmns.locmns_backend.security.UtilisateurDetails;
 import com.locmns.locmns_backend.services.EmpruntService;
 import com.locmns.locmns_backend.view.EmpruntView;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -34,8 +37,11 @@ public class EmpruntController {
 
     @GetMapping("/liste/actif")
     @JsonView(EmpruntView.class)
-    public List<Emprunt> obtenirEmpruntActif() {
-        return empruntService.obtenirEmpruntsActifs();
+    public List<Emprunt> obtenirEmpruntActif(
+            @AuthenticationPrincipal UtilisateurDetails utilisateurDetails
+    ) {
+        Utilisateur utilisateur = utilisateurDetails.getUtilisateur();
+        return empruntService.obtenirEmpruntSelonRole(utilisateur);
     }
 
     @GetMapping("/liste")
