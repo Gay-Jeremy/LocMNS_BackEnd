@@ -3,7 +3,6 @@ package com.locmns.locmns_backend.services;
 import com.locmns.locmns_backend.model.Utilisateur;
 import com.locmns.locmns_backend.repository.UtilisateurDao;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +14,7 @@ public class UtilisateurService {
 
     private final UtilisateurDao utilisateurDao;
 
-    public void Insert (Utilisateur utilisateur) {
+    public void insert(Utilisateur utilisateur) {
         utilisateur.setId(null);
         utilisateur.setPassword(encoder.encode(utilisateur.getPassword()));
         utilisateurDao.save(utilisateur);

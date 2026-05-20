@@ -14,6 +14,15 @@ import java.util.Optional;
 @Repository
 public interface MaterielDao extends JpaRepository<Materiel, Integer> {
 
+    @Query("""
+    SELECT DISTINCT m FROM Materiel m
+    JOIN m.emprunts e
+    WHERE e.utilisateur.email = :email
+    AND e.dateRetourReel IS NULL
+    AND e.statutEmprunt.code NOT IN ('DEMANDE_EN_COURS', 'REFUSE')
+    """)
+    List<Materiel> retourneListeMaterielEmpruntsEnCoursParEmail(@Param("email") String email);
+
     @Query("FROM Materiel m WHERE m.emprunts IS EMPTY OR NOT EXISTS (SELECT e FROM m.emprunts e WHERE e.dateRetourReel IS NULL)")
     List<Materiel> retourneListeMaterielDisponible();
 

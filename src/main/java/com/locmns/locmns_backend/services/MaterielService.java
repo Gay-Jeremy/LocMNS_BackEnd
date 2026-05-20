@@ -35,6 +35,17 @@ public class MaterielService {
         return materielDao.findAll();
     }
 
+    public List<Materiel> obtenirMaterielsSelonRole(Utilisateur utilisateur) {
+
+        String role = utilisateur.getCategorieUtilisateur().getLibelle();
+
+        if (role.equals("Administrateur")) {
+            return materielDao.findAll();
+        }
+
+        return materielDao.retourneListeMaterielEmpruntsEnCoursParEmail(utilisateur.getEmail());
+    }
+
     public List<Materiel> obtenirMaterielsDisponibles() { return materielDao.retourneListeMaterielDisponible(); }
 
     public List<Materiel> obtenirListeMaterielPanneSignalee() { return materielDao.retourneListeMaterielPanneSignales(); }

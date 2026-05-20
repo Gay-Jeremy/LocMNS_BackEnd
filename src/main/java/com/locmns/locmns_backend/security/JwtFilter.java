@@ -29,7 +29,7 @@ public class JwtFilter extends OncePerRequestFilter {
             FilterChain filterChain) throws ServletException, IOException {
         String token = request.getHeader("Authorization");
 
-        if(token != null) {
+        if(token != null && token.toLowerCase().startsWith("bearer ")) {
             String jwt = token.substring(7);
 
             String email = Jwts.parser()

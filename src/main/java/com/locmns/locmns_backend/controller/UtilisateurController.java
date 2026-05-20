@@ -7,6 +7,7 @@ import com.locmns.locmns_backend.view.UtilisateurView;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +21,8 @@ import java.util.Optional;
 public class UtilisateurController {
 
     private final UtilisateurDao utilisateurDao;
+    private final PasswordEncoder passwordEncoder;
+
 
     @GetMapping("/liste")
     @JsonView( {UtilisateurView.class})
@@ -43,6 +46,8 @@ public class UtilisateurController {
     @PostMapping("")
     public ResponseEntity<Utilisateur> creerUtilisateur(
             @RequestBody @Validated(Utilisateur.OnCreate.class) Utilisateur utilisateurToInsert) {
+
+        utilisateurToInsert.setPassword(passwordEncoder.encode(utilisateurToInsert.getPassword()));
 
         utilisateurDao.save(utilisateurToInsert);
 

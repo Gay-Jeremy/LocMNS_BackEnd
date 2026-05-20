@@ -9,7 +9,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -35,7 +34,7 @@ public class AuthController {
     public ResponseEntity<Utilisateur>  signIn(
             @RequestBody @Validated(Utilisateur.OnCreate.class) Utilisateur utilisateurToInsert) {
 
-        utilisateurService.Insert(utilisateurToInsert);
+        utilisateurService.insert(utilisateurToInsert);
 
         return new ResponseEntity<>(utilisateurToInsert,HttpStatus.CREATED);
     }

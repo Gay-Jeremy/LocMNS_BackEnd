@@ -37,9 +37,12 @@ public class MaterielController {
     @JsonView(MaterielView.class)
     @GetMapping("/liste")
     @IsUser
-    public List<Materiel> obtenirTousLesMateriels() {
+    public List<Materiel> obtenirTousLesMateriels(
+            @AuthenticationPrincipal UtilisateurDetails utilisateurDetails) {
 
-        return materielService.obtenirTousLesMateriels();
+        Utilisateur utilisateur = utilisateurDetails.getUtilisateur();
+
+        return materielService.obtenirMaterielsSelonRole(utilisateur);
     }
 
     @JsonView(MaterielView.class)

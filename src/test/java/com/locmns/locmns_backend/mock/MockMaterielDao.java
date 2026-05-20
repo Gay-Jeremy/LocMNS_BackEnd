@@ -37,6 +37,11 @@ public class MockMaterielDao implements MaterielDao {
     // ── Méthodes custom ──────────────────────────────────
 
     @Override
+    public List<Materiel> retourneListeMaterielEmpruntsEnCoursParEmail(String email) {
+        return List.of();
+    }
+
+    @Override
     public List<Materiel> retourneListeMaterielDisponible() { return List.of(); }
 
     @Override
