@@ -55,6 +55,7 @@ public class AuthController {
         String jwt = Jwts.builder()
                     .setSubject(utilisateur.getEmail())
                     .addClaims(Map.of(
+                            "id", utilisateurDetails.getUtilisateur().getId(),
                             "role", utilisateurDetails.getUtilisateur().getCategorieUtilisateur().getLibelle(),
                             "nom", utilisateurDetails.getUtilisateur().getNom(),
                             "prenom", utilisateurDetails.getUtilisateur().getPrenom()))

@@ -4,6 +4,7 @@ package com.locmns.locmns_backend.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.locmns.locmns_backend.dto.StatutDto;
 import com.locmns.locmns_backend.model.Utilisateur;
+import com.locmns.locmns_backend.repository.EmpruntDao;
 import com.locmns.locmns_backend.repository.MaterielDao;
 import com.locmns.locmns_backend.dto.MaterielDto;
 import com.locmns.locmns_backend.model.Materiel;
@@ -16,7 +17,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,6 +31,8 @@ import java.util.Optional;
 public class MaterielController {
 
     private final MaterielDao materielDao;
+
+    private final EmpruntDao empruntDao;
 
     private final MaterielService materielService;
 
@@ -110,14 +112,18 @@ public class MaterielController {
     @IsAdmin
     public ResponseEntity<Void> supprimerMateriel(@PathVariable int id) {
 
-        Optional<Materiel> optionalMateriel = materielDao.findById(id);
-
-        if(optionalMateriel.isEmpty()) {
+        if (materielDao.findById(id).isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
+        if (empruntDao.existsEmpruntActifParMaterielId(id)) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+
+        empruntDao.deleteByMaterielId(id);
         materielDao.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
     }
 
     @JsonView(MaterielView.class)
@@ -138,7 +144,7 @@ public class MaterielController {
     }
 
     @PutMapping("/{id}/statut")
-    @IsAdmin
+    @IsUser
     public ResponseEntity<Void> modifierStatutMateriel(
             @PathVariable Integer id,
             @RequestBody StatutDto statutDTO) {

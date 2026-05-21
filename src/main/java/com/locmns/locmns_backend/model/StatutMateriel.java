@@ -34,8 +34,9 @@ public class StatutMateriel {
     private String libelle;
 
     @Column(unique=true, updatable=false)
+    @JsonView( StatutMaterielView.class)
     private String code;
 
-    @OneToMany(mappedBy = "statutMateriel")
+    @OneToMany(mappedBy = "statutMateriel",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Materiel> materiels;
 }

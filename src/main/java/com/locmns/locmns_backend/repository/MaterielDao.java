@@ -43,10 +43,10 @@ public interface MaterielDao extends JpaRepository<Materiel, Integer> {
             @Param("dateFin") LocalDate dateFin,
             @Param("id") int id);
 
-    @Query("SELECT m FROM Materiel m WHERE m.statutMateriel.code = 'PANNE_SIGNALEE'")
+    @Query("SELECT m FROM Materiel m WHERE m.statutMateriel.code IN ('PANNE', 'INCIDENT')")
     List<Materiel> retourneListeMaterielPanneSignales();
 
-    @Query("SELECT m FROM Materiel m  JOIN m.emprunts e WHERE m.statutMateriel.code = 'PANNE_SIGNALEE' AND e.utilisateur.email = :email AND e.dateRetourReel IS NULL")
+    @Query("SELECT m FROM Materiel m  JOIN m.emprunts e WHERE m.statutMateriel.code IN ('PANNE', 'INCIDENT') AND e.utilisateur.email = :email AND e.dateRetourReel IS NULL")
     List<Materiel> retourneListeMaterielPanneSignalesParEmail(@Param("email") String email);
 
     Optional<Materiel> findByNumSerie(String numSerie);

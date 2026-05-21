@@ -85,6 +85,17 @@ public class MockEmpruntDao implements EmpruntDao {
         return List.of();
     }
 
+    @Override
+    public boolean existsEmpruntActifParMaterielId(int materielId) {
+        return false;
+    }
+
+    @Override
+    public void deleteByMaterielId(int materielId) {
+
+    }
+
+
     // ── Méthodes JpaRepository obligatoires ────────────
 
     @Override public void flush() {}

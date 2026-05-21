@@ -1,6 +1,7 @@
 package com.locmns.locmns_backend.repository;
 
 import com.locmns.locmns_backend.model.Emprunt;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -45,6 +46,10 @@ public interface EmpruntDao extends JpaRepository<Emprunt, Integer> {
     @Query("SELECT e FROM Emprunt e WHERE e.utilisateur.email = :email AND (e.dateFin < CURRENT_DATE  OR e.statutEmprunt.code = 'REFUSE') ORDER BY e.dateFin ASC")
     List<Emprunt> retourneHistoriqueEmpruntParEmail(@Param("email") String email);
 
+    @Query("SELECT CASE WHEN COUNT(e) > 0 THEN true ELSE false END FROM Emprunt e WHERE e.materiel.id = :materielId AND (e.dateRetourReel IS NULL AND e.statutEmprunt.code NOT IN ('REFUSE'))")
+    boolean existsEmpruntActifParMaterielId(@Param("materielId") int materielId);
 
+    @Transactional
+    void deleteByMaterielId(int materielId);
 
 }

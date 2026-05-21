@@ -41,7 +41,7 @@ public class Modele {
     @JsonView({MaterielView.class, EmpruntView.class, ModeleView.class})
     private CategorieModele categorieModele;
 
-    @OneToMany(mappedBy = "modele")
+    @OneToMany(mappedBy = "modele", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Materiel> materiels;
 
     @ManyToMany

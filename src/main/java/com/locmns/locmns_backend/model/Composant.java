@@ -37,4 +37,6 @@ public class Composant {
 
     private List<CategorieModele> categoriesModeles = new ArrayList<>();
 
+    @OneToMany(mappedBy = "composant", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CaracteristiqueMaterielComposant> caracteristiques = new ArrayList<>();
 }

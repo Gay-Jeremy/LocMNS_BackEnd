@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -54,4 +55,7 @@ public class Materiel {
     @JoinColumn(name = "modele_id")
     @JsonView({EmpruntView.class, MaterielView.class})
     private Modele modele;
+
+    @OneToMany(mappedBy = "materiel", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CaracteristiqueMaterielComposant> caracteristiques = new ArrayList<>();
 }
