@@ -8,6 +8,7 @@ import com.locmns.locmns_backend.mock.MockMaterielDao;
 import com.locmns.locmns_backend.mock.MockUtilisateurDao;
 import com.locmns.locmns_backend.model.Emprunt;
 import com.locmns.locmns_backend.services.EmpruntService;
+import com.locmns.locmns_backend.services.MaterielService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -23,10 +24,11 @@ public class EmpruntControllerUnitTest {
     private EmpruntController empruntController;
     private MockEmpruntDao mockEmpruntDao;
 
+
     @BeforeEach
     public void init() {
-        mockEmpruntDao    = new MockEmpruntDao();
-        MockMaterielDao mockMaterielDao    = new MockMaterielDao();
+        mockEmpruntDao = new MockEmpruntDao();
+        MockMaterielDao mockMaterielDao = new MockMaterielDao();
         MockUtilisateurDao mockUtilisateurDao = new MockUtilisateurDao();
 
         EmpruntService empruntService = new EmpruntService(
@@ -35,7 +37,16 @@ public class EmpruntControllerUnitTest {
                 mockUtilisateurDao,
                 null
         );
-        empruntController = new EmpruntController(empruntService);
+
+        MaterielService materielService = new MaterielService(
+                mockMaterielDao,
+                null,
+                null,
+                null,
+                mockEmpruntDao
+        );
+
+        empruntController = new EmpruntController(empruntService, materielService);
     }
 
     // ── obtenirEmpruntParId ───────────────────────────────

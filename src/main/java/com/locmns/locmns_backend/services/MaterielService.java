@@ -2,12 +2,10 @@ package com.locmns.locmns_backend.services;
 
 import com.locmns.locmns_backend.exception.RessourceIntrouvableException;
 import com.locmns.locmns_backend.model.*;
-import com.locmns.locmns_backend.repository.MaterielDao;
-import com.locmns.locmns_backend.repository.ModeleDao;
-import com.locmns.locmns_backend.repository.SalleDao;
-import com.locmns.locmns_backend.repository.StatutMaterielDao;
+import com.locmns.locmns_backend.repository.*;
 import com.locmns.locmns_backend.dto.MaterielDto;
 import com.locmns.locmns_backend.exception.MetierException;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +24,8 @@ public class MaterielService {
     private final StatutMaterielDao statutMaterielDao;
 
     private final SalleDao salleDao;
+
+    private final EmpruntDao  empruntDao;
 
     public Optional<Materiel> obtenirMaterielParId(Integer id) {
         return materielDao.findById(id);
@@ -62,9 +62,24 @@ public class MaterielService {
     }
 
 
-
     public List<Materiel> obtenirMaterielsDisponiblesPourPeriodeParIdCategorieModele(LocalDate dateDebut, LocalDate dateFin, int id) {
         return materielDao.retourneListeMaterielDisponiblePourPeriodeParIdCategorieModele(dateDebut, dateFin, id);
+    }
+
+    public void verifierDisponibilitePourProlongation(int empruntId, LocalDate nouvelleDateFin) {
+        Emprunt emprunt = empruntDao.findById(empruntId)
+                .orElseThrow(() -> new EntityNotFoundException("Emprunt introuvable"));
+
+        List<Materiel> materielsDisponibles = materielDao
+                .retourneDisponibiliteMaterielPourPeriodeParIdMateriel(
+                        emprunt.getDateDebut(),
+                        nouvelleDateFin,
+                        emprunt.getMateriel().getId()
+                );
+
+        if (materielsDisponibles.isEmpty()) {
+            throw new IllegalStateException("Le matériel n'est pas disponible pour cette période");
+        }
     }
 
     public Materiel creerMateriel(MaterielDto materielDto, Utilisateur utilisateur) {
