@@ -3,6 +3,7 @@ package com.locmns.locmns_backend.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.locmns.locmns_backend.repository.UtilisateurDao;
 import com.locmns.locmns_backend.model.Utilisateur;
+import com.locmns.locmns_backend.services.UtilisateurService;
 import com.locmns.locmns_backend.view.UtilisateurView;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ public class UtilisateurController {
 
     private final UtilisateurDao utilisateurDao;
     private final PasswordEncoder passwordEncoder;
+    private final UtilisateurService utilisateurService;
 
 
     @GetMapping("/liste")
@@ -47,9 +49,7 @@ public class UtilisateurController {
     public ResponseEntity<Utilisateur> creerUtilisateur(
             @RequestBody @Validated(Utilisateur.OnCreate.class) Utilisateur utilisateurToInsert) {
 
-        utilisateurToInsert.setPassword(passwordEncoder.encode(utilisateurToInsert.getPassword()));
-
-        utilisateurDao.save(utilisateurToInsert);
+        utilisateurService.insert(utilisateurToInsert);
 
         return new ResponseEntity<>(utilisateurToInsert, HttpStatus.CREATED) ;
     }
