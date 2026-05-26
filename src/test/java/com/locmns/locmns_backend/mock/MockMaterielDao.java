@@ -48,6 +48,11 @@ public class MockMaterielDao implements MaterielDao {
     public List<Materiel> retourneListeMaterielDisponiblePourPeriodeParIdCategorieModele(LocalDate dateDebut, LocalDate dateFin, int id) { return List.of(); }
 
     @Override
+    public List<Materiel> retourneDisponibiliteMaterielPourPeriodeParIdMateriel(LocalDate dateDebut, LocalDate dateFin, int id) {
+        return List.of();
+    }
+
+    @Override
     public List<Materiel> retourneListeMaterielPanneSignales() { return List.of(); }
 
     @Override

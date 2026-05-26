@@ -4,9 +4,12 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.locmns.locmns_backend.dto.EmpruntDto;
 import com.locmns.locmns_backend.dto.StatutDto;
 import com.locmns.locmns_backend.model.Emprunt;
+import com.locmns.locmns_backend.model.Materiel;
 import com.locmns.locmns_backend.model.Utilisateur;
+import com.locmns.locmns_backend.repository.MaterielDao;
 import com.locmns.locmns_backend.security.UtilisateurDetails;
 import com.locmns.locmns_backend.services.EmpruntService;
+import com.locmns.locmns_backend.services.MaterielService;
 import com.locmns.locmns_backend.view.EmpruntView;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +31,8 @@ import java.util.Optional;
 public class EmpruntController {
 
     private final EmpruntService empruntService;
+
+    private final MaterielService materielService;
 
     @GetMapping("/liste/recent")
     @JsonView(EmpruntView.class)
@@ -118,9 +123,16 @@ public class EmpruntController {
     public ResponseEntity<Void> modifierStatutEmprunt(
             @PathVariable int id,
             @RequestBody StatutDto statutDTO) {
-        empruntService.modifierStatutEmprunt(id, statutDTO.getStatutId());
+
+        if ("DEMANDE_PROLONGATION".equals(statutDTO.getCode()) && statutDTO.getDate() != null) {
+            materielService.verifierDisponibilitePourProlongation(id, statutDTO.getDate());
+        }
+
+        empruntService.modifierStatutEmprunt(id, statutDTO.getStatutId(), statutDTO.getDate(), statutDTO.getCode());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+
 
 
 }

@@ -154,7 +154,7 @@ public class EmpruntService {
         empruntDao.save(emprunt);
     }
 
-    public void modifierStatutEmprunt(int empruntId, int statutId) {
+    public void modifierStatutEmprunt(int empruntId, int statutId, LocalDate date, String code) {
         Emprunt emprunt = empruntDao.findById(empruntId)
                 .orElseThrow(() -> new RessourceIntrouvableException("Emprunt non trouvé : " + empruntId));
 
@@ -162,6 +162,15 @@ public class EmpruntService {
                 .orElseThrow(() -> new RessourceIntrouvableException("Statut non trouvé : " + statutId));
 
         emprunt.setStatutEmprunt(statutEmprunt);
+
+        if (date != null) {
+            if ("DEMANDE_PROLONGATION".equals(code)) {
+                emprunt.setDateProlongation(date);
+            } else if ("DEMANDE_RETOUR_ANTICIPE".equals(code)) {
+                emprunt.setDateRetourAnticipe(date);
+            }
+        }
+
         empruntDao.save(emprunt);
     }
 
