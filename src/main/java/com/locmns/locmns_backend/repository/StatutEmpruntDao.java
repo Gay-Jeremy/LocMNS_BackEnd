@@ -12,7 +12,16 @@ import java.util.Optional;
 public interface StatutEmpruntDao extends JpaRepository<StatutEmprunt, Integer> {
 
     @Query("FROM StatutEmprunt st WHERE st.code IN ('ACCEPTE', 'REFUSE' )")
-    List<StatutEmprunt> retourneDecisionEmprunt();
+    List<StatutEmprunt> retourneDecisionDemandeEmprunt();
 
     Optional<StatutEmprunt> findByCode(String code);
+
+
+
+
+
+
 }
+
+
+

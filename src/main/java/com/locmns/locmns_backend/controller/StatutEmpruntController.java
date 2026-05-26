@@ -30,9 +30,8 @@ public class StatutEmpruntController {
     @GetMapping("/liste/decision")
     @JsonView(StatutEmpruntView.class)
     public List<StatutEmprunt> obtenirToutesLesDecisions() {
-        return statutEmpruntDao.retourneDecisionEmprunt();
+        return statutEmpruntDao.retourneDecisionDemandeEmprunt();
     }
-
 
 
     @GetMapping("/{id}")
