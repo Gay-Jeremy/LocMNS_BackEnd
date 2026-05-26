@@ -32,6 +32,7 @@ public class StatutEmprunt {
     private String libelle;
 
     @Column(nullable = false, unique = true, updatable = false)
+    @JsonView(StatutEmpruntView.class)
     private String code;
 
     @OneToMany(mappedBy = "statutEmprunt")
