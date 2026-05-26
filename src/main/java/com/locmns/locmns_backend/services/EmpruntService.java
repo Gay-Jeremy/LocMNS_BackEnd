@@ -6,6 +6,7 @@ import com.locmns.locmns_backend.repository.MaterielDao;
 import com.locmns.locmns_backend.repository.StatutEmpruntDao;
 import com.locmns.locmns_backend.repository.UtilisateurDao;
 import com.locmns.locmns_backend.dto.EmpruntDto;
+import com.locmns.locmns_backend.dto.StatutDto;
 import com.locmns.locmns_backend.exception.MetierException;
 import com.locmns.locmns_backend.exception.RessourceIntrouvableException;
 import com.locmns.locmns_backend.model.Emprunt;
@@ -32,6 +33,8 @@ public class EmpruntService {
     private  final UtilisateurDao utilisateurDao;
 
     private  final StatutEmpruntDao statutEmpruntDao;
+
+    private final MaterielService materielService;
     
     public Optional<Emprunt> obtenirEmpruntsParId(Integer id){ return empruntDao.findById(id); }
 
@@ -154,19 +157,44 @@ public class EmpruntService {
         empruntDao.save(emprunt);
     }
 
-    public void modifierStatutEmprunt(int empruntId, int statutId, LocalDate date, String code) {
+    @Transactional
+    public void modifierStatutEmpruntFromDto(int empruntId, StatutDto statutDto) {
         Emprunt emprunt = empruntDao.findById(empruntId)
                 .orElseThrow(() -> new RessourceIntrouvableException("Emprunt non trouvé : " + empruntId));
 
-        StatutEmprunt statutEmprunt = statutEmpruntDao.findById(statutId)
-                .orElseThrow(() -> new RessourceIntrouvableException("Statut non trouvé : " + statutId));
+        StatutEmprunt statutEmprunt = statutEmpruntDao.findById(statutDto.getStatutId())
+                .orElseThrow(() -> new RessourceIntrouvableException("Statut non trouvé : " + statutDto.getStatutId()));
+
+        String code = statutDto.getCode();
+        if (code == null || code.isBlank()) {
+            code = statutEmprunt.getCode();
+        }
+
+        LocalDate date = statutDto.getDate();
+
+        if (CodeStatutEmprunt.DEMANDE_PROLONGATION.name().equals(code)) {
+            if (date == null) {
+                throw new MetierException("La date de prolongation est obligatoire");
+            }
+            if (!date.isAfter(emprunt.getDateFin())) {
+                throw new MetierException("La date de prolongation doit être postérieure à la date de fin de l'emprunt");
+            }
+            materielService.verifierDisponibilitePourProlongation(empruntId, date);
+        } else if (CodeStatutEmprunt.DEMANDE_RETOUR_ANTICIPE.name().equals(code)) {
+            if (date == null) {
+                throw new MetierException("La date de retour anticipé est obligatoire");
+            }
+            if (!date.isBefore(emprunt.getDateFin())) {
+                throw new MetierException("La date de retour anticipé doit être antérieure à la date de fin de l'emprunt");
+            }
+        }
 
         emprunt.setStatutEmprunt(statutEmprunt);
 
         if (date != null) {
-            if ("DEMANDE_PROLONGATION".equals(code)) {
+            if (CodeStatutEmprunt.DEMANDE_PROLONGATION.name().equals(code)) {
                 emprunt.setDateProlongation(date);
-            } else if ("DEMANDE_RETOUR_ANTICIPE".equals(code)) {
+            } else if (CodeStatutEmprunt.DEMANDE_RETOUR_ANTICIPE.name().equals(code)) {
                 emprunt.setDateRetourAnticipe(date);
             }
         }

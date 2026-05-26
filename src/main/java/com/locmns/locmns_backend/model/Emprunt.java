@@ -46,9 +46,10 @@ public class Emprunt {
     private LocalDate dateRetourReel;
 
 
+    @JsonView(EmpruntView.class)
     private LocalDate dateProlongation;
 
-
+    @JsonView(EmpruntView.class)
     private LocalDate dateRetourAnticipe;
 
     @JsonView(EmpruntView.class)

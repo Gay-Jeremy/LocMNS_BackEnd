@@ -49,6 +49,21 @@ public interface EmpruntDao extends JpaRepository<Emprunt, Integer> {
     @Query("SELECT CASE WHEN COUNT(e) > 0 THEN true ELSE false END FROM Emprunt e WHERE e.materiel.id = :materielId AND (e.dateRetourReel IS NULL AND e.statutEmprunt.code NOT IN ('REFUSE'))")
     boolean existsEmpruntActifParMaterielId(@Param("materielId") int materielId);
 
+    @Query("""
+        SELECT CASE WHEN COUNT(e) > 0 THEN true ELSE false END FROM Emprunt e
+        WHERE e.materiel.id = :materielId
+        AND e.id <> :empruntId
+        AND e.dateRetourReel IS NULL
+        AND e.dateDebut <= :dateFin
+        AND e.dateFin >= :dateDebut
+        AND e.statutEmprunt.code NOT IN ('REFUSE', 'TERMINE')
+        """)
+    boolean existsConflitEmpruntSurMaterielPourPeriode(
+            @Param("materielId") int materielId,
+            @Param("empruntId") int empruntId,
+            @Param("dateDebut") LocalDate dateDebut,
+            @Param("dateFin") LocalDate dateFin);
+
     @Transactional
     void deleteByMaterielId(int materielId);
 
