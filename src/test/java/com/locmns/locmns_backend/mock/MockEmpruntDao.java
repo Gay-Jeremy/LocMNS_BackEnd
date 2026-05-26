@@ -91,6 +91,11 @@ public class MockEmpruntDao implements EmpruntDao {
     }
 
     @Override
+    public boolean existsConflitEmpruntSurMaterielPourPeriode(int materielId, int empruntId, LocalDate dateDebut, LocalDate dateFin) {
+        return false;
+    }
+
+    @Override
     public void deleteByMaterielId(int materielId) {
 
     }

@@ -5,7 +5,6 @@ import com.locmns.locmns_backend.model.*;
 import com.locmns.locmns_backend.repository.*;
 import com.locmns.locmns_backend.dto.MaterielDto;
 import com.locmns.locmns_backend.exception.MetierException;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -68,17 +67,21 @@ public class MaterielService {
 
     public void verifierDisponibilitePourProlongation(int empruntId, LocalDate nouvelleDateFin) {
         Emprunt emprunt = empruntDao.findById(empruntId)
-                .orElseThrow(() -> new EntityNotFoundException("Emprunt introuvable"));
+                .orElseThrow(() -> new RessourceIntrouvableException("Emprunt introuvable"));
 
-        List<Materiel> materielsDisponibles = materielDao
-                .retourneDisponibiliteMaterielPourPeriodeParIdMateriel(
-                        emprunt.getDateDebut(),
-                        nouvelleDateFin,
-                        emprunt.getMateriel().getId()
-                );
+        LocalDate debutPeriodeExtension = emprunt.getDateFin().plusDays(1);
 
-        if (materielsDisponibles.isEmpty()) {
-            throw new IllegalStateException("Le matériel n'est pas disponible pour cette période");
+        boolean conflit = empruntDao.existsConflitEmpruntSurMaterielPourPeriode(
+                emprunt.getMateriel().getId(),
+                empruntId,
+                debutPeriodeExtension,
+                nouvelleDateFin
+        );
+
+        if (conflit) {
+            throw new MetierException(
+                    "Le matériel n'est pas disponible pour cette période : un autre emprunt ou une demande existe déjà sur ces dates"
+            );
         }
     }
 
