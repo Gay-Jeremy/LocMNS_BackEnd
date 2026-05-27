@@ -6,6 +6,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,6 +21,9 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
+    @Value("${jwt.secret}")
+    protected String jwtSecret;
+
     protected final UserDetailsService userDetailsService;
 
     @Override
@@ -33,7 +37,7 @@ public class JwtFilter extends OncePerRequestFilter {
             String jwt = token.substring(7);
 
             String email = Jwts.parser()
-                    .setSigningKey("root")
+                    .setSigningKey(jwtSecret)
                     .parseClaimsJws(jwt)
                     .getBody()
                     .getSubject();
