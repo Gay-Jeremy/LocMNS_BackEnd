@@ -3,7 +3,7 @@ package com.locmns.locmns_backend.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.locmns.locmns_backend.model.Utilisateur;
 import com.locmns.locmns_backend.security.UtilisateurDetails;
-import com.locmns.locmns_backend.services.UtilisateurService;
+import com.locmns.locmns_backend.services.IUtilisateurService;
 import com.locmns.locmns_backend.view.UtilisateurView;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -26,7 +26,7 @@ import java.util.Map;
 @CrossOrigin
 public class AuthController {
 
-    private final UtilisateurService utilisateurService;
+    private final IUtilisateurService IUtilisateurService;
     private final AuthenticationProvider authenticationProvider;
 
     @PostMapping("/sign-in")
@@ -34,7 +34,7 @@ public class AuthController {
     public ResponseEntity<Utilisateur>  signIn(
             @RequestBody @Validated(Utilisateur.OnCreate.class) Utilisateur utilisateurToInsert) {
 
-        utilisateurService.insert(utilisateurToInsert);
+        IUtilisateurService.insert(utilisateurToInsert);
 
         return new ResponseEntity<>(utilisateurToInsert,HttpStatus.CREATED);
     }

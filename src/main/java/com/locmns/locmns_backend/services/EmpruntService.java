@@ -24,7 +24,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class EmpruntService {
+public class EmpruntService implements IEmpruntService {
 
     private  final EmpruntDao empruntDao;
 
@@ -36,12 +36,16 @@ public class EmpruntService {
 
     private final MaterielService materielService;
 
+    @Override
     public Optional<Emprunt> obtenirEmpruntsParId(Integer id){ return empruntDao.findById(id); }
 
+    @Override
     public List<Emprunt> obtenirTousLesEmprunts(){ return empruntDao.findAll(); }
 
+    @Override
     public List<Emprunt> obtenirEmpruntsActifs(){ return empruntDao.retourneListeEmpruntActif(CodeStatutEmprunt.ACCEPTE.name()); }
 
+    @Override
     public List<Emprunt> obtenirEmpruntSelonRole(Utilisateur utilisateur) {
 
         String role = utilisateur.getCategorieUtilisateur().getLibelle();
@@ -53,6 +57,7 @@ public class EmpruntService {
         return empruntDao.retourneListeEmpruntActifParEmail(CodeStatutEmprunt.ACCEPTE.name(), utilisateur.getEmail());
     }
 
+    @Override
     public List<Emprunt> obtenirDemandesEmprunt(){
 
         List<String> codes = List.of(
@@ -63,6 +68,7 @@ public class EmpruntService {
 
         return empruntDao.retourneListeDemandeEmprunt(codes); }
 
+    @Override
     public List<Emprunt> obtenirDemandesEmpruntSelonRole(Utilisateur utilisateur) {
 
         String role = utilisateur.getCategorieUtilisateur().getLibelle();
@@ -82,10 +88,12 @@ public class EmpruntService {
     }
 
 
+    @Override
     public List<Emprunt> obtenirEmpruntsRecents() {
         return empruntDao.retourneEmpruntRecent(LocalDate.now().minusDays(30));
     }
 
+    @Override
     public List<Emprunt> obtenirEmpruntsRecentsSelonRole(Utilisateur utilisateur) {
 
         String role = utilisateur.getCategorieUtilisateur().getLibelle();
@@ -97,11 +105,13 @@ public class EmpruntService {
         return empruntDao.retourneEmpruntRecentParEmail(LocalDate.now().minusDays(30), utilisateur.getEmail());
     }
 
-    public List<Emprunt> obtenirListeEmpruntEnRetard () {
+    @Override
+    public List<Emprunt> obtenirListeEmpruntEnRetard() {
         return  empruntDao.retourneEmpruntEnRetard();
     }
 
-    public List<Emprunt> obtenirListeEmpruntEnRetardSelonRole (Utilisateur utilisateur) {
+    @Override
+    public List<Emprunt> obtenirListeEmpruntEnRetardSelonRole(Utilisateur utilisateur) {
 
         String role = utilisateur.getCategorieUtilisateur().getLibelle();
 
@@ -112,11 +122,13 @@ public class EmpruntService {
         return empruntDao.retourneEmpruntEnRetardParEmail(utilisateur.getEmail());
     }
 
-    public List<Emprunt> obtenirHistoriqueEmprunt () {
+    @Override
+    public List<Emprunt> obtenirHistoriqueEmprunt() {
         return  empruntDao.retourneHistoriqueEmprunt();
     }
 
-    public List<Emprunt> obtenirHistoriqueEmpruntSelonRole (Utilisateur utilisateur) {
+    @Override
+    public List<Emprunt> obtenirHistoriqueEmpruntSelonRole(Utilisateur utilisateur) {
 
         String role = utilisateur.getCategorieUtilisateur().getLibelle();
 
@@ -129,6 +141,7 @@ public class EmpruntService {
 
 
 
+    @Override
     public void supprimerEmprunt(Integer id) {
         if (!empruntDao.existsById(id)) {
             throw new RessourceIntrouvableException("Emprunt introuvable");
@@ -137,6 +150,7 @@ public class EmpruntService {
     }
 
     @Transactional
+    @Override
     public void modifierEmprunt(Integer id, EmpruntDto empruntDto) {
 
         Emprunt emprunt = empruntDao.findById(id)
@@ -158,6 +172,7 @@ public class EmpruntService {
     }
 
     @Transactional
+    @Override
     public void modifierStatutEmpruntFromDto(int empruntId, StatutDto statutDto) {
         Emprunt emprunt = empruntDao.findById(empruntId)
                 .orElseThrow(() -> new RessourceIntrouvableException("Emprunt non trouvé : " + empruntId));
@@ -203,6 +218,7 @@ public class EmpruntService {
     }
 
     @Transactional
+    @Override
     public Emprunt creerEmprunt(EmpruntDto empruntDto) {
 
         // Vérification dateFin > dateDebut

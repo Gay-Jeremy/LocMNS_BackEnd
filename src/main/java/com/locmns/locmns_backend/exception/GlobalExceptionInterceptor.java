@@ -61,4 +61,10 @@ public class GlobalExceptionInterceptor {
         return Map.of("erreur", ex.getMessage());
 
     }
+
+    @ExceptionHandler(ConflitReservationException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public Map<String, String> conflitReservationInterceptor(ConflitReservationException ex) {
+        return Map.of("message", ex.getMessage());
+    }
 }
