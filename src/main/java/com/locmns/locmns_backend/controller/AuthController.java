@@ -8,6 +8,7 @@ import com.locmns.locmns_backend.view.UtilisateurView;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -25,6 +26,9 @@ import java.util.Map;
 @RequiredArgsConstructor
 @CrossOrigin
 public class AuthController {
+
+    @Value("${jwt.secret}")
+    protected String jwtSecret;
 
     private final IUtilisateurService IUtilisateurService;
     private final AuthenticationProvider authenticationProvider;
@@ -59,7 +63,7 @@ public class AuthController {
                             "role", utilisateurDetails.getUtilisateur().getCategorieUtilisateur().getLibelle(),
                             "nom", utilisateurDetails.getUtilisateur().getNom(),
                             "prenom", utilisateurDetails.getUtilisateur().getPrenom()))
-                    .signWith(SignatureAlgorithm.HS256, "root")
+                    .signWith(SignatureAlgorithm.HS256, jwtSecret)
                     .compact();
 
         return new ResponseEntity<>(jwt, HttpStatus.OK);
