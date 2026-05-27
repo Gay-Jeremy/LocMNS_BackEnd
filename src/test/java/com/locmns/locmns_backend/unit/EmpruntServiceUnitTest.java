@@ -8,6 +8,7 @@ import com.locmns.locmns_backend.dto.EmpruntDto;
 import com.locmns.locmns_backend.exception.MetierException;
 import com.locmns.locmns_backend.model.*;
 import com.locmns.locmns_backend.services.EmpruntService;
+import com.locmns.locmns_backend.services.MaterielService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -26,6 +27,7 @@ public class EmpruntServiceUnitTest {
     private MaterielDao materielDao;
     private UtilisateurDao utilisateurDao;
     private StatutEmpruntDao statutEmpruntDao;
+    private MaterielService materielService;
 
     private EmpruntService empruntService;
 
@@ -42,8 +44,15 @@ public class EmpruntServiceUnitTest {
         materielDao     = Mockito.mock(MaterielDao.class);
         utilisateurDao  = Mockito.mock(UtilisateurDao.class);
         statutEmpruntDao = Mockito.mock(StatutEmpruntDao.class);
+        materielService = Mockito.mock(MaterielService.class);
 
-        empruntService = new EmpruntService(empruntDao, materielDao, utilisateurDao, statutEmpruntDao);
+        empruntService = new EmpruntService(
+                empruntDao,
+                materielDao,
+                utilisateurDao,
+                statutEmpruntDao,
+                materielService
+        );
 
         // Données communes à tous les tests
         CategorieModele categorieModele = new CategorieModele();

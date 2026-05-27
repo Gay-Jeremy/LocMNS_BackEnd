@@ -35,7 +35,7 @@ public class EmpruntService {
     private  final StatutEmpruntDao statutEmpruntDao;
 
     private final MaterielService materielService;
-    
+
     public Optional<Emprunt> obtenirEmpruntsParId(Integer id){ return empruntDao.findById(id); }
 
     public List<Emprunt> obtenirTousLesEmprunts(){ return empruntDao.findAll(); }
@@ -162,12 +162,12 @@ public class EmpruntService {
         Emprunt emprunt = empruntDao.findById(empruntId)
                 .orElseThrow(() -> new RessourceIntrouvableException("Emprunt non trouvé : " + empruntId));
 
-        StatutEmprunt statutEmprunt = statutEmpruntDao.findById(statutDto.getStatutId())
+        StatutEmprunt nouveauStatut = statutEmpruntDao.findById(statutDto.getStatutId())
                 .orElseThrow(() -> new RessourceIntrouvableException("Statut non trouvé : " + statutDto.getStatutId()));
 
         String code = statutDto.getCode();
         if (code == null || code.isBlank()) {
-            code = statutEmprunt.getCode();
+            code = nouveauStatut.getCode();
         }
 
         LocalDate date = statutDto.getDate();
@@ -189,7 +189,7 @@ public class EmpruntService {
             }
         }
 
-        emprunt.setStatutEmprunt(statutEmprunt);
+        emprunt.setStatutEmprunt(nouveauStatut);
 
         if (date != null) {
             if (CodeStatutEmprunt.DEMANDE_PROLONGATION.name().equals(code)) {

@@ -7,10 +7,12 @@ import com.locmns.locmns_backend.mock.MockEmpruntDao;
 import com.locmns.locmns_backend.mock.MockMaterielDao;
 import com.locmns.locmns_backend.mock.MockUtilisateurDao;
 import com.locmns.locmns_backend.model.Emprunt;
+import com.locmns.locmns_backend.repository.StatutEmpruntDao;
 import com.locmns.locmns_backend.services.EmpruntService;
 import com.locmns.locmns_backend.services.MaterielService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -24,6 +26,9 @@ public class EmpruntControllerUnitTest {
     private EmpruntController empruntController;
     private MockEmpruntDao mockEmpruntDao;
 
+    StatutEmpruntDao mockStatutEmpruntDao = Mockito.mock(StatutEmpruntDao.class);
+    MaterielService mockMaterielService = Mockito.mock(MaterielService.class);
+
 
     @BeforeEach
     public void init() {
@@ -31,22 +36,18 @@ public class EmpruntControllerUnitTest {
         MockMaterielDao mockMaterielDao = new MockMaterielDao();
         MockUtilisateurDao mockUtilisateurDao = new MockUtilisateurDao();
 
+        StatutEmpruntDao mockStatutEmpruntDao = Mockito.mock(StatutEmpruntDao.class);
+        MaterielService mockMaterielService = Mockito.mock(MaterielService.class);
+
         EmpruntService empruntService = new EmpruntService(
                 mockEmpruntDao,
                 mockMaterielDao,
                 mockUtilisateurDao,
-                null
+                mockStatutEmpruntDao,
+                mockMaterielService
         );
 
-        MaterielService materielService = new MaterielService(
-                mockMaterielDao,
-                null,
-                null,
-                null,
-                mockEmpruntDao
-        );
-
-        empruntController = new EmpruntController(empruntService, materielService);
+        empruntController = new EmpruntController(empruntService);
     }
 
     // ── obtenirEmpruntParId ───────────────────────────────
