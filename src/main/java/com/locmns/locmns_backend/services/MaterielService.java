@@ -1,5 +1,6 @@
 package com.locmns.locmns_backend.services;
 
+import com.locmns.locmns_backend.exception.ConflitReservationException;
 import com.locmns.locmns_backend.exception.RessourceIntrouvableException;
 import com.locmns.locmns_backend.model.*;
 import com.locmns.locmns_backend.repository.*;
@@ -79,7 +80,7 @@ public class MaterielService {
         );
 
         if (conflit) {
-            throw new MetierException(
+            throw new ConflitReservationException(
                     "Le matériel n'est pas disponible pour cette période : un autre emprunt ou une demande existe déjà sur ces dates"
             );
         }

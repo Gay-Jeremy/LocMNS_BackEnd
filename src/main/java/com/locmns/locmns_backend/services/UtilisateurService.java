@@ -8,12 +8,13 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class UtilisateurService {
+public class UtilisateurService implements IUtilisateurService {
 
     private final PasswordEncoder encoder ;
 
     private final UtilisateurDao utilisateurDao;
 
+    @Override
     public void insert(Utilisateur utilisateur) {
         utilisateur.setId(null);
         utilisateur.setPassword(encoder.encode(utilisateur.getPassword()));

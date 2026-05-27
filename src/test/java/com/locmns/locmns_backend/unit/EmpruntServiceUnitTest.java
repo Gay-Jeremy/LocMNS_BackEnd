@@ -8,6 +8,7 @@ import com.locmns.locmns_backend.dto.EmpruntDto;
 import com.locmns.locmns_backend.exception.MetierException;
 import com.locmns.locmns_backend.model.*;
 import com.locmns.locmns_backend.services.EmpruntService;
+import com.locmns.locmns_backend.services.IEmpruntService;
 import com.locmns.locmns_backend.services.MaterielService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,7 +30,7 @@ public class EmpruntServiceUnitTest {
     private StatutEmpruntDao statutEmpruntDao;
     private MaterielService materielService;
 
-    private EmpruntService empruntService;
+    private IEmpruntService IEmpruntService;
 
     // Données réutilisées dans plusieurs tests
     private Materiel materielDisponible;
@@ -46,7 +47,7 @@ public class EmpruntServiceUnitTest {
         statutEmpruntDao = Mockito.mock(StatutEmpruntDao.class);
         materielService = Mockito.mock(MaterielService.class);
 
-        empruntService = new EmpruntService(
+        IEmpruntService = new EmpruntService(
                 empruntDao,
                 materielDao,
                 utilisateurDao,
@@ -93,7 +94,7 @@ public class EmpruntServiceUnitTest {
         when(statutEmpruntDao.findByCode("DEMANDE_EN_COURS")).thenReturn(Optional.of(statutEmprunt));
 
         // Act
-        assertDoesNotThrow(() -> empruntService.creerEmprunt(dto));
+        assertDoesNotThrow(() -> IEmpruntService.creerEmprunt(dto));
 
         // Assert — save() a bien été appelé une fois
         verify(empruntDao, times(1)).save(any(Emprunt.class));
@@ -113,7 +114,7 @@ public class EmpruntServiceUnitTest {
 
         MetierException exception = assertThrows(
                 MetierException.class,
-                () -> empruntService.creerEmprunt(dtoInvalide)
+                () -> IEmpruntService.creerEmprunt(dtoInvalide)
         );
 
         assertEquals("La date de fin doit être après la date de début", exception.getMessage());
@@ -131,7 +132,7 @@ public class EmpruntServiceUnitTest {
 
         MetierException exception = assertThrows(
                 MetierException.class,
-                () -> empruntService.creerEmprunt(dtoInvalide)
+                () -> IEmpruntService.creerEmprunt(dtoInvalide)
         );
 
         assertEquals("La date de début ne peut pas être dans le passé", exception.getMessage());
@@ -149,7 +150,7 @@ public class EmpruntServiceUnitTest {
 
         MetierException exception = assertThrows(
                 MetierException.class,
-                () -> empruntService.creerEmprunt(dtoInvalide)
+                () -> IEmpruntService.creerEmprunt(dtoInvalide)
         );
 
         // dateDebut dans le passé est vérifiée en premier
@@ -173,7 +174,7 @@ public class EmpruntServiceUnitTest {
 
         MetierException exception = assertThrows(
                 MetierException.class,
-                () -> empruntService.creerEmprunt(dtoInvalide)
+                () -> IEmpruntService.creerEmprunt(dtoInvalide)
         );
 
         assertEquals("Matériel introuvable", exception.getMessage());
@@ -194,7 +195,7 @@ public class EmpruntServiceUnitTest {
 
         MetierException exception = assertThrows(
                 MetierException.class,
-                () -> empruntService.creerEmprunt(dtoInvalide)
+                () -> IEmpruntService.creerEmprunt(dtoInvalide)
         );
 
         assertEquals("Utilisateur introuvable", exception.getMessage());
@@ -213,7 +214,7 @@ public class EmpruntServiceUnitTest {
 
         MetierException exception = assertThrows(
                 MetierException.class,
-                () -> empruntService.creerEmprunt(dto)
+                () -> IEmpruntService.creerEmprunt(dto)
         );
 
         assertEquals("Ce matériel n'est pas disponible sur cette période", exception.getMessage());
