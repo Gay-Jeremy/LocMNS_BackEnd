@@ -33,3 +33,6 @@ jobs:
     - name: Build docker image
       run: docker build -t jeremygaydev/locmns-back .
 
+    - name: Build docker image
+      run: mv .example.env .env
+
