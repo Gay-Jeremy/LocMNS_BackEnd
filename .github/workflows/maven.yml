@@ -49,5 +49,13 @@ jobs:
     - name: Push to Docker Hub
       run: docker push jeremygaydev/locmns-back
 
+    - name: Extract version from pom.xml
+      id: extract_version
+      run: echo "VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
 
+    - name: Tag image with version
+      run: docker tag jeremygaydev/locmns-back jeremygaydev/locmns-back:${{env.VERSION}}
+
+    - name: Push tag to Docker Hub
+      run: docker push jeremygaydev/locmns-back:${{env.VERSION}}
 
