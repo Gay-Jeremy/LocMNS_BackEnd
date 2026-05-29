@@ -79,6 +79,17 @@ public class EmpruntServiceUnitTest {
                 1,
                 ""
         );
+
+        Emprunt empruntSauvegarde = new Emprunt();
+        empruntSauvegarde.setId(1);
+        empruntSauvegarde.setDateDebut(dto.dateDebut());
+        empruntSauvegarde.setDateFin(dto.dateFin());
+        empruntSauvegarde.setMateriel(materielDisponible);
+        empruntSauvegarde.setUtilisateur(utilisateur);
+        empruntSauvegarde.setStatutEmprunt(statutEmprunt);
+
+        when(empruntRepository.save(any())).thenReturn(empruntSauvegarde);
+
     }
 
     // ── CAS NOMINAL ──────────────────────────────────────
