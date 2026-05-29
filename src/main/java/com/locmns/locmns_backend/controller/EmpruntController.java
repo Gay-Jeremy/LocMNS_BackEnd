@@ -1,13 +1,11 @@
 package com.locmns.locmns_backend.controller;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import com.locmns.locmns_backend.dto.EmpruntDto;
 import com.locmns.locmns_backend.dto.StatutDto;
-import com.locmns.locmns_backend.model.Emprunt;
+import com.locmns.locmns_backend.dto.response.EmpruntResponseDto;
 import com.locmns.locmns_backend.model.Utilisateur;
 import com.locmns.locmns_backend.security.UtilisateurDetails;
 import com.locmns.locmns_backend.services.IEmpruntService;
-import com.locmns.locmns_backend.view.EmpruntView;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,11 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-
 import java.util.List;
 import java.util.Optional;
-
-
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
@@ -30,76 +25,58 @@ public class EmpruntController {
     private final IEmpruntService IEmpruntService;
 
     @GetMapping("/liste/recent")
-    @JsonView(EmpruntView.class)
-    public List<Emprunt> obtenirEmpruntsRecents(
+    public List<EmpruntResponseDto> obtenirEmpruntsRecents(
             @AuthenticationPrincipal UtilisateurDetails utilisateurDetails) {
-
         Utilisateur utilisateur = utilisateurDetails.getUtilisateur();
-
         return IEmpruntService.obtenirEmpruntsRecentsSelonRole(utilisateur);
     }
 
     @GetMapping("/liste/actif")
-    @JsonView(EmpruntView.class)
-    public List<Emprunt> obtenirEmpruntActif(
+    public List<EmpruntResponseDto> obtenirEmpruntActif(
             @AuthenticationPrincipal UtilisateurDetails utilisateurDetails) {
-
         Utilisateur utilisateur = utilisateurDetails.getUtilisateur();
         return IEmpruntService.obtenirEmpruntSelonRole(utilisateur);
     }
 
     @GetMapping("/liste")
-    @JsonView(EmpruntView.class)
-    public List<Emprunt> obtenirTousLesEmprunts() {
+    public List<EmpruntResponseDto> obtenirTousLesEmprunts() {
         return IEmpruntService.obtenirTousLesEmprunts();
     }
 
-
     @GetMapping("/liste/demande")
-    @JsonView(EmpruntView.class)
-    public List<Emprunt> obtenirDemandesEmprunt(
+    public List<EmpruntResponseDto> obtenirDemandesEmprunt(
             @AuthenticationPrincipal UtilisateurDetails utilisateurDetails) {
-
         Utilisateur utilisateur = utilisateurDetails.getUtilisateur();
         return IEmpruntService.obtenirDemandesEmpruntSelonRole(utilisateur);
     }
 
     @GetMapping("/liste/retard")
-    @JsonView(EmpruntView.class)
-    public List<Emprunt> obtenirEmpruntEnRetard(
+    public List<EmpruntResponseDto> obtenirEmpruntEnRetard(
             @AuthenticationPrincipal UtilisateurDetails utilisateurDetails) {
-
         Utilisateur utilisateur = utilisateurDetails.getUtilisateur();
         return IEmpruntService.obtenirListeEmpruntEnRetardSelonRole(utilisateur);
     }
 
     @GetMapping("/historique")
-    @JsonView(EmpruntView.class)
-    public List<Emprunt> obtenirHistoriqueEmprunt(
+    public List<EmpruntResponseDto> obtenirHistoriqueEmprunt(
             @AuthenticationPrincipal UtilisateurDetails utilisateurDetails) {
-
         Utilisateur utilisateur = utilisateurDetails.getUtilisateur();
-        return IEmpruntService.obtenirHistoriqueEmpruntSelonRole(utilisateur);}
-
+        return IEmpruntService.obtenirHistoriqueEmpruntSelonRole(utilisateur);
+    }
 
     @GetMapping("/{id}")
-    @JsonView(EmpruntView.class)
-    public ResponseEntity<Emprunt> obtenirEmpruntParId(@PathVariable int id) {
-
-        Optional<Emprunt> optionalEmprunt = IEmpruntService.obtenirEmpruntsParId(id);
-
+    public ResponseEntity<EmpruntResponseDto> obtenirEmpruntParId(@PathVariable int id) {
+        Optional<EmpruntResponseDto> optionalEmprunt = IEmpruntService.obtenirEmpruntsParId(id);
         if (optionalEmprunt.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
         return new ResponseEntity<>(optionalEmprunt.get(), HttpStatus.OK);
     }
 
-    @JsonView(EmpruntView.class)
     @PostMapping("")
-    public ResponseEntity<Emprunt> creerEmprunt(@RequestBody @Valid EmpruntDto empruntDto) {
-        Emprunt emprunt = IEmpruntService.creerEmprunt(empruntDto);
-        return new ResponseEntity<>(emprunt,HttpStatus.CREATED);
+    public ResponseEntity<EmpruntResponseDto> creerEmprunt(@RequestBody @Valid EmpruntDto empruntDto) {
+        EmpruntResponseDto emprunt = IEmpruntService.creerEmprunt(empruntDto);
+        return new ResponseEntity<>(emprunt, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
@@ -118,12 +95,8 @@ public class EmpruntController {
     public ResponseEntity<Void> modifierStatutEmprunt(
             @PathVariable int id,
             @RequestBody StatutDto statutDTO) {
-
         IEmpruntService.modifierStatutEmpruntFromDto(id, statutDTO);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
-
-
 
 }
