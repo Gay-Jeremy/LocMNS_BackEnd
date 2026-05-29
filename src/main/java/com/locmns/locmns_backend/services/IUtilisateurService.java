@@ -1,7 +1,17 @@
 package com.locmns.locmns_backend.services;
 
-import com.locmns.locmns_backend.model.Utilisateur;
+import com.locmns.locmns_backend.dto.request.UtilisateurRequestDto;
+import com.locmns.locmns_backend.dto.response.UtilisateurResponseDto;
+
+import java.util.List;
+import java.util.Optional;
 
 public interface IUtilisateurService {
-    void insert(Utilisateur utilisateur);
+
+    List<UtilisateurResponseDto> obtenirTousLesUtilisateurs();
+    Optional<UtilisateurResponseDto> obtenirUtilisateurParId(Integer id);
+    UtilisateurResponseDto creerUtilisateur(UtilisateurRequestDto dto);
+    void modifierUtilisateur(Integer id, UtilisateurRequestDto dto);
+    void supprimerUtilisateur(Integer id);
+
 }

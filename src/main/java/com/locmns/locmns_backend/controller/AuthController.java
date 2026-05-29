@@ -1,6 +1,7 @@
 package com.locmns.locmns_backend.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.locmns.locmns_backend.dto.request.UtilisateurRequestDto;
 import com.locmns.locmns_backend.model.Utilisateur;
 import com.locmns.locmns_backend.security.UtilisateurDetails;
 import com.locmns.locmns_backend.services.IUtilisateurService;
@@ -35,10 +36,10 @@ public class AuthController {
 
     @PostMapping("/sign-in")
     @JsonView( UtilisateurView.class )
-    public ResponseEntity<Utilisateur>  signIn(
-            @RequestBody @Validated(Utilisateur.OnCreate.class) Utilisateur utilisateurToInsert) {
+    public ResponseEntity<UtilisateurRequestDto>  signIn(
+            @RequestBody @Validated(Utilisateur.OnCreate.class) UtilisateurRequestDto utilisateurToInsert) {
 
-        IUtilisateurService.insert(utilisateurToInsert);
+        IUtilisateurService.creerUtilisateur(utilisateurToInsert);
 
         return new ResponseEntity<>(utilisateurToInsert,HttpStatus.CREATED);
     }

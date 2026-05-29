@@ -1,14 +1,12 @@
 package com.locmns.locmns_backend.controller;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import com.locmns.locmns_backend.repository.UtilisateurDao;
+import com.locmns.locmns_backend.dto.request.UtilisateurRequestDto;
+import com.locmns.locmns_backend.dto.response.UtilisateurResponseDto;
 import com.locmns.locmns_backend.model.Utilisateur;
 import com.locmns.locmns_backend.services.IUtilisateurService;
-import com.locmns.locmns_backend.view.UtilisateurView;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,22 +19,17 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UtilisateurController {
 
-    private final UtilisateurDao utilisateurDao;
-    private final PasswordEncoder passwordEncoder;
     private final IUtilisateurService IUtilisateurService;
 
-
     @GetMapping("/liste")
-    @JsonView( {UtilisateurView.class})
-    public List<Utilisateur> obtenirTousLesUtilisateurs() {
-        return utilisateurDao.findAll();
+    public List<UtilisateurResponseDto> obtenirTousLesUtilisateurs() {
+        return IUtilisateurService.obtenirTousLesUtilisateurs();
     }
 
     @GetMapping("/{id}")
-    @JsonView(UtilisateurView.class)
-    public ResponseEntity<Utilisateur> obtenirUtilisateurParId(@PathVariable int id) {
+    public ResponseEntity<UtilisateurResponseDto> obtenirUtilisateurParId(@PathVariable int id) {
 
-        Optional<Utilisateur> optionalUtilisateur = utilisateurDao.findById(id);
+        Optional<UtilisateurResponseDto> optionalUtilisateur = IUtilisateurService.obtenirUtilisateurParId(id);
 
         if (optionalUtilisateur.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -46,38 +39,24 @@ public class UtilisateurController {
     }
 
     @PostMapping("")
-    public ResponseEntity<Utilisateur> creerUtilisateur(
-            @RequestBody @Validated(Utilisateur.OnCreate.class) Utilisateur utilisateurToInsert) {
+    public ResponseEntity<UtilisateurResponseDto> creerUtilisateur(
+            @RequestBody @Validated(Utilisateur.OnCreate.class) UtilisateurRequestDto utilisateurToInsert) {
 
-        IUtilisateurService.insert(utilisateurToInsert);
+        UtilisateurResponseDto utilisateur = IUtilisateurService.creerUtilisateur(utilisateurToInsert);
 
-        return new ResponseEntity<>(utilisateurToInsert, HttpStatus.CREATED) ;
+        return new ResponseEntity<UtilisateurResponseDto>(utilisateur, HttpStatus.CREATED) ;
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> supprimerUtilisateur(@PathVariable int id) {
-
-        Optional<Utilisateur> optionalUtilisateur = utilisateurDao.findById(id);
-
-        if (optionalUtilisateur.isEmpty())
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
-        utilisateurDao.deleteById(id);
+        IUtilisateurService.supprimerUtilisateur(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> modifierUtilisateur(@PathVariable int id, @RequestBody @Validated(Utilisateur.OnUpdate.class) Utilisateur utilisateurToInsert ) {
+    public ResponseEntity<Void> modifierUtilisateur(@PathVariable int id, @RequestBody @Validated(Utilisateur.OnUpdate.class) UtilisateurRequestDto utilisateurToInsert ) {
 
-        utilisateurToInsert.setId(id);
-
-        Optional<Utilisateur> optionalUtilisateur = utilisateurDao.findById(id);
-
-        if (optionalUtilisateur.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        utilisateurDao.save(utilisateurToInsert);
+        IUtilisateurService.modifierUtilisateur(id, utilisateurToInsert);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
