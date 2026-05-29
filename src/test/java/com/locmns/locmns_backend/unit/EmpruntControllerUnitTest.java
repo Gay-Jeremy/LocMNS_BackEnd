@@ -2,6 +2,7 @@ package com.locmns.locmns_backend.unit;
 
 import com.locmns.locmns_backend.controller.EmpruntController;
 import com.locmns.locmns_backend.dto.EmpruntDto;
+import com.locmns.locmns_backend.dto.response.EmpruntResponseDto;
 import com.locmns.locmns_backend.exception.RessourceIntrouvableException;
 import com.locmns.locmns_backend.mock.MockEmpruntDao;
 import com.locmns.locmns_backend.mock.MockMaterielDao;
@@ -54,13 +55,13 @@ public class EmpruntControllerUnitTest {
 
     @Test
     public void obtenirEmpruntParIdExistant_devrait_Retourner200() {
-        ResponseEntity<Emprunt> reponse = empruntController.obtenirEmpruntParId(1);
+        ResponseEntity<EmpruntResponseDto> reponse = empruntController.obtenirEmpruntParId(1);
         assertEquals(HttpStatus.OK, reponse.getStatusCode());
     }
 
     @Test
     public void obtenirEmpruntParIdInexistant_devrait_Retourner404() {
-        ResponseEntity<Emprunt> reponse = empruntController.obtenirEmpruntParId(99);
+        ResponseEntity<EmpruntResponseDto> reponse = empruntController.obtenirEmpruntParId(99);
         assertEquals(HttpStatus.NOT_FOUND, reponse.getStatusCode());
     }
 
