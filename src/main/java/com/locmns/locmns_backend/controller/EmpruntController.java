@@ -4,6 +4,7 @@ import com.locmns.locmns_backend.dto.request.EmpruntRequestDto;
 import com.locmns.locmns_backend.dto.request.StatutRequestDto;
 import com.locmns.locmns_backend.dto.response.EmpruntResponseDto;
 import com.locmns.locmns_backend.model.Utilisateur;
+import com.locmns.locmns_backend.security.IsUser;
 import com.locmns.locmns_backend.security.UtilisateurDetails;
 import com.locmns.locmns_backend.services.IEmpruntService;
 import jakarta.validation.Valid;

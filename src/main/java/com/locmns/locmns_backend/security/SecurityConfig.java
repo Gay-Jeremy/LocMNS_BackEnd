@@ -38,11 +38,15 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
-
-        return http.csrf(c -> c.disable())
+        return http
+                .csrf(c -> c.disable())
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .cors(c -> c.configurationSource(corsConfigurationSource()))
-                .addFilterBefore(filter , UsernamePasswordAuthenticationFilter.class)
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/sign-in", "/login").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
