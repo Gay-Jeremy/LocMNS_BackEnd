@@ -40,10 +40,10 @@ public interface EmpruntRepository extends JpaRepository<Emprunt, Integer> {
     @Query("SELECT e FROM Emprunt e WHERE e.dateFin < CURRENT_DATE AND e.dateRetourReel IS NULL AND e.statutEmprunt.code NOT IN ('DEMANDE_EN_COURS', 'REFUSE') AND e.utilisateur.email = :email")
     List<Emprunt> retourneEmpruntEnRetardParEmail(@Param("email") String email);
 
-    @Query("SELECT e FROM Emprunt e WHERE e.dateFin < CURRENT_DATE OR e.statutEmprunt.code = 'REFUSE' ORDER BY e.dateFin ASC")
+    @Query("SELECT e FROM Emprunt e WHERE e.dateFin < CURRENT_DATE AND e.statutEmprunt.code NOT IN ('DEMANDE_EN_COURS') ORDER BY e.dateFin ASC")
     List<Emprunt> retourneHistoriqueEmprunt();
 
-    @Query("SELECT e FROM Emprunt e WHERE e.utilisateur.email = :email AND (e.dateFin < CURRENT_DATE  OR e.statutEmprunt.code = 'REFUSE') ORDER BY e.dateFin ASC")
+    @Query("SELECT e FROM Emprunt e WHERE e.utilisateur.email = :email AND (e.dateFin < CURRENT_DATE  AND e.statutEmprunt.code NOT IN ('DEMANDE_EN_COURS')) ORDER BY e.dateFin ASC")
     List<Emprunt> retourneHistoriqueEmpruntParEmail(@Param("email") String email);
 
     @Query("SELECT CASE WHEN COUNT(e) > 0 THEN true ELSE false END FROM Emprunt e WHERE e.materiel.id = :materielId AND (e.dateRetourReel IS NULL AND e.statutEmprunt.code NOT IN ('REFUSE'))")
@@ -56,7 +56,7 @@ public interface EmpruntRepository extends JpaRepository<Emprunt, Integer> {
         AND e.dateRetourReel IS NULL
         AND e.dateDebut <= :dateFin
         AND e.dateFin >= :dateDebut
-        AND e.statutEmprunt.code NOT IN ('REFUSE', 'TERMINE')
+        AND e.statutEmprunt.code NOT IN ('REFUSE')
         """)
     boolean existsConflitEmpruntSurMaterielPourPeriode(
             @Param("materielId") int materielId,

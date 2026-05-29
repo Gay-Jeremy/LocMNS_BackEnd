@@ -10,6 +10,7 @@ import com.locmns.locmns_backend.exception.RessourceIntrouvableException;
 import com.locmns.locmns_backend.model.*;
 import com.locmns.locmns_backend.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,7 +35,7 @@ public class EmpruntService implements IEmpruntService {
 
     @Override
     public List<EmpruntResponseDto> obtenirTousLesEmprunts() {
-        return empruntRepository.findAll().stream()
+        return empruntRepository.findAll(Sort.by(Sort.Direction.ASC,"dateCreation")).stream()
                 .map(EmpruntResponseDto::depuisEntite)
                 .toList();
     }
