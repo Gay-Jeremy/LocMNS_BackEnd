@@ -1,9 +1,9 @@
 package com.locmns.locmns_backend.unit;
 
-import com.locmns.locmns_backend.repository.EmpruntDao;
-import com.locmns.locmns_backend.repository.MaterielDao;
-import com.locmns.locmns_backend.repository.StatutEmpruntDao;
-import com.locmns.locmns_backend.repository.UtilisateurDao;
+import com.locmns.locmns_backend.repository.EmpruntRepository;
+import com.locmns.locmns_backend.repository.MaterielRepository;
+import com.locmns.locmns_backend.repository.StatutEmpruntRepository;
+import com.locmns.locmns_backend.repository.UtilisateurRepository;
 import com.locmns.locmns_backend.dto.EmpruntDto;
 import com.locmns.locmns_backend.exception.MetierException;
 import com.locmns.locmns_backend.model.*;
@@ -24,10 +24,10 @@ import static org.mockito.Mockito.*;
 public class EmpruntServiceUnitTest {
 
     // Les mocks — faux DAOs générés par Mockito
-    private EmpruntDao empruntDao;
-    private MaterielDao materielDao;
-    private UtilisateurDao utilisateurDao;
-    private StatutEmpruntDao statutEmpruntDao;
+    private EmpruntRepository empruntRepository;
+    private MaterielRepository materielRepository;
+    private UtilisateurRepository utilisateurRepository;
+    private StatutEmpruntRepository statutEmpruntRepository;
     private MaterielService materielService;
 
     private IEmpruntService IEmpruntService;
@@ -41,17 +41,17 @@ public class EmpruntServiceUnitTest {
     @BeforeEach
     public void init() {
         // Mockito crée de faux DAOs — pas de base de données
-        empruntDao      = Mockito.mock(EmpruntDao.class);
-        materielDao     = Mockito.mock(MaterielDao.class);
-        utilisateurDao  = Mockito.mock(UtilisateurDao.class);
-        statutEmpruntDao = Mockito.mock(StatutEmpruntDao.class);
+        empruntRepository = Mockito.mock(EmpruntRepository.class);
+        materielRepository = Mockito.mock(MaterielRepository.class);
+        utilisateurRepository = Mockito.mock(UtilisateurRepository.class);
+        statutEmpruntRepository = Mockito.mock(StatutEmpruntRepository.class);
         materielService = Mockito.mock(MaterielService.class);
 
         IEmpruntService = new EmpruntService(
-                empruntDao,
-                materielDao,
-                utilisateurDao,
-                statutEmpruntDao,
+                empruntRepository,
+                materielRepository,
+                utilisateurRepository,
+                statutEmpruntRepository,
                 materielService
         );
 
@@ -86,18 +86,18 @@ public class EmpruntServiceUnitTest {
     @Test
     public void creerEmpruntAvecDonneesValides_devrait_Reussir() {
 
-        when(materielDao.findById(1)).thenReturn(Optional.of(materielDisponible));
-        when(utilisateurDao.findById(1)).thenReturn(Optional.of(utilisateur));
-        when(materielDao.retourneListeMaterielDisponiblePourPeriodeParIdCategorieModele(
+        when(materielRepository.findById(1)).thenReturn(Optional.of(materielDisponible));
+        when(utilisateurRepository.findById(1)).thenReturn(Optional.of(utilisateur));
+        when(materielRepository.retourneListeMaterielDisponiblePourPeriodeParIdCategorieModele(
                 any(), any(), eq(1)
         )).thenReturn(List.of(materielDisponible));
-        when(statutEmpruntDao.findByCode("DEMANDE_EN_COURS")).thenReturn(Optional.of(statutEmprunt));
+        when(statutEmpruntRepository.findByCode("DEMANDE_EN_COURS")).thenReturn(Optional.of(statutEmprunt));
 
         // Act
         assertDoesNotThrow(() -> IEmpruntService.creerEmprunt(dto));
 
         // Assert — save() a bien été appelé une fois
-        verify(empruntDao, times(1)).save(any(Emprunt.class));
+        verify(empruntRepository, times(1)).save(any(Emprunt.class));
     }
 
     // ── VALIDATION DES DATES ─────────────────────────────
@@ -162,7 +162,7 @@ public class EmpruntServiceUnitTest {
     @Test
     public void creerEmpruntAvecMaterielInexistant_devrait_LeverMetierException() {
         // Le mock retourne vide — matériel introuvable
-        when(materielDao.findById(99)).thenReturn(Optional.empty());
+        when(materielRepository.findById(99)).thenReturn(Optional.empty());
 
         EmpruntDto dtoInvalide = new EmpruntDto(
                 LocalDate.now(),
@@ -182,8 +182,8 @@ public class EmpruntServiceUnitTest {
 
     @Test
     public void creerEmpruntAvecUtilisateurInexistant_devrait_LeverMetierException() {
-        when(materielDao.findById(1)).thenReturn(Optional.of(materielDisponible));
-        when(utilisateurDao.findById(99)).thenReturn(Optional.empty());
+        when(materielRepository.findById(1)).thenReturn(Optional.of(materielDisponible));
+        when(utilisateurRepository.findById(99)).thenReturn(Optional.empty());
 
         EmpruntDto dtoInvalide = new EmpruntDto(
                 LocalDate.now(),
@@ -205,10 +205,10 @@ public class EmpruntServiceUnitTest {
 
     @Test
     public void creerEmpruntAvecMaterielIndisponible_devrait_LeverMetierException() {
-        when(materielDao.findById(1)).thenReturn(Optional.of(materielDisponible));
-        when(utilisateurDao.findById(1)).thenReturn(Optional.of(utilisateur));
+        when(materielRepository.findById(1)).thenReturn(Optional.of(materielDisponible));
+        when(utilisateurRepository.findById(1)).thenReturn(Optional.of(utilisateur));
         // Liste vide — matériel non disponible sur la période
-        when(materielDao.retourneListeMaterielDisponiblePourPeriodeParIdCategorieModele(
+        when(materielRepository.retourneListeMaterielDisponiblePourPeriodeParIdCategorieModele(
                 any(), any(), eq(1)
         )).thenReturn(List.of());
 

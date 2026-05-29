@@ -4,8 +4,8 @@ import com.locmns.locmns_backend.dto.MaterielDto;
 import com.locmns.locmns_backend.dto.StatutDto;
 import com.locmns.locmns_backend.dto.response.MaterielResponseDto;
 import com.locmns.locmns_backend.model.Utilisateur;
-import com.locmns.locmns_backend.repository.EmpruntDao;
-import com.locmns.locmns_backend.repository.MaterielDao;
+import com.locmns.locmns_backend.repository.EmpruntRepository;
+import com.locmns.locmns_backend.repository.MaterielRepository;
 import com.locmns.locmns_backend.security.IsAdmin;
 import com.locmns.locmns_backend.security.IsUser;
 import com.locmns.locmns_backend.security.UtilisateurDetails;
@@ -27,8 +27,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MaterielController {
 
-    private final MaterielDao materielDao;
-    private final EmpruntDao empruntDao;
+    private final MaterielRepository materielRepository;
+    private final EmpruntRepository empruntRepository;
     private final MaterielService materielService;
 
     @GetMapping("/liste")
@@ -85,14 +85,14 @@ public class MaterielController {
     @DeleteMapping("/{id}")
     @IsAdmin
     public ResponseEntity<Void> supprimerMateriel(@PathVariable int id) {
-        if (materielDao.findById(id).isEmpty()) {
+        if (materielRepository.findById(id).isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        if (empruntDao.existsEmpruntActifParMaterielId(id)) {
+        if (empruntRepository.existsEmpruntActifParMaterielId(id)) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
-        empruntDao.deleteByMaterielId(id);
-        materielDao.deleteById(id);
+        empruntRepository.deleteByMaterielId(id);
+        materielRepository.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

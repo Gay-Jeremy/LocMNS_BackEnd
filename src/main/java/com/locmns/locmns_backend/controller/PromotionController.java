@@ -1,7 +1,7 @@
 package com.locmns.locmns_backend.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.locmns.locmns_backend.repository.PromotionDao;
+import com.locmns.locmns_backend.repository.PromotionRepository;
 import com.locmns.locmns_backend.model.Promotion;
 import com.locmns.locmns_backend.view.PromotionView;
 import jakarta.validation.Valid;
@@ -19,17 +19,17 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class PromotionController {
 
-    private final PromotionDao promotionDao;
+    private final PromotionRepository promotionRepository;
 
     @GetMapping("/liste")
     @JsonView(PromotionView .class)
     public List<Promotion> obtenirToutesLesPromotions() {
-        return promotionDao.findAll();
+        return promotionRepository.findAll();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Promotion> obtenirPromotionParId(@PathVariable int id) {
-        Optional<Promotion> optionalPromotion = promotionDao.findById(id);
+        Optional<Promotion> optionalPromotion = promotionRepository.findById(id);
         if(optionalPromotion.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -40,18 +40,18 @@ public class PromotionController {
     public ResponseEntity<Promotion>  creerPromotion(
             @RequestBody @Valid Promotion promotionToInsert) {
 
-        promotionDao.save(promotionToInsert);
+        promotionRepository.save(promotionToInsert);
 
         return new ResponseEntity<>(promotionToInsert, HttpStatus.CREATED) ;
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> supprimerPromotion(@PathVariable int id) {
-        Optional<Promotion> optionalPromotion = promotionDao.findById(id);
+        Optional<Promotion> optionalPromotion = promotionRepository.findById(id);
         if (optionalPromotion.isEmpty()) {
             return new ResponseEntity<>((HttpStatus.NOT_FOUND));
         }
-        promotionDao.deleteById(id);
+        promotionRepository.deleteById(id);
 
         return new ResponseEntity<>((HttpStatus.NO_CONTENT));
     }
@@ -62,12 +62,12 @@ public class PromotionController {
 
         promotionToUpdate.setId(id);
 
-        Optional<Promotion> optionalPromotion = promotionDao.findById(id);
+        Optional<Promotion> optionalPromotion = promotionRepository.findById(id);
         if (optionalPromotion.isEmpty()) {
             return new ResponseEntity<>((HttpStatus.NOT_FOUND));
         }
 
-        promotionDao.save(promotionToUpdate);
+        promotionRepository.save(promotionToUpdate);
 
         return new ResponseEntity<>((HttpStatus.NO_CONTENT));
     }

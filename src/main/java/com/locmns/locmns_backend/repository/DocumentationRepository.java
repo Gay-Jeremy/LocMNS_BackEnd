@@ -1,9 +1,9 @@
 package com.locmns.locmns_backend.repository;
 
-import com.locmns.locmns_backend.model.Promotion;
+import com.locmns.locmns_backend.model.Documentation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PromotionDao extends JpaRepository<Promotion, Integer> {
+public interface DocumentationRepository extends JpaRepository<Documentation, Integer> {
 }

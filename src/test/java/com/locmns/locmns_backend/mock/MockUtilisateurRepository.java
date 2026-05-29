@@ -1,6 +1,6 @@
 package com.locmns.locmns_backend.mock;
 
-import com.locmns.locmns_backend.repository.UtilisateurDao;
+import com.locmns.locmns_backend.repository.UtilisateurRepository;
 import com.locmns.locmns_backend.model.Utilisateur;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
-public class MockUtilisateurDao implements UtilisateurDao {
+public class MockUtilisateurRepository implements UtilisateurRepository {
 
     @Override
     public Optional<Utilisateur> findById(Integer id) {

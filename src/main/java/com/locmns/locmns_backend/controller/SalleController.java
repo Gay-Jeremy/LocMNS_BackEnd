@@ -1,6 +1,6 @@
 package com.locmns.locmns_backend.controller;
 
-import com.locmns.locmns_backend.repository.SalleDao;
+import com.locmns.locmns_backend.repository.SalleRepository;
 import com.locmns.locmns_backend.model.Salle;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SalleController {
 
-    private final SalleDao salleDao;
+    private final SalleRepository salleDao;
 
     @GetMapping("/liste")
     public List<Salle> obtenirToutesLesSalles() {

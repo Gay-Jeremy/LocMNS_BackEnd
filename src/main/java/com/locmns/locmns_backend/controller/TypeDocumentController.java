@@ -1,6 +1,6 @@
 package com.locmns.locmns_backend.controller;
 
-import com.locmns.locmns_backend.repository.TypeDocumentDao;
+import com.locmns.locmns_backend.repository.TypeDocumentRepository;
 import com.locmns.locmns_backend.model.TypeDocument;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,16 +17,16 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class TypeDocumentController {
 
-    private final TypeDocumentDao typeDocumentDao;
+    private final TypeDocumentRepository typeDocumentRepository;
 
     @GetMapping("/liste")
     public List<TypeDocument> obtenirTousLesTypesDocument() {
-        return typeDocumentDao.findAll();
+        return typeDocumentRepository.findAll();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<TypeDocument> obtenirTypeDocumentParId(@PathVariable int id) {
-        Optional<TypeDocument> opt = typeDocumentDao.findById(id);
+        Optional<TypeDocument> opt = typeDocumentRepository.findById(id);
         if (opt.isEmpty()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(opt.get(), HttpStatus.OK);
     }
@@ -35,16 +35,16 @@ public class TypeDocumentController {
     public ResponseEntity<TypeDocument>  creerTypeDocument(
             @RequestBody @Valid TypeDocument typeDocumentToInsert) {
 
-        typeDocumentDao.save(typeDocumentToInsert);
+        typeDocumentRepository.save(typeDocumentToInsert);
 
         return new ResponseEntity<>(typeDocumentToInsert, HttpStatus.CREATED) ;
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> supprimerTypeDocument(@PathVariable int id) {
-        Optional<TypeDocument> opt = typeDocumentDao.findById(id);
+        Optional<TypeDocument> opt = typeDocumentRepository.findById(id);
         if (opt.isEmpty()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        typeDocumentDao.deleteById(id);
+        typeDocumentRepository.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -52,9 +52,9 @@ public class TypeDocumentController {
     public ResponseEntity<Void> modifierTypeDocument(@PathVariable int id,
                                                      @RequestBody @Valid TypeDocument typeDocumentToUpdate) {
         typeDocumentToUpdate.setId(id);
-        Optional<TypeDocument> opt = typeDocumentDao.findById(id);
+        Optional<TypeDocument> opt = typeDocumentRepository.findById(id);
         if (opt.isEmpty()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        typeDocumentDao.save(typeDocumentToUpdate);
+        typeDocumentRepository.save(typeDocumentToUpdate);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

@@ -4,11 +4,10 @@ import com.locmns.locmns_backend.controller.EmpruntController;
 import com.locmns.locmns_backend.dto.EmpruntDto;
 import com.locmns.locmns_backend.dto.response.EmpruntResponseDto;
 import com.locmns.locmns_backend.exception.RessourceIntrouvableException;
-import com.locmns.locmns_backend.mock.MockEmpruntDao;
-import com.locmns.locmns_backend.mock.MockMaterielDao;
-import com.locmns.locmns_backend.mock.MockUtilisateurDao;
-import com.locmns.locmns_backend.model.Emprunt;
-import com.locmns.locmns_backend.repository.StatutEmpruntDao;
+import com.locmns.locmns_backend.mock.MockEmpruntRepository;
+import com.locmns.locmns_backend.mock.MockMaterielRepository;
+import com.locmns.locmns_backend.mock.MockUtilisateurRepository;
+import com.locmns.locmns_backend.repository.StatutEmpruntRepository;
 import com.locmns.locmns_backend.services.EmpruntService;
 import com.locmns.locmns_backend.services.MaterielService;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,26 +24,26 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class EmpruntControllerUnitTest {
 
     private EmpruntController empruntController;
-    private MockEmpruntDao mockEmpruntDao;
+    private MockEmpruntRepository mockEmpruntDao;
 
-    StatutEmpruntDao mockStatutEmpruntDao = Mockito.mock(StatutEmpruntDao.class);
+    StatutEmpruntRepository mockStatutEmpruntRepository = Mockito.mock(StatutEmpruntRepository.class);
     MaterielService mockMaterielService = Mockito.mock(MaterielService.class);
 
 
     @BeforeEach
     public void init() {
-        mockEmpruntDao = new MockEmpruntDao();
-        MockMaterielDao mockMaterielDao = new MockMaterielDao();
-        MockUtilisateurDao mockUtilisateurDao = new MockUtilisateurDao();
+        mockEmpruntDao = new MockEmpruntRepository();
+        MockMaterielRepository mockMaterielDao = new MockMaterielRepository();
+        MockUtilisateurRepository mockUtilisateurDao = new MockUtilisateurRepository();
 
-        StatutEmpruntDao mockStatutEmpruntDao = Mockito.mock(StatutEmpruntDao.class);
+        StatutEmpruntRepository mockStatutEmpruntRepository = Mockito.mock(StatutEmpruntRepository.class);
         MaterielService mockMaterielService = Mockito.mock(MaterielService.class);
 
         EmpruntService empruntService = new EmpruntService(
                 mockEmpruntDao,
                 mockMaterielDao,
                 mockUtilisateurDao,
-                mockStatutEmpruntDao,
+                mockStatutEmpruntRepository,
                 mockMaterielService
         );
 

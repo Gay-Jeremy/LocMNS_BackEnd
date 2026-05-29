@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface DroitEmpruntDao extends JpaRepository<DroitEmprunt, DroitEmprunt.CleDroitEmpruntCategorieUtilisateurCategorieModele> {
+public interface DroitEmpruntRepository extends JpaRepository<DroitEmprunt, DroitEmprunt.CleDroitEmpruntCategorieUtilisateurCategorieModele> {
 
     List<DroitEmprunt> findByCategorieUtilisateurId(Integer id);
 }

@@ -3,7 +3,7 @@ package com.locmns.locmns_backend.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.locmns.locmns_backend.dto.ModeleDto;
-import com.locmns.locmns_backend.repository.ModeleDao;
+import com.locmns.locmns_backend.repository.ModeleRepository;
 import com.locmns.locmns_backend.model.Modele;
 import com.locmns.locmns_backend.services.ModeleService;
 import com.locmns.locmns_backend.view.ModeleView;
@@ -22,7 +22,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ModeleController {
 
-    private final ModeleDao modeleDao;
+    private final ModeleRepository modeleRepository;
 
     private final ModeleService modeleService;
 
@@ -30,20 +30,20 @@ public class ModeleController {
     @GetMapping("/liste")
     public List<Modele> obtenirTousLesModeles() {
 
-        return modeleDao.findAll();
+        return modeleRepository.findAll();
     }
 
     @JsonView(ModeleView.class)
     @GetMapping("/liste/categorie/{categorieModeleId}")
     public List<Modele> obtenirLesModelesParIdCategorieModele(@PathVariable int categorieModeleId) {
-        return modeleDao.findByCategorieModeleId(categorieModeleId);
+        return modeleRepository.findByCategorieModeleId(categorieModeleId);
     }
 
     @JsonView(ModeleView.class)
     @GetMapping("/{id}")
     public ResponseEntity<Modele> obtenirModeleParId(@PathVariable int id) {
 
-        Optional<Modele> optionalModele = modeleDao.findById(id);
+        Optional<Modele> optionalModele = modeleRepository.findById(id);
 
         if (optionalModele.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -62,13 +62,13 @@ public class ModeleController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> supprimerModele(@PathVariable int id) {
 
-        Optional<Modele> optionalModele = modeleDao.findById(id);
+        Optional<Modele> optionalModele = modeleRepository.findById(id);
 
         if(optionalModele.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        modeleDao.deleteById(id);
+        modeleRepository.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -77,13 +77,13 @@ public class ModeleController {
 
         modeleToInsert.setId(id);
 
-        Optional<Modele> optionalModele = modeleDao.findById(id);
+        Optional<Modele> optionalModele = modeleRepository.findById(id);
 
         if(optionalModele.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        modeleDao.save(modeleToInsert);
+        modeleRepository.save(modeleToInsert);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

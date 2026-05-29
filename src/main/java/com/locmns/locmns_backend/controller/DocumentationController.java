@@ -1,6 +1,6 @@
 package com.locmns.locmns_backend.controller;
 
-import com.locmns.locmns_backend.repository.DocumentationDao;
+import com.locmns.locmns_backend.repository.DocumentationRepository;
 import com.locmns.locmns_backend.model.Documentation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,17 +17,17 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class DocumentationController {
 
-    private final DocumentationDao documentationDao;
+    private final DocumentationRepository documentationRepository;
 
     @GetMapping("/liste")
     public List<Documentation> obtenirToutesLesDocumentations() {
 
-        return documentationDao.findAll();
+        return documentationRepository.findAll();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Documentation> obtenirDocumentationParId(@PathVariable int id) {
-        Optional<Documentation> optionalDocumentation = documentationDao.findById(id);
+        Optional<Documentation> optionalDocumentation = documentationRepository.findById(id);
         if(optionalDocumentation.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -37,17 +37,17 @@ public class DocumentationController {
     @PostMapping("")
     public Documentation creerDocumentation(@RequestBody @Valid Documentation documentationToInsert) {
         documentationToInsert.setId(null);
-        documentationDao.save(documentationToInsert);
+        documentationRepository.save(documentationToInsert);
         return documentationToInsert;
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> supprimerDocumentation(@PathVariable int id) {
-        Optional<Documentation> optionalDocumentation = documentationDao.findById(id);
+        Optional<Documentation> optionalDocumentation = documentationRepository.findById(id);
         if (optionalDocumentation.isEmpty()) {
             return new ResponseEntity<>((HttpStatus.NOT_FOUND));
         }
-        documentationDao.deleteById(id);
+        documentationRepository.deleteById(id);
 
         return new ResponseEntity<>((HttpStatus.NO_CONTENT));
     }
@@ -58,12 +58,12 @@ public class DocumentationController {
 
         documentationToUpdate.setId(id);
 
-        Optional<Documentation> optionalDocumentation = documentationDao.findById(id);
+        Optional<Documentation> optionalDocumentation = documentationRepository.findById(id);
         if (optionalDocumentation.isEmpty()) {
             return new ResponseEntity<>((HttpStatus.NOT_FOUND));
         }
 
-        documentationDao.save(documentationToUpdate);
+        documentationRepository.save(documentationToUpdate);
 
         return new ResponseEntity<>((HttpStatus.NO_CONTENT));
     }

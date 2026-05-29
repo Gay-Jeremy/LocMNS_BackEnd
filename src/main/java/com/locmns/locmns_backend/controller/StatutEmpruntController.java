@@ -1,7 +1,7 @@
 package com.locmns.locmns_backend.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.locmns.locmns_backend.repository.StatutEmpruntDao;
+import com.locmns.locmns_backend.repository.StatutEmpruntRepository;
 import com.locmns.locmns_backend.model.StatutEmprunt;
 import com.locmns.locmns_backend.view.StatutEmpruntView;
 import jakarta.validation.Valid;
@@ -19,24 +19,24 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class StatutEmpruntController {
 
-    private final StatutEmpruntDao statutEmpruntDao;
+    private final StatutEmpruntRepository statutEmpruntRepository;
 
     @GetMapping("/liste")
     @JsonView(StatutEmpruntView.class)
     public List<StatutEmprunt> obtenirTousLesStatutsEmprunt() {
-        return statutEmpruntDao.findAll();
+        return statutEmpruntRepository.findAll();
     }
 
     @GetMapping("/liste/decision")
     @JsonView(StatutEmpruntView.class)
     public List<StatutEmprunt> obtenirToutesLesDecisions() {
-        return statutEmpruntDao.retourneDecisionDemandeEmprunt();
+        return statutEmpruntRepository.retourneDecisionDemandeEmprunt();
     }
 
 
     @GetMapping("/{id}")
     public ResponseEntity<StatutEmprunt> obtenirStatutEmpruntParId(@PathVariable int id) {
-        Optional<StatutEmprunt> optionalStatutEmprunt = statutEmpruntDao.findById(id);
+        Optional<StatutEmprunt> optionalStatutEmprunt = statutEmpruntRepository.findById(id);
         if(optionalStatutEmprunt.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -47,18 +47,18 @@ public class StatutEmpruntController {
     public ResponseEntity<StatutEmprunt>  creerStatutEmprunt(
             @RequestBody @Valid StatutEmprunt statutEmpruntToInsert) {
 
-        statutEmpruntDao.save(statutEmpruntToInsert);
+        statutEmpruntRepository.save(statutEmpruntToInsert);
 
         return new ResponseEntity<>(statutEmpruntToInsert, HttpStatus.CREATED) ;
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> supprimerStatutEmprunt(@PathVariable int id) {
-        Optional<StatutEmprunt> optionalStatutEmprunt = statutEmpruntDao.findById(id);
+        Optional<StatutEmprunt> optionalStatutEmprunt = statutEmpruntRepository.findById(id);
         if (optionalStatutEmprunt.isEmpty()) {
             return new ResponseEntity<>((HttpStatus.NOT_FOUND));
         }
-        statutEmpruntDao.deleteById(id);
+        statutEmpruntRepository.deleteById(id);
 
         return new ResponseEntity<>((HttpStatus.NO_CONTENT));
     }
@@ -69,12 +69,12 @@ public class StatutEmpruntController {
 
         statutEmpruntToUpdate.setId(id);
 
-        Optional<StatutEmprunt> optionalStatutEmprunt = statutEmpruntDao.findById(id);
+        Optional<StatutEmprunt> optionalStatutEmprunt = statutEmpruntRepository.findById(id);
         if (optionalStatutEmprunt.isEmpty()) {
             return new ResponseEntity<>((HttpStatus.NOT_FOUND));
         }
 
-        statutEmpruntDao.save(statutEmpruntToUpdate);
+        statutEmpruntRepository.save(statutEmpruntToUpdate);
 
         return new ResponseEntity<>((HttpStatus.NO_CONTENT));
     }

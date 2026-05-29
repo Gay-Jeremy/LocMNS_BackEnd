@@ -1,7 +1,7 @@
 package com.locmns.locmns_backend.controller;
 
 
-import com.locmns.locmns_backend.repository.ComposantDao;
+import com.locmns.locmns_backend.repository.ComposantRepository;
 import com.locmns.locmns_backend.model.Composant;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,19 +18,19 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ComposantController {
 
-    private final ComposantDao composantDao;
+    private final ComposantRepository composantRepository;
 
     @GetMapping("/liste")
     public List<Composant> obtenirTousLesComposants() {
 
-        return composantDao.findAll();
+        return composantRepository.findAll();
 
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Composant> obtenirComposantParId(@PathVariable int id) {
 
-        Optional<Composant> optionalComposant = composantDao.findById(id);
+        Optional<Composant> optionalComposant = composantRepository.findById(id);
 
         if(optionalComposant.isEmpty()) {
 
@@ -45,7 +45,7 @@ public class ComposantController {
 
         categorieToInsert.setId(null);
 
-        composantDao.save(categorieToInsert);
+        composantRepository.save(categorieToInsert);
 
         return categorieToInsert;
 
@@ -54,12 +54,12 @@ public class ComposantController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> supprimerComposant(@PathVariable int id) {
 
-        Optional<Composant> optionalComposant = composantDao.findById(id);
+        Optional<Composant> optionalComposant = composantRepository.findById(id);
 
         if (optionalComposant.isEmpty()) {
             return new ResponseEntity<>((HttpStatus.NOT_FOUND));
         }
-        composantDao.deleteById(id);
+        composantRepository.deleteById(id);
 
         return new ResponseEntity<>((HttpStatus.NO_CONTENT));
 
@@ -72,13 +72,13 @@ public class ComposantController {
         // On écrase l'id du json par celui en paramètre
         categorieToUpdate.setId(id);
 
-        Optional<Composant> optionalComposant = composantDao.findById(id);
+        Optional<Composant> optionalComposant = composantRepository.findById(id);
 
         if (optionalComposant.isEmpty()) {
             return new ResponseEntity<>((HttpStatus.NOT_FOUND));
         }
 
-        composantDao.save(categorieToUpdate);
+        composantRepository.save(categorieToUpdate);
 
         return new ResponseEntity<>((HttpStatus.NO_CONTENT));
     }

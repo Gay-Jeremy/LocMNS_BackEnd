@@ -11,7 +11,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Repository
-public interface EmpruntDao extends JpaRepository<Emprunt, Integer> {
+public interface EmpruntRepository extends JpaRepository<Emprunt, Integer> {
 
     @Query("SELECT e FROM Emprunt e WHERE e.statutEmprunt.code= :code AND e.dateFin >= CURRENT_DATE")
     List<Emprunt> retourneListeEmpruntActif(@Param("code") String code);

@@ -1,7 +1,7 @@
 package com.locmns.locmns_backend.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.locmns.locmns_backend.repository.DroitEmpruntDao;
+import com.locmns.locmns_backend.repository.DroitEmpruntRepository;
 import com.locmns.locmns_backend.model.DroitEmprunt;
 import com.locmns.locmns_backend.view.DroitEmpruntView;
 import jakarta.validation.Valid;
@@ -17,25 +17,25 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DroitEmpruntController {
 
-    private final DroitEmpruntDao droitEmpruntDao;
+    private final DroitEmpruntRepository droitEmpruntRepository;
 
     @GetMapping("/liste")
     @JsonView(DroitEmpruntView.class)
     public List<DroitEmprunt> obtenirTousLesDroitsEmprunt() {
 
-        return droitEmpruntDao.findAll();
+        return droitEmpruntRepository.findAll();
     }
 
     @GetMapping("/{id_categorie_utilisateur}")
     @JsonView(DroitEmpruntView.class)
     public List<DroitEmprunt> obtenirTousLesDroitsEmpruntParIdCategorieUtilisateur(@PathVariable int id_categorie_utilisateur) {
 
-        return droitEmpruntDao.findByCategorieUtilisateurId(id_categorie_utilisateur);
+        return droitEmpruntRepository.findByCategorieUtilisateurId(id_categorie_utilisateur);
     }
 
     @PostMapping("")
     public ResponseEntity<Void> creerDroitEmprunt(@RequestBody @Valid DroitEmprunt droitEmpruntToInsert) {
-        droitEmpruntDao.save(droitEmpruntToInsert);
+        droitEmpruntRepository.save(droitEmpruntToInsert);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -46,11 +46,11 @@ public class DroitEmpruntController {
                 new DroitEmprunt.CleDroitEmpruntCategorieUtilisateurCategorieModele(categorieUtilisateurId,
                         categorieModeleId);
 
-        if (!droitEmpruntDao.existsById(cle)) {
+        if (!droitEmpruntRepository.existsById(cle)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        droitEmpruntDao.deleteById(cle);
+        droitEmpruntRepository.deleteById(cle);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
     }

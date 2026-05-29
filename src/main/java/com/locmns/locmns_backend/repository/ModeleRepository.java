@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ModeleDao extends JpaRepository<Modele, Integer> {
+public interface ModeleRepository extends JpaRepository<Modele, Integer> {
 
     List<Modele> findByCategorieModeleId(int categorieModeleId);
     boolean existsByLibelle(String libelle);

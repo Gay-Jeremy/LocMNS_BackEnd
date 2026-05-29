@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface StatutEmpruntDao extends JpaRepository<StatutEmprunt, Integer> {
+public interface StatutEmpruntRepository extends JpaRepository<StatutEmprunt, Integer> {
 
     @Query("FROM StatutEmprunt st WHERE st.code IN ('ACCEPTE', 'REFUSE' )")
     List<StatutEmprunt> retourneDecisionDemandeEmprunt();

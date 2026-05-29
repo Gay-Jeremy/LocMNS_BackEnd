@@ -1,6 +1,6 @@
 package com.locmns.locmns_backend.mock;
 
-import com.locmns.locmns_backend.repository.EmpruntDao;
+import com.locmns.locmns_backend.repository.EmpruntRepository;
 import com.locmns.locmns_backend.model.Emprunt;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
-public class MockEmpruntDao implements EmpruntDao {
+public class MockEmpruntRepository implements EmpruntRepository {
 
 
     @Override

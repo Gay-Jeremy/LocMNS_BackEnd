@@ -20,27 +20,27 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class EmpruntService implements IEmpruntService {
 
-    private final EmpruntDao empruntDao;
-    private final MaterielDao materielDao;
-    private final UtilisateurDao utilisateurDao;
-    private final StatutEmpruntDao statutEmpruntDao;
+    private final EmpruntRepository empruntRepository;
+    private final MaterielRepository materielRepository;
+    private final UtilisateurRepository utilisateurRepository;
+    private final StatutEmpruntRepository statutEmpruntRepository;
     private final MaterielService materielService;
 
     @Override
     public Optional<EmpruntResponseDto> obtenirEmpruntsParId(Integer id) {
-        return empruntDao.findById(id).map(EmpruntResponseDto::depuisEntite);
+        return empruntRepository.findById(id).map(EmpruntResponseDto::depuisEntite);
     }
 
     @Override
     public List<EmpruntResponseDto> obtenirTousLesEmprunts() {
-        return empruntDao.findAll().stream()
+        return empruntRepository.findAll().stream()
                 .map(EmpruntResponseDto::depuisEntite)
                 .toList();
     }
 
     @Override
     public List<EmpruntResponseDto> obtenirEmpruntsActifs() {
-        return empruntDao.retourneListeEmpruntActif(CodeStatutEmprunt.ACCEPTE.name()).stream()
+        return empruntRepository.retourneListeEmpruntActif(CodeStatutEmprunt.ACCEPTE.name()).stream()
                 .map(EmpruntResponseDto::depuisEntite)
                 .toList();
     }
@@ -49,11 +49,11 @@ public class EmpruntService implements IEmpruntService {
     public List<EmpruntResponseDto> obtenirEmpruntSelonRole(Utilisateur utilisateur) {
         String role = utilisateur.getCategorieUtilisateur().getLibelle();
         if (role.equals("Administrateur")) {
-            return empruntDao.retourneListeEmpruntActif(CodeStatutEmprunt.ACCEPTE.name()).stream()
+            return empruntRepository.retourneListeEmpruntActif(CodeStatutEmprunt.ACCEPTE.name()).stream()
                     .map(EmpruntResponseDto::depuisEntite)
                     .toList();
         }
-        return empruntDao.retourneListeEmpruntActifParEmail(CodeStatutEmprunt.ACCEPTE.name(), utilisateur.getEmail()).stream()
+        return empruntRepository.retourneListeEmpruntActifParEmail(CodeStatutEmprunt.ACCEPTE.name(), utilisateur.getEmail()).stream()
                 .map(EmpruntResponseDto::depuisEntite)
                 .toList();
     }
@@ -65,7 +65,7 @@ public class EmpruntService implements IEmpruntService {
                 CodeStatutEmprunt.DEMANDE_PROLONGATION.name(),
                 CodeStatutEmprunt.DEMANDE_RETOUR_ANTICIPE.name()
         );
-        return empruntDao.retourneListeDemandeEmprunt(codes).stream()
+        return empruntRepository.retourneListeDemandeEmprunt(codes).stream()
                 .map(EmpruntResponseDto::depuisEntite)
                 .toList();
     }
@@ -79,18 +79,18 @@ public class EmpruntService implements IEmpruntService {
                 CodeStatutEmprunt.DEMANDE_RETOUR_ANTICIPE.name()
         );
         if (role.equals("Administrateur")) {
-            return empruntDao.retourneListeDemandeEmprunt(codes).stream()
+            return empruntRepository.retourneListeDemandeEmprunt(codes).stream()
                     .map(EmpruntResponseDto::depuisEntite)
                     .toList();
         }
-        return empruntDao.retourneListeDemandeEmpruntParEmail(codes, utilisateur.getEmail()).stream()
+        return empruntRepository.retourneListeDemandeEmpruntParEmail(codes, utilisateur.getEmail()).stream()
                 .map(EmpruntResponseDto::depuisEntite)
                 .toList();
     }
 
     @Override
     public List<EmpruntResponseDto> obtenirEmpruntsRecents() {
-        return empruntDao.retourneEmpruntRecent(LocalDate.now().minusDays(30)).stream()
+        return empruntRepository.retourneEmpruntRecent(LocalDate.now().minusDays(30)).stream()
                 .map(EmpruntResponseDto::depuisEntite)
                 .toList();
     }
@@ -99,18 +99,18 @@ public class EmpruntService implements IEmpruntService {
     public List<EmpruntResponseDto> obtenirEmpruntsRecentsSelonRole(Utilisateur utilisateur) {
         String role = utilisateur.getCategorieUtilisateur().getLibelle();
         if (role.equals("Administrateur")) {
-            return empruntDao.retourneEmpruntRecent(LocalDate.now().minusDays(30)).stream()
+            return empruntRepository.retourneEmpruntRecent(LocalDate.now().minusDays(30)).stream()
                     .map(EmpruntResponseDto::depuisEntite)
                     .toList();
         }
-        return empruntDao.retourneEmpruntRecentParEmail(LocalDate.now().minusDays(30), utilisateur.getEmail()).stream()
+        return empruntRepository.retourneEmpruntRecentParEmail(LocalDate.now().minusDays(30), utilisateur.getEmail()).stream()
                 .map(EmpruntResponseDto::depuisEntite)
                 .toList();
     }
 
     @Override
     public List<EmpruntResponseDto> obtenirListeEmpruntEnRetard() {
-        return empruntDao.retourneEmpruntEnRetard().stream()
+        return empruntRepository.retourneEmpruntEnRetard().stream()
                 .map(EmpruntResponseDto::depuisEntite)
                 .toList();
     }
@@ -119,18 +119,18 @@ public class EmpruntService implements IEmpruntService {
     public List<EmpruntResponseDto> obtenirListeEmpruntEnRetardSelonRole(Utilisateur utilisateur) {
         String role = utilisateur.getCategorieUtilisateur().getLibelle();
         if (role.equals("Administrateur")) {
-            return empruntDao.retourneEmpruntEnRetard().stream()
+            return empruntRepository.retourneEmpruntEnRetard().stream()
                     .map(EmpruntResponseDto::depuisEntite)
                     .toList();
         }
-        return empruntDao.retourneEmpruntEnRetardParEmail(utilisateur.getEmail()).stream()
+        return empruntRepository.retourneEmpruntEnRetardParEmail(utilisateur.getEmail()).stream()
                 .map(EmpruntResponseDto::depuisEntite)
                 .toList();
     }
 
     @Override
     public List<EmpruntResponseDto> obtenirHistoriqueEmprunt() {
-        return empruntDao.retourneHistoriqueEmprunt().stream()
+        return empruntRepository.retourneHistoriqueEmprunt().stream()
                 .map(EmpruntResponseDto::depuisEntite)
                 .toList();
     }
@@ -139,33 +139,33 @@ public class EmpruntService implements IEmpruntService {
     public List<EmpruntResponseDto> obtenirHistoriqueEmpruntSelonRole(Utilisateur utilisateur) {
         String role = utilisateur.getCategorieUtilisateur().getLibelle();
         if (role.equals("Administrateur")) {
-            return empruntDao.retourneHistoriqueEmprunt().stream()
+            return empruntRepository.retourneHistoriqueEmprunt().stream()
                     .map(EmpruntResponseDto::depuisEntite)
                     .toList();
         }
-        return empruntDao.retourneHistoriqueEmpruntParEmail(utilisateur.getEmail()).stream()
+        return empruntRepository.retourneHistoriqueEmpruntParEmail(utilisateur.getEmail()).stream()
                 .map(EmpruntResponseDto::depuisEntite)
                 .toList();
     }
 
     @Override
     public void supprimerEmprunt(Integer id) {
-        if (!empruntDao.existsById(id)) {
+        if (!empruntRepository.existsById(id)) {
             throw new RessourceIntrouvableException("Emprunt introuvable");
         }
-        empruntDao.deleteById(id);
+        empruntRepository.deleteById(id);
     }
 
     @Transactional
     @Override
     public void modifierEmprunt(Integer id, EmpruntDto empruntDto) {
-        Emprunt emprunt = empruntDao.findById(id)
+        Emprunt emprunt = empruntRepository.findById(id)
                 .orElseThrow(() -> new RessourceIntrouvableException("Emprunt introuvable"));
 
-        Materiel materiel = materielDao.findById(empruntDto.materielId())
+        Materiel materiel = materielRepository.findById(empruntDto.materielId())
                 .orElseThrow(() -> new MetierException("Matériel introuvable"));
 
-        Utilisateur utilisateur = utilisateurDao.findById(empruntDto.utilisateurId())
+        Utilisateur utilisateur = utilisateurRepository.findById(empruntDto.utilisateurId())
                 .orElseThrow(() -> new MetierException("Utilisateur introuvable"));
 
         emprunt.setMateriel(materiel);
@@ -173,16 +173,16 @@ public class EmpruntService implements IEmpruntService {
         emprunt.setDateDebut(empruntDto.dateDebut());
         emprunt.setDateFin(empruntDto.dateFin());
         emprunt.setNote(empruntDto.note());
-        empruntDao.save(emprunt);
+        empruntRepository.save(emprunt);
     }
 
     @Transactional
     @Override
     public void modifierStatutEmpruntFromDto(int empruntId, StatutDto statutDto) {
-        Emprunt emprunt = empruntDao.findById(empruntId)
+        Emprunt emprunt = empruntRepository.findById(empruntId)
                 .orElseThrow(() -> new RessourceIntrouvableException("Emprunt non trouvé : " + empruntId));
 
-        StatutEmprunt nouveauStatut = statutEmpruntDao.findById(statutDto.getStatutId())
+        StatutEmprunt nouveauStatut = statutEmpruntRepository.findById(statutDto.getStatutId())
                 .orElseThrow(() -> new RessourceIntrouvableException("Statut non trouvé : " + statutDto.getStatutId()));
 
         String code = statutDto.getCode();
@@ -213,7 +213,7 @@ public class EmpruntService implements IEmpruntService {
                 emprunt.setDateRetourAnticipe(date);
             }
         }
-        empruntDao.save(emprunt);
+        empruntRepository.save(emprunt);
     }
 
     @Transactional
@@ -228,13 +228,13 @@ public class EmpruntService implements IEmpruntService {
         if (empruntDto.dateFin().isBefore(LocalDate.now()))
             throw new MetierException("La date de fin ne peut pas être dans le passé");
 
-        Materiel materiel = materielDao.findById(empruntDto.materielId())
+        Materiel materiel = materielRepository.findById(empruntDto.materielId())
                 .orElseThrow(() -> new MetierException("Matériel introuvable"));
 
-        Utilisateur utilisateur = utilisateurDao.findById(empruntDto.utilisateurId())
+        Utilisateur utilisateur = utilisateurRepository.findById(empruntDto.utilisateurId())
                 .orElseThrow(() -> new MetierException("Utilisateur introuvable"));
 
-        List<Materiel> disponibles = materielDao.retourneListeMaterielDisponiblePourPeriodeParIdCategorieModele(
+        List<Materiel> disponibles = materielRepository.retourneListeMaterielDisponiblePourPeriodeParIdCategorieModele(
                 empruntDto.dateDebut(), empruntDto.dateFin(), materiel.getModele().getCategorieModele().getId()
         );
 
@@ -244,7 +244,7 @@ public class EmpruntService implements IEmpruntService {
         if (!materielDisponible)
             throw new MetierException("Ce matériel n'est pas disponible sur cette période");
 
-        StatutEmprunt statutEmprunt = statutEmpruntDao.findByCode(CodeStatutEmprunt.DEMANDE_EN_COURS.name())
+        StatutEmprunt statutEmprunt = statutEmpruntRepository.findByCode(CodeStatutEmprunt.DEMANDE_EN_COURS.name())
                 .orElseThrow(() -> new MetierException("Statut emprunt introuvable"));
 
         Emprunt emprunt = new Emprunt();
@@ -255,7 +255,7 @@ public class EmpruntService implements IEmpruntService {
         emprunt.setStatutEmprunt(statutEmprunt);
         emprunt.setNote(empruntDto.note());
 
-        return EmpruntResponseDto.depuisEntite(empruntDao.save(emprunt));
+        return EmpruntResponseDto.depuisEntite(empruntRepository.save(emprunt));
     }
 
 }

@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface MaterielDao extends JpaRepository<Materiel, Integer> {
+public interface MaterielRepository extends JpaRepository<Materiel, Integer> {
 
     @Query("""
     SELECT DISTINCT m FROM Materiel m

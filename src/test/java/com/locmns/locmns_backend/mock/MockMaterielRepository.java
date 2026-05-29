@@ -1,6 +1,6 @@
 package com.locmns.locmns_backend.mock;
 
-import com.locmns.locmns_backend.repository.MaterielDao;
+import com.locmns.locmns_backend.repository.MaterielRepository;
 import com.locmns.locmns_backend.model.Materiel;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
-public class MockMaterielDao implements MaterielDao {
+public class MockMaterielRepository implements MaterielRepository {
 
     @Override
     public Optional<Materiel> findById(Integer id) {

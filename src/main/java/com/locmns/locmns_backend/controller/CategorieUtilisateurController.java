@@ -1,7 +1,7 @@
 package com.locmns.locmns_backend.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.locmns.locmns_backend.repository.CategorieUtilisateurDao;
+import com.locmns.locmns_backend.repository.CategorieUtilisateurRepository;
 import com.locmns.locmns_backend.model.CategorieUtilisateur;
 import com.locmns.locmns_backend.view.CategorieUtilisateurView;
 import jakarta.validation.Valid;
@@ -20,7 +20,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CategorieUtilisateurController {
 
-    private final CategorieUtilisateurDao categorieUilisateurDao;
+    private final CategorieUtilisateurRepository categorieUilisateurDao;
 
     @GetMapping("/liste")
     @JsonView(CategorieUtilisateurView.class)

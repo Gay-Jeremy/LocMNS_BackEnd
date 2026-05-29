@@ -1,9 +1,8 @@
 package com.locmns.locmns_backend.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.locmns.locmns_backend.repository.StatutMaterielDao;
+import com.locmns.locmns_backend.repository.StatutMaterielRepository;
 import com.locmns.locmns_backend.model.StatutMateriel;
-import com.locmns.locmns_backend.view.MaterielView;
 import com.locmns.locmns_backend.view.StatutMaterielView;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,17 +19,17 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class StatutMaterielController {
 
-    private final StatutMaterielDao statutMaterielDao;
+    private final StatutMaterielRepository statutMaterielRepository;
 
     @GetMapping("/liste")
     @JsonView({ StatutMaterielView.class})
     public List<StatutMateriel> obtenirTousLesStatutsMateriel() {
-        return statutMaterielDao.findAll();
+        return statutMaterielRepository.findAll();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<StatutMateriel> obtenirStatutMaterielParId(@PathVariable int id) {
-        Optional<StatutMateriel> optionalStatutMateriel = statutMaterielDao.findById(id);
+        Optional<StatutMateriel> optionalStatutMateriel = statutMaterielRepository.findById(id);
         if(optionalStatutMateriel.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -41,18 +40,18 @@ public class StatutMaterielController {
     public ResponseEntity<StatutMateriel>  creerStatutMateriel(
             @RequestBody @Valid StatutMateriel statutMaterielToInsert) {
 
-        statutMaterielDao.save(statutMaterielToInsert);
+        statutMaterielRepository.save(statutMaterielToInsert);
 
         return new ResponseEntity<>(statutMaterielToInsert, HttpStatus.CREATED) ;
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> supprimerStatutMateriel(@PathVariable int id) {
-        Optional<StatutMateriel> optionalStatutMateriel = statutMaterielDao.findById(id);
+        Optional<StatutMateriel> optionalStatutMateriel = statutMaterielRepository.findById(id);
         if (optionalStatutMateriel.isEmpty()) {
             return new ResponseEntity<>((HttpStatus.NOT_FOUND));
         }
-        statutMaterielDao.deleteById(id);
+        statutMaterielRepository.deleteById(id);
 
         return new ResponseEntity<>((HttpStatus.NO_CONTENT));
     }
@@ -63,12 +62,12 @@ public class StatutMaterielController {
 
         statutMaterielToUpdate.setId(id);
 
-        Optional<StatutMateriel> optionalStatutMateriel = statutMaterielDao.findById(id);
+        Optional<StatutMateriel> optionalStatutMateriel = statutMaterielRepository.findById(id);
         if (optionalStatutMateriel.isEmpty()) {
             return new ResponseEntity<>((HttpStatus.NOT_FOUND));
         }
 
-        statutMaterielDao.save(statutMaterielToUpdate);
+        statutMaterielRepository.save(statutMaterielToUpdate);
 
         return new ResponseEntity<>((HttpStatus.NO_CONTENT));
     }

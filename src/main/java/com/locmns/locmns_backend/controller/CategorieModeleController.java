@@ -1,7 +1,7 @@
 package com.locmns.locmns_backend.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.locmns.locmns_backend.repository.CategorieModeleDao;
+import com.locmns.locmns_backend.repository.CategorieModeleRepository;
 import com.locmns.locmns_backend.model.CategorieModele;
 import com.locmns.locmns_backend.view.CategorieModeleView;
 import jakarta.validation.Valid;
@@ -20,20 +20,20 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CategorieModeleController {
 
-    private final CategorieModeleDao categorieModeleDao;
+    private final CategorieModeleRepository categorieModeleRepository;
 
     @GetMapping("/liste")
     @JsonView(CategorieModeleView.class)
     public List<CategorieModele> obtenirToutesLesCategoriesModele() {
 
-        return categorieModeleDao.findAll();
+        return categorieModeleRepository.findAll();
     }
 
     @GetMapping("/{id}")
     @JsonView(CategorieModeleView.class)
     public ResponseEntity<CategorieModele> obtenirCategorieModeleParId(@PathVariable int id) {
 
-        Optional<CategorieModele> optionalCategorieModele = categorieModeleDao.findById(id);
+        Optional<CategorieModele> optionalCategorieModele = categorieModeleRepository.findById(id);
 
         if(optionalCategorieModele.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -47,7 +47,7 @@ public class CategorieModeleController {
 
         categorieToInsert.setId(null);
 
-        CategorieModele NouvelleCategorie = categorieModeleDao.save(categorieToInsert);
+        CategorieModele NouvelleCategorie = categorieModeleRepository.save(categorieToInsert);
         
         return NouvelleCategorie;
     }
@@ -55,12 +55,12 @@ public class CategorieModeleController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> supprimerCategorieModele(@PathVariable int id) {
 
-        Optional<CategorieModele> optionalCategorieModele = categorieModeleDao.findById(id);
+        Optional<CategorieModele> optionalCategorieModele = categorieModeleRepository.findById(id);
 
         if (optionalCategorieModele.isEmpty()) {
             return new ResponseEntity<>((HttpStatus.NOT_FOUND));
         }
-        categorieModeleDao.deleteById(id);
+        categorieModeleRepository.deleteById(id);
 
         return new ResponseEntity<>((HttpStatus.NO_CONTENT));
 
@@ -73,13 +73,13 @@ public class CategorieModeleController {
         // On écrase l'id du json par celui en paramètre
         categorieToUpdate.setId(id);
 
-        Optional<CategorieModele> optionalCategorieModele = categorieModeleDao.findById(id);
+        Optional<CategorieModele> optionalCategorieModele = categorieModeleRepository.findById(id);
 
         if (optionalCategorieModele.isEmpty()) {
             return new ResponseEntity<>((HttpStatus.NOT_FOUND));
         }
 
-        categorieModeleDao.save(categorieToUpdate);
+        categorieModeleRepository.save(categorieToUpdate);
 
         return new ResponseEntity<>((HttpStatus.NO_CONTENT));
 
