@@ -1,7 +1,7 @@
 package com.locmns.locmns_backend.controller;
 
-import com.locmns.locmns_backend.dto.MaterielDto;
-import com.locmns.locmns_backend.dto.StatutDto;
+import com.locmns.locmns_backend.dto.request.MaterielRequestDto;
+import com.locmns.locmns_backend.dto.request.StatutRequestDto;
 import com.locmns.locmns_backend.dto.response.MaterielResponseDto;
 import com.locmns.locmns_backend.model.Utilisateur;
 import com.locmns.locmns_backend.repository.EmpruntRepository;
@@ -9,7 +9,7 @@ import com.locmns.locmns_backend.repository.MaterielRepository;
 import com.locmns.locmns_backend.security.IsAdmin;
 import com.locmns.locmns_backend.security.IsUser;
 import com.locmns.locmns_backend.security.UtilisateurDetails;
-import com.locmns.locmns_backend.services.MaterielService;
+import com.locmns.locmns_backend.services.IMaterielService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -29,20 +29,20 @@ public class MaterielController {
 
     private final MaterielRepository materielRepository;
     private final EmpruntRepository empruntRepository;
-    private final MaterielService materielService;
+    private final IMaterielService IMaterielService;
 
     @GetMapping("/liste")
     @IsUser
     public List<MaterielResponseDto> obtenirTousLesMateriels(
             @AuthenticationPrincipal UtilisateurDetails utilisateurDetails) {
         Utilisateur utilisateur = utilisateurDetails.getUtilisateur();
-        return materielService.obtenirMaterielsSelonRole(utilisateur);
+        return IMaterielService.obtenirMaterielsSelonRole(utilisateur);
     }
 
     @GetMapping("/liste/disponible")
     @IsUser
     public List<MaterielResponseDto> obtenirMaterielsDisponibles() {
-        return materielService.obtenirMaterielsDisponibles();
+        return IMaterielService.obtenirMaterielsDisponibles();
     }
 
     @GetMapping("/liste/disponible/categorie")
@@ -51,7 +51,7 @@ public class MaterielController {
             @RequestParam LocalDate dateDebut,
             @RequestParam LocalDate dateFin,
             @RequestParam int categorieModeleId) {
-        return materielService.obtenirMaterielsDisponiblesPourPeriodeParIdCategorieModele(dateDebut, dateFin, categorieModeleId);
+        return IMaterielService.obtenirMaterielsDisponiblesPourPeriodeParIdCategorieModele(dateDebut, dateFin, categorieModeleId);
     }
 
     @GetMapping("/liste/panne_signalee")
@@ -59,13 +59,13 @@ public class MaterielController {
     public List<MaterielResponseDto> obtenirListeMaterielPanneSignalee(
             @AuthenticationPrincipal UtilisateurDetails utilisateurDetails) {
         Utilisateur utilisateur = utilisateurDetails.getUtilisateur();
-        return materielService.obtenirListeMaterielPanneSignaleeSelonRole(utilisateur);
+        return IMaterielService.obtenirListeMaterielPanneSignaleeSelonRole(utilisateur);
     }
 
     @GetMapping("/{id}")
     @IsUser
     public ResponseEntity<MaterielResponseDto> obtenirMaterielParId(@PathVariable int id) {
-        Optional<MaterielResponseDto> optionalMateriel = materielService.obtenirMaterielParId(id);
+        Optional<MaterielResponseDto> optionalMateriel = IMaterielService.obtenirMaterielParId(id);
         if (optionalMateriel.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -76,9 +76,9 @@ public class MaterielController {
     @IsAdmin
     public ResponseEntity<MaterielResponseDto> creerMateriel(
             @AuthenticationPrincipal UtilisateurDetails utilisateurDetails,
-            @RequestBody @Valid MaterielDto materielDto) {
+            @RequestBody @Valid MaterielRequestDto materielRequestDto) {
         Utilisateur utilisateur = utilisateurDetails.getUtilisateur();
-        MaterielResponseDto materiel = materielService.creerMateriel(materielDto, utilisateur);
+        MaterielResponseDto materiel = IMaterielService.creerMateriel(materielRequestDto, utilisateur);
         return new ResponseEntity<>(materiel, HttpStatus.CREATED);
     }
 
@@ -100,8 +100,8 @@ public class MaterielController {
     @IsAdmin
     public ResponseEntity<Void> modifierMateriel(
             @PathVariable int id,
-            @RequestBody @Valid MaterielDto materielDto) {
-        materielService.modifierMateriel(id, materielDto);
+            @RequestBody @Valid MaterielRequestDto materielRequestDto) {
+        IMaterielService.modifierMateriel(id, materielRequestDto);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -109,8 +109,8 @@ public class MaterielController {
     @IsUser
     public ResponseEntity<Void> modifierStatutMateriel(
             @PathVariable Integer id,
-            @RequestBody StatutDto statutDTO) {
-        materielService.modifierStatutMateriel(id, statutDTO.getStatutId());
+            @RequestBody StatutRequestDto statutRequestDTO) {
+        IMaterielService.modifierStatutMateriel(id, statutRequestDTO.getStatutId());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

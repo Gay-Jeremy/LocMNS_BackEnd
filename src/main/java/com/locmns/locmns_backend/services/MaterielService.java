@@ -1,6 +1,7 @@
 package com.locmns.locmns_backend.services;
 
-import com.locmns.locmns_backend.dto.MaterielDto;
+import com.locmns.locmns_backend.constants.Role;
+import com.locmns.locmns_backend.dto.request.MaterielRequestDto;
 import com.locmns.locmns_backend.dto.response.MaterielResponseDto;
 import com.locmns.locmns_backend.exception.ConflitReservationException;
 import com.locmns.locmns_backend.exception.MetierException;
@@ -17,7 +18,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class MaterielService {
+public class MaterielService implements IMaterielService {
 
     private final MaterielRepository materielRepository;
     private final ModeleRepository modeleRepository;
@@ -25,20 +26,23 @@ public class MaterielService {
     private final SalleRepository salleDao;
     private final EmpruntRepository empruntRepository;
 
+    @Override
     public Optional<MaterielResponseDto> obtenirMaterielParId(Integer id) {
         return materielRepository.findById(id)
                 .map(MaterielResponseDto::depuisEntite);
     }
 
+    @Override
     public List<MaterielResponseDto> obtenirTousLesMateriels() {
         return materielRepository.findAll().stream()
                 .map(MaterielResponseDto::depuisEntite)
                 .toList();
     }
 
+    @Override
     public List<MaterielResponseDto> obtenirMaterielsSelonRole(Utilisateur utilisateur) {
-        String role = utilisateur.getCategorieUtilisateur().getLibelle();
-        if (role.equals("Administrateur")) {
+        String code = utilisateur.getCategorieUtilisateur().getCode();
+        if (Role.ADMIN.name().equals(code)) {
             return materielRepository.findAll().stream()
                     .map(MaterielResponseDto::depuisEntite)
                     .toList();
@@ -48,21 +52,24 @@ public class MaterielService {
                 .toList();
     }
 
+    @Override
     public List<MaterielResponseDto> obtenirMaterielsDisponibles() {
         return materielRepository.retourneListeMaterielDisponible().stream()
                 .map(MaterielResponseDto::depuisEntite)
                 .toList();
     }
 
+    @Override
     public List<MaterielResponseDto> obtenirListeMaterielPanneSignalee() {
         return materielRepository.retourneListeMaterielPanneSignales().stream()
                 .map(MaterielResponseDto::depuisEntite)
                 .toList();
     }
 
+    @Override
     public List<MaterielResponseDto> obtenirListeMaterielPanneSignaleeSelonRole(Utilisateur utilisateur) {
-        String role = utilisateur.getCategorieUtilisateur().getLibelle();
-        if (role.equals("Administrateur")) {
+        String code = utilisateur.getCategorieUtilisateur().getCode();
+        if (Role.ADMIN.name().equals(code)) {
             return materielRepository.retourneListeMaterielPanneSignales().stream()
                     .map(MaterielResponseDto::depuisEntite)
                     .toList();
@@ -72,6 +79,7 @@ public class MaterielService {
                 .toList();
     }
 
+    @Override
     public List<MaterielResponseDto> obtenirMaterielsDisponiblesPourPeriodeParIdCategorieModele(
             LocalDate dateDebut, LocalDate dateFin, int id) {
         return materielRepository.retourneListeMaterielDisponiblePourPeriodeParIdCategorieModele(dateDebut, dateFin, id).stream()
@@ -79,6 +87,7 @@ public class MaterielService {
                 .toList();
     }
 
+    @Override
     public void verifierDisponibilitePourProlongation(int empruntId, LocalDate nouvelleDateFin) {
         Emprunt emprunt = empruntRepository.findById(empruntId)
                 .orElseThrow(() -> new RessourceIntrouvableException("Emprunt introuvable"));
@@ -96,25 +105,26 @@ public class MaterielService {
         }
     }
 
-    public MaterielResponseDto creerMateriel(MaterielDto materielDto, Utilisateur utilisateur) {
-        if (materielRepository.findByNumSerie(materielDto.numSerie()).isPresent()) {
-            throw new MetierException("Un matériel avec le numéro de série '" + materielDto.numSerie() + "' existe déjà");
+    @Override
+    public MaterielResponseDto creerMateriel(MaterielRequestDto materielRequestDto, Utilisateur utilisateur) {
+        if (materielRepository.findByNumSerie(materielRequestDto.numSerie()).isPresent()) {
+            throw new MetierException("Un matériel avec le numéro de série '" + materielRequestDto.numSerie() + "' existe déjà");
         }
-        Modele modele = modeleRepository.findById(materielDto.modeleId())
-                .orElseThrow(() -> new RessourceIntrouvableException("Le modèle avec l'id " + materielDto.modeleId() + " est introuvable"));
+        Modele modele = modeleRepository.findById(materielRequestDto.modeleId())
+                .orElseThrow(() -> new RessourceIntrouvableException("Le modèle avec l'id " + materielRequestDto.modeleId() + " est introuvable"));
         StatutMateriel statutMateriel = null;
-        if (materielDto.statutMaterielId() != null) {
-            statutMateriel = statutMaterielRepository.findById(materielDto.statutMaterielId())
-                    .orElseThrow(() -> new RessourceIntrouvableException("Le statut matériel avec l'id " + materielDto.statutMaterielId() + " est introuvable"));
+        if (materielRequestDto.statutMaterielId() != null) {
+            statutMateriel = statutMaterielRepository.findById(materielRequestDto.statutMaterielId())
+                    .orElseThrow(() -> new RessourceIntrouvableException("Le statut matériel avec l'id " + materielRequestDto.statutMaterielId() + " est introuvable"));
         }
         Salle salle = null;
-        if (materielDto.salleId() != null) {
-            salle = salleDao.findById(materielDto.salleId())
-                    .orElseThrow(() -> new RessourceIntrouvableException("La salle avec l'id " + materielDto.salleId() + " est introuvable"));
+        if (materielRequestDto.salleId() != null) {
+            salle = salleDao.findById(materielRequestDto.salleId())
+                    .orElseThrow(() -> new RessourceIntrouvableException("La salle avec l'id " + materielRequestDto.salleId() + " est introuvable"));
         }
 
         Materiel materiel = new Materiel();
-        materiel.setNumSerie(materielDto.numSerie());
+        materiel.setNumSerie(materielRequestDto.numSerie());
         materiel.setModele(modele);
         materiel.setStatutMateriel(statutMateriel);
         materiel.setSalle(salle);
@@ -122,23 +132,24 @@ public class MaterielService {
     }
 
     @Transactional
-    public void modifierMateriel(Integer id, MaterielDto materielDto) {
+    @Override
+    public void modifierMateriel(Integer id, MaterielRequestDto materielRequestDto) {
 
         Materiel materiel = materielRepository.findById(id)
                 .orElseThrow(() -> new RessourceIntrouvableException("Matériel non trouvé : " + id));
 
-        Modele modele = modeleRepository.findById(materielDto.modeleId())
-                .orElseThrow(() -> new RessourceIntrouvableException("Modele non trouvé :" + materielDto.modeleId()));
+        Modele modele = modeleRepository.findById(materielRequestDto.modeleId())
+                .orElseThrow(() -> new RessourceIntrouvableException("Modele non trouvé :" + materielRequestDto.modeleId()));
 
         StatutMateriel statutMateriel = null;
-        if(materielDto.statutMaterielId() != null) {
-            statutMateriel = statutMaterielRepository.findById(materielDto.statutMaterielId())
-                    .orElseThrow(() -> new RessourceIntrouvableException("Le statut matériel avec l'id " + materielDto.statutMaterielId() + " est introuvable"));
+        if(materielRequestDto.statutMaterielId() != null) {
+            statutMateriel = statutMaterielRepository.findById(materielRequestDto.statutMaterielId())
+                    .orElseThrow(() -> new RessourceIntrouvableException("Le statut matériel avec l'id " + materielRequestDto.statutMaterielId() + " est introuvable"));
         }
         Salle salle = null;
-        if(materielDto.salleId() != null) {
-            salle = salleDao.findById(materielDto.salleId())
-                    .orElseThrow(() -> new RessourceIntrouvableException("La salle avec l'id " + materielDto.salleId() + " est introuvable"));
+        if(materielRequestDto.salleId() != null) {
+            salle = salleDao.findById(materielRequestDto.salleId())
+                    .orElseThrow(() -> new RessourceIntrouvableException("La salle avec l'id " + materielRequestDto.salleId() + " est introuvable"));
         }
 
         materiel.setModele(modele);
@@ -147,8 +158,9 @@ public class MaterielService {
         materielRepository.save(materiel);
     }
 
+    @Override
     public void modifierStatutMateriel(Integer materielId, Integer statutId) {
-        // On travaille avec l'entité Materiel, pas le DTO
+
         Materiel materiel = materielRepository.findById(materielId)
                 .orElseThrow(() -> new RessourceIntrouvableException("Matériel non trouvé : " + materielId));
         if (statutId == null) {

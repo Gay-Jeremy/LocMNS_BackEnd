@@ -32,6 +32,10 @@ public class CategorieUtilisateur {
     @JsonView({CategorieUtilisateurView.class, DroitEmpruntView.class})
     private String libelle;
 
+    @Column(nullable = false, updatable = false)
+    @JsonView(CategorieUtilisateurView.class)
+    private String code;
+
     @OneToMany(mappedBy = "categorieUtilisateur")
     @JsonView(CategorieUtilisateurView.class)
     private List<Utilisateur> utilisateurs;

@@ -1,7 +1,7 @@
 package com.locmns.locmns_backend.services;
 
-import com.locmns.locmns_backend.dto.EmpruntDto;
-import com.locmns.locmns_backend.dto.StatutDto;
+import com.locmns.locmns_backend.dto.request.EmpruntRequestDto;
+import com.locmns.locmns_backend.dto.request.StatutRequestDto;
 import com.locmns.locmns_backend.dto.response.EmpruntResponseDto;
 import com.locmns.locmns_backend.model.Utilisateur;
 
@@ -22,9 +22,9 @@ public interface IEmpruntService {
     List<EmpruntResponseDto> obtenirListeEmpruntEnRetardSelonRole(Utilisateur utilisateur);
     List<EmpruntResponseDto> obtenirHistoriqueEmprunt();
     List<EmpruntResponseDto> obtenirHistoriqueEmpruntSelonRole(Utilisateur utilisateur);
-    EmpruntResponseDto creerEmprunt(EmpruntDto empruntDto);
-    void modifierEmprunt(Integer id, EmpruntDto empruntDto);
+    EmpruntResponseDto creerEmprunt(EmpruntRequestDto empruntRequestDto);
+    void modifierEmprunt(Integer id, EmpruntRequestDto empruntRequestDto);
     void supprimerEmprunt(Integer id);
-    void modifierStatutEmpruntFromDto(int empruntId, StatutDto statutDto);
+    void modifierStatutEmpruntFromDto(int empruntId, StatutRequestDto statutRequestDto);
 
 }

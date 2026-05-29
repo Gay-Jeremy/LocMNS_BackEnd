@@ -1,6 +1,6 @@
 package com.locmns.locmns_backend.services;
 
-import com.locmns.locmns_backend.dto.ModeleDto;
+import com.locmns.locmns_backend.dto.request.ModeleRequestDto;
 import com.locmns.locmns_backend.exception.MetierException;
 import com.locmns.locmns_backend.exception.RessourceIntrouvableException;
 import com.locmns.locmns_backend.model.CategorieModele;
@@ -15,21 +15,24 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ModeleService {
+public class ModeleService implements IModeleService {
 
     private final ModeleRepository modeleRepository;
     private final CategorieModeleRepository categorieModeleRepository;
 
+    @Override
     public List<Modele> obtenirTousLesModeles() {
         return modeleRepository.findAll();
     }
 
+    @Override
     public List<Modele> obtenirModeleParCategorie(int categorieModeleId) {
         return modeleRepository.findByCategorieModeleId(categorieModeleId);
     }
 
     @Transactional
-    public Modele creerModele(ModeleDto dto) {
+    @Override
+    public Modele creerModele(ModeleRequestDto dto) {
 
         // Vérification unicité libellé
         if (modeleRepository.existsByLibelle(dto.libelle())) {

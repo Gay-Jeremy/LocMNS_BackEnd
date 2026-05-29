@@ -1,7 +1,7 @@
 package com.locmns.locmns_backend.mock;
 
-import com.locmns.locmns_backend.dto.EmpruntDto;
-import com.locmns.locmns_backend.dto.StatutDto;
+import com.locmns.locmns_backend.dto.request.EmpruntRequestDto;
+import com.locmns.locmns_backend.dto.request.StatutRequestDto;
 import com.locmns.locmns_backend.dto.response.EmpruntResponseDto;
 import com.locmns.locmns_backend.model.Utilisateur;
 import com.locmns.locmns_backend.services.IEmpruntService;
@@ -75,13 +75,13 @@ public class MockEmpruntService implements IEmpruntService {
     public void supprimerEmprunt(Integer id) {}
 
     @Override
-    public void modifierEmprunt(Integer id, EmpruntDto empruntDto) {}
+    public void modifierEmprunt(Integer id, EmpruntRequestDto empruntRequestDto) {}
 
     @Override
-    public void modifierStatutEmpruntFromDto(int empruntId, StatutDto statutDto) {}
+    public void modifierStatutEmpruntFromDto(int empruntId, StatutRequestDto statutRequestDto) {}
 
     @Override
-    public EmpruntResponseDto creerEmprunt(EmpruntDto empruntDto) {
+    public EmpruntResponseDto creerEmprunt(EmpruntRequestDto empruntRequestDto) {
         return null;
     }
 }

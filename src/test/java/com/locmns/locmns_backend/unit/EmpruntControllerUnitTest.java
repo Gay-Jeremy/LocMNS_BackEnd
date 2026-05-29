@@ -1,7 +1,7 @@
 package com.locmns.locmns_backend.unit;
 
 import com.locmns.locmns_backend.controller.EmpruntController;
-import com.locmns.locmns_backend.dto.EmpruntDto;
+import com.locmns.locmns_backend.dto.request.EmpruntRequestDto;
 import com.locmns.locmns_backend.dto.response.EmpruntResponseDto;
 import com.locmns.locmns_backend.exception.RessourceIntrouvableException;
 import com.locmns.locmns_backend.mock.MockEmpruntRepository;
@@ -9,6 +9,7 @@ import com.locmns.locmns_backend.mock.MockMaterielRepository;
 import com.locmns.locmns_backend.mock.MockUtilisateurRepository;
 import com.locmns.locmns_backend.repository.StatutEmpruntRepository;
 import com.locmns.locmns_backend.services.EmpruntService;
+import com.locmns.locmns_backend.services.IMaterielService;
 import com.locmns.locmns_backend.services.MaterielService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,7 +28,7 @@ public class EmpruntControllerUnitTest {
     private MockEmpruntRepository mockEmpruntDao;
 
     StatutEmpruntRepository mockStatutEmpruntRepository = Mockito.mock(StatutEmpruntRepository.class);
-    MaterielService mockMaterielService = Mockito.mock(MaterielService.class);
+    IMaterielService mockIMaterielService = Mockito.mock(MaterielService.class);
 
 
     @BeforeEach
@@ -83,20 +84,20 @@ public class EmpruntControllerUnitTest {
 
     @Test
     public void modifierEmpruntExistant_devrait_Retourner204() {
-        EmpruntDto empruntDto = new EmpruntDto(
+        EmpruntRequestDto empruntRequestDto = new EmpruntRequestDto(
                 LocalDate.now(),
                 LocalDate.now().plusDays(7),
                 1,
                 1,
                 ""
         );
-        ResponseEntity<Void> reponse = empruntController.modifierEmprunt(1, empruntDto);
+        ResponseEntity<Void> reponse = empruntController.modifierEmprunt(1, empruntRequestDto);
         assertEquals(HttpStatus.NO_CONTENT, reponse.getStatusCode());
     }
 
     @Test
     public void modifierEmpruntInexistant_devrait_lancerException() {
-        EmpruntDto empruntDto = new EmpruntDto(
+        EmpruntRequestDto empruntRequestDto = new EmpruntRequestDto(
                 LocalDate.now(),
                 LocalDate.now().plusDays(7),
                 1,
@@ -105,7 +106,7 @@ public class EmpruntControllerUnitTest {
         );
 
         assertThrows(RessourceIntrouvableException.class, () -> {
-            empruntController.modifierEmprunt(99, empruntDto);
+            empruntController.modifierEmprunt(99, empruntRequestDto);
         });
     }
 }

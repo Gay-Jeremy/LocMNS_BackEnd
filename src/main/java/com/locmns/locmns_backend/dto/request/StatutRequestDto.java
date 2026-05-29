@@ -1,8 +1,11 @@
-package com.locmns.locmns_backend.dto;
+package com.locmns.locmns_backend.dto.request;
+
+import lombok.Data;
 
 import java.time.LocalDate;
 
-public class StatutDto {
+@Data
+public class StatutRequestDto {
 
     private Integer statutId;
     private String code;

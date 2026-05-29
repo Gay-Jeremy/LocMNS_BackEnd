@@ -4,7 +4,7 @@ import com.locmns.locmns_backend.repository.EmpruntRepository;
 import com.locmns.locmns_backend.repository.MaterielRepository;
 import com.locmns.locmns_backend.repository.StatutEmpruntRepository;
 import com.locmns.locmns_backend.repository.UtilisateurRepository;
-import com.locmns.locmns_backend.dto.EmpruntDto;
+import com.locmns.locmns_backend.dto.request.EmpruntRequestDto;
 import com.locmns.locmns_backend.exception.MetierException;
 import com.locmns.locmns_backend.model.*;
 import com.locmns.locmns_backend.services.EmpruntService;
@@ -36,7 +36,7 @@ public class EmpruntServiceUnitTest {
     private Materiel materielDisponible;
     private Utilisateur utilisateur;
     private StatutEmprunt statutEmprunt;
-    private EmpruntDto dto;
+    private EmpruntRequestDto dto;
 
     @BeforeEach
     public void init() {
@@ -72,7 +72,7 @@ public class EmpruntServiceUnitTest {
         statutEmprunt = new StatutEmprunt();
         statutEmprunt.setId(3);
 
-        dto = new EmpruntDto(
+        dto = new EmpruntRequestDto(
                 LocalDate.now(),
                 LocalDate.now().plusDays(7),
                 1,
@@ -104,7 +104,7 @@ public class EmpruntServiceUnitTest {
 
     @Test
     public void creerEmpruntAvecDateFinAvantDateDebut_devrait_LeverMetierException() {
-        EmpruntDto dtoInvalide = new EmpruntDto(
+        EmpruntRequestDto dtoInvalide = new EmpruntRequestDto(
                 LocalDate.now().plusDays(7), // dateDebut après dateFin
                 LocalDate.now(),
                 1,
@@ -122,7 +122,7 @@ public class EmpruntServiceUnitTest {
 
     @Test
     public void creerEmpruntAvecDateDebutDansLePasse_devrait_LeverMetierException() {
-        EmpruntDto dtoInvalide = new EmpruntDto(
+        EmpruntRequestDto dtoInvalide = new EmpruntRequestDto(
                 LocalDate.now().minusDays(1), // hier
                 LocalDate.now().plusDays(7),
                 1,
@@ -140,7 +140,7 @@ public class EmpruntServiceUnitTest {
 
     @Test
     public void creerEmpruntAvecDateFinDansLePasse_devrait_LeverMetierException() {
-        EmpruntDto dtoInvalide = new EmpruntDto(
+        EmpruntRequestDto dtoInvalide = new EmpruntRequestDto(
                 LocalDate.now().minusDays(5),
                 LocalDate.now().minusDays(1), // aussi dans le passé
                 1,
@@ -164,7 +164,7 @@ public class EmpruntServiceUnitTest {
         // Le mock retourne vide — matériel introuvable
         when(materielRepository.findById(99)).thenReturn(Optional.empty());
 
-        EmpruntDto dtoInvalide = new EmpruntDto(
+        EmpruntRequestDto dtoInvalide = new EmpruntRequestDto(
                 LocalDate.now(),
                 LocalDate.now().plusDays(7),
                 99, // id inexistant
@@ -185,7 +185,7 @@ public class EmpruntServiceUnitTest {
         when(materielRepository.findById(1)).thenReturn(Optional.of(materielDisponible));
         when(utilisateurRepository.findById(99)).thenReturn(Optional.empty());
 
-        EmpruntDto dtoInvalide = new EmpruntDto(
+        EmpruntRequestDto dtoInvalide = new EmpruntRequestDto(
                 LocalDate.now(),
                 LocalDate.now().plusDays(7),
                 1,

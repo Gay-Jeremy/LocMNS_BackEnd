@@ -1,8 +1,9 @@
 package com.locmns.locmns_backend.services;
 
 import com.locmns.locmns_backend.constants.CodeStatutEmprunt;
-import com.locmns.locmns_backend.dto.EmpruntDto;
-import com.locmns.locmns_backend.dto.StatutDto;
+import com.locmns.locmns_backend.constants.Role;
+import com.locmns.locmns_backend.dto.request.EmpruntRequestDto;
+import com.locmns.locmns_backend.dto.request.StatutRequestDto;
 import com.locmns.locmns_backend.dto.response.EmpruntResponseDto;
 import com.locmns.locmns_backend.exception.MetierException;
 import com.locmns.locmns_backend.exception.RessourceIntrouvableException;
@@ -24,7 +25,7 @@ public class EmpruntService implements IEmpruntService {
     private final MaterielRepository materielRepository;
     private final UtilisateurRepository utilisateurRepository;
     private final StatutEmpruntRepository statutEmpruntRepository;
-    private final MaterielService materielService;
+    private final IMaterielService IMaterielService;
 
     @Override
     public Optional<EmpruntResponseDto> obtenirEmpruntsParId(Integer id) {
@@ -47,8 +48,8 @@ public class EmpruntService implements IEmpruntService {
 
     @Override
     public List<EmpruntResponseDto> obtenirEmpruntSelonRole(Utilisateur utilisateur) {
-        String role = utilisateur.getCategorieUtilisateur().getLibelle();
-        if (role.equals("Administrateur")) {
+        String code = utilisateur.getCategorieUtilisateur().getCode();
+        if (Role.ADMIN.name().equals(code)) {
             return empruntRepository.retourneListeEmpruntActif(CodeStatutEmprunt.ACCEPTE.name()).stream()
                     .map(EmpruntResponseDto::depuisEntite)
                     .toList();
@@ -78,7 +79,9 @@ public class EmpruntService implements IEmpruntService {
                 CodeStatutEmprunt.DEMANDE_PROLONGATION.name(),
                 CodeStatutEmprunt.DEMANDE_RETOUR_ANTICIPE.name()
         );
-        if (role.equals("Administrateur")) {
+
+        String code = utilisateur.getCategorieUtilisateur().getCode();
+        if (Role.ADMIN.name().equals(code))  {
             return empruntRepository.retourneListeDemandeEmprunt(codes).stream()
                     .map(EmpruntResponseDto::depuisEntite)
                     .toList();
@@ -97,8 +100,8 @@ public class EmpruntService implements IEmpruntService {
 
     @Override
     public List<EmpruntResponseDto> obtenirEmpruntsRecentsSelonRole(Utilisateur utilisateur) {
-        String role = utilisateur.getCategorieUtilisateur().getLibelle();
-        if (role.equals("Administrateur")) {
+        String code = utilisateur.getCategorieUtilisateur().getCode();
+        if (Role.ADMIN.name().equals(code)) {
             return empruntRepository.retourneEmpruntRecent(LocalDate.now().minusDays(30)).stream()
                     .map(EmpruntResponseDto::depuisEntite)
                     .toList();
@@ -117,8 +120,8 @@ public class EmpruntService implements IEmpruntService {
 
     @Override
     public List<EmpruntResponseDto> obtenirListeEmpruntEnRetardSelonRole(Utilisateur utilisateur) {
-        String role = utilisateur.getCategorieUtilisateur().getLibelle();
-        if (role.equals("Administrateur")) {
+        String code = utilisateur.getCategorieUtilisateur().getCode();
+        if (Role.ADMIN.name().equals(code)) {
             return empruntRepository.retourneEmpruntEnRetard().stream()
                     .map(EmpruntResponseDto::depuisEntite)
                     .toList();
@@ -137,8 +140,8 @@ public class EmpruntService implements IEmpruntService {
 
     @Override
     public List<EmpruntResponseDto> obtenirHistoriqueEmpruntSelonRole(Utilisateur utilisateur) {
-        String role = utilisateur.getCategorieUtilisateur().getLibelle();
-        if (role.equals("Administrateur")) {
+        String code = utilisateur.getCategorieUtilisateur().getCode();
+        if (Role.ADMIN.name().equals(code)) {
             return empruntRepository.retourneHistoriqueEmprunt().stream()
                     .map(EmpruntResponseDto::depuisEntite)
                     .toList();
@@ -158,46 +161,46 @@ public class EmpruntService implements IEmpruntService {
 
     @Transactional
     @Override
-    public void modifierEmprunt(Integer id, EmpruntDto empruntDto) {
+    public void modifierEmprunt(Integer id, EmpruntRequestDto empruntRequestDto) {
         Emprunt emprunt = empruntRepository.findById(id)
                 .orElseThrow(() -> new RessourceIntrouvableException("Emprunt introuvable"));
 
-        Materiel materiel = materielRepository.findById(empruntDto.materielId())
+        Materiel materiel = materielRepository.findById(empruntRequestDto.materielId())
                 .orElseThrow(() -> new MetierException("Matériel introuvable"));
 
-        Utilisateur utilisateur = utilisateurRepository.findById(empruntDto.utilisateurId())
+        Utilisateur utilisateur = utilisateurRepository.findById(empruntRequestDto.utilisateurId())
                 .orElseThrow(() -> new MetierException("Utilisateur introuvable"));
 
         emprunt.setMateriel(materiel);
         emprunt.setUtilisateur(utilisateur);
-        emprunt.setDateDebut(empruntDto.dateDebut());
-        emprunt.setDateFin(empruntDto.dateFin());
-        emprunt.setNote(empruntDto.note());
+        emprunt.setDateDebut(empruntRequestDto.dateDebut());
+        emprunt.setDateFin(empruntRequestDto.dateFin());
+        emprunt.setNote(empruntRequestDto.note());
         empruntRepository.save(emprunt);
     }
 
     @Transactional
     @Override
-    public void modifierStatutEmpruntFromDto(int empruntId, StatutDto statutDto) {
+    public void modifierStatutEmpruntFromDto(int empruntId, StatutRequestDto statutRequestDto) {
         Emprunt emprunt = empruntRepository.findById(empruntId)
                 .orElseThrow(() -> new RessourceIntrouvableException("Emprunt non trouvé : " + empruntId));
 
-        StatutEmprunt nouveauStatut = statutEmpruntRepository.findById(statutDto.getStatutId())
-                .orElseThrow(() -> new RessourceIntrouvableException("Statut non trouvé : " + statutDto.getStatutId()));
+        StatutEmprunt nouveauStatut = statutEmpruntRepository.findById(statutRequestDto.getStatutId())
+                .orElseThrow(() -> new RessourceIntrouvableException("Statut non trouvé : " + statutRequestDto.getStatutId()));
 
-        String code = statutDto.getCode();
+        String code = statutRequestDto.getCode();
         if (code == null || code.isBlank()) {
             code = nouveauStatut.getCode();
         }
 
-        LocalDate date = statutDto.getDate();
+        LocalDate date = statutRequestDto.getDate();
 
         if (CodeStatutEmprunt.DEMANDE_PROLONGATION.name().equals(code)) {
             if (date == null) throw new MetierException("La date de prolongation est obligatoire");
 
             if (!date.isAfter(emprunt.getDateFin())) throw new MetierException("La date de prolongation doit être postérieure à la date de fin de l'emprunt");
 
-            materielService.verifierDisponibilitePourProlongation(empruntId, date);
+            IMaterielService.verifierDisponibilitePourProlongation(empruntId, date);
 
         } else if (CodeStatutEmprunt.DEMANDE_RETOUR_ANTICIPE.name().equals(code)) {
             if (date == null) throw new MetierException("La date de retour anticipé est obligatoire");
@@ -218,28 +221,28 @@ public class EmpruntService implements IEmpruntService {
 
     @Transactional
     @Override
-    public EmpruntResponseDto creerEmprunt(EmpruntDto empruntDto) {
-        if (!empruntDto.dateFin().isAfter(empruntDto.dateDebut()))
+    public EmpruntResponseDto creerEmprunt(EmpruntRequestDto empruntRequestDto) {
+        if (!empruntRequestDto.dateFin().isAfter(empruntRequestDto.dateDebut()))
             throw new MetierException("La date de fin doit être après la date de début");
 
-        if (empruntDto.dateDebut().isBefore(LocalDate.now()))
+        if (empruntRequestDto.dateDebut().isBefore(LocalDate.now()))
             throw new MetierException("La date de début ne peut pas être dans le passé");
 
-        if (empruntDto.dateFin().isBefore(LocalDate.now()))
+        if (empruntRequestDto.dateFin().isBefore(LocalDate.now()))
             throw new MetierException("La date de fin ne peut pas être dans le passé");
 
-        Materiel materiel = materielRepository.findById(empruntDto.materielId())
+        Materiel materiel = materielRepository.findById(empruntRequestDto.materielId())
                 .orElseThrow(() -> new MetierException("Matériel introuvable"));
 
-        Utilisateur utilisateur = utilisateurRepository.findById(empruntDto.utilisateurId())
+        Utilisateur utilisateur = utilisateurRepository.findById(empruntRequestDto.utilisateurId())
                 .orElseThrow(() -> new MetierException("Utilisateur introuvable"));
 
         List<Materiel> disponibles = materielRepository.retourneListeMaterielDisponiblePourPeriodeParIdCategorieModele(
-                empruntDto.dateDebut(), empruntDto.dateFin(), materiel.getModele().getCategorieModele().getId()
+                empruntRequestDto.dateDebut(), empruntRequestDto.dateFin(), materiel.getModele().getCategorieModele().getId()
         );
 
         boolean materielDisponible = disponibles.stream()
-                .anyMatch(m -> m.getId().equals(empruntDto.materielId()));
+                .anyMatch(m -> m.getId().equals(empruntRequestDto.materielId()));
 
         if (!materielDisponible)
             throw new MetierException("Ce matériel n'est pas disponible sur cette période");
@@ -250,10 +253,10 @@ public class EmpruntService implements IEmpruntService {
         Emprunt emprunt = new Emprunt();
         emprunt.setUtilisateur(utilisateur);
         emprunt.setMateriel(materiel);
-        emprunt.setDateDebut(empruntDto.dateDebut());
-        emprunt.setDateFin(empruntDto.dateFin());
+        emprunt.setDateDebut(empruntRequestDto.dateDebut());
+        emprunt.setDateFin(empruntRequestDto.dateFin());
         emprunt.setStatutEmprunt(statutEmprunt);
-        emprunt.setNote(empruntDto.note());
+        emprunt.setNote(empruntRequestDto.note());
 
         return EmpruntResponseDto.depuisEntite(empruntRepository.save(emprunt));
     }

@@ -99,12 +99,10 @@ INSERT INTO composant (libelle) VALUES
 ('Dock USB-C');
 
 
-
-
-INSERT INTO categorie_utilisateur (libelle) VALUES
-('Administrateur'),
-('Enseignant'),
-('Étudiant');
+INSERT INTO categorie_utilisateur (libelle, code) VALUES
+('Administrateur', 'ADMIN'),
+('Enseignant', 'USER'),
+('Étudiant', 'USER');
 
 
 INSERT INTO promotion (libelle) VALUES

@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestControllerAdvice
-public class GlobalExceptionInterceptor {
+public class GlobalExceptionHandler {
 
     //intercepte les exceptions du à un JSON qui ne respecte pas des contraintes (@NotBlank, @Size...)
     @ExceptionHandler(MethodArgumentNotValidException.class)
