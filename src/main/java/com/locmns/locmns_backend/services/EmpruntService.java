@@ -2,13 +2,13 @@ package com.locmns.locmns_backend.services;
 
 import com.locmns.locmns_backend.constants.CodeStatutEmprunt;
 import com.locmns.locmns_backend.constants.Role;
-import com.locmns.locmns_backend.dto.request.EmpruntRequestDto;
-import com.locmns.locmns_backend.dto.request.StatutRequestDto;
+import com.locmns.locmns_backend.dto.request.*;
 import com.locmns.locmns_backend.dto.response.EmpruntResponseDto;
 import com.locmns.locmns_backend.exception.MetierException;
 import com.locmns.locmns_backend.exception.RessourceIntrouvableException;
 import com.locmns.locmns_backend.model.*;
 import com.locmns.locmns_backend.repository.*;
+import com.locmns.locmns_backend.validator.emprunt.EmpruntValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -26,7 +26,49 @@ public class EmpruntService implements IEmpruntService {
     private final MaterielRepository materielRepository;
     private final UtilisateurRepository utilisateurRepository;
     private final StatutEmpruntRepository statutEmpruntRepository;
-    private final IMaterielService IMaterielService;
+    private final IMaterielService materielService;
+    private final EmpruntValidator empruntValidator;
+
+    private List<String> statutsExclus() {
+        return List.of(
+                CodeStatutEmprunt.DEMANDE_EN_COURS.name(),
+                CodeStatutEmprunt.REFUSE.name()
+        );
+    }
+
+    // =========================================================
+    // UTIL
+    // =========================================================
+
+    private Emprunt getEmprunt(Integer id) {
+        return empruntRepository.findById(id)
+                .orElseThrow(() -> new RessourceIntrouvableException("Emprunt non trouvé : " + id));
+    }
+
+    private StatutEmprunt getStatutParCode(CodeStatutEmprunt code) {
+        return statutEmpruntRepository.findByCode(code.name())
+                .orElseThrow(() -> new RessourceIntrouvableException("Statut introuvable : " + code));
+    }
+
+    private boolean isAdmin(Utilisateur user) {
+        return Role.ADMIN.name().equals(user.getCategorieUtilisateur().getCode());
+    }
+
+    private List<EmpruntResponseDto> map(List<Emprunt> list) {
+        return list.stream().map(EmpruntResponseDto::depuisEntite).toList();
+    }
+
+    private List<String> statutsDemandes() {
+        return List.of(
+                CodeStatutEmprunt.DEMANDE_EN_COURS.name(),
+                CodeStatutEmprunt.DEMANDE_PROLONGATION.name(),
+                CodeStatutEmprunt.DEMANDE_RETOUR_ANTICIPE.name()
+        );
+    }
+
+    // =========================================================
+    // READ
+    // =========================================================
 
     @Override
     public Optional<EmpruntResponseDto> obtenirEmpruntsParId(Integer id) {
@@ -35,122 +77,235 @@ public class EmpruntService implements IEmpruntService {
 
     @Override
     public List<EmpruntResponseDto> obtenirTousLesEmprunts() {
-        return empruntRepository.findAll(Sort.by(Sort.Direction.ASC,"dateCreation")).stream()
-                .map(EmpruntResponseDto::depuisEntite)
-                .toList();
+        return map(empruntRepository.findAll(Sort.by("dateCreation")));
     }
+
 
     @Override
-    public List<EmpruntResponseDto> obtenirEmpruntsActifs() {
-        return empruntRepository.retourneListeEmpruntActif(CodeStatutEmprunt.ACCEPTE.name()).stream()
-                .map(EmpruntResponseDto::depuisEntite)
-                .toList();
+    public List<EmpruntResponseDto> obtenirEmpruntSelonRole(Utilisateur user) {
+        return isAdmin(user)
+                ? map(empruntRepository.retourneListeEmpruntActif(statutsExclus()))
+                : map(empruntRepository.retourneListeEmpruntActifParEmail(statutsExclus(), user.getEmail()));
     }
+
 
     @Override
-    public List<EmpruntResponseDto> obtenirEmpruntSelonRole(Utilisateur utilisateur) {
-        String code = utilisateur.getCategorieUtilisateur().getCode();
-        if (Role.ADMIN.name().equals(code)) {
-            return empruntRepository.retourneListeEmpruntActif(CodeStatutEmprunt.ACCEPTE.name()).stream()
-                    .map(EmpruntResponseDto::depuisEntite)
-                    .toList();
-        }
-        return empruntRepository.retourneListeEmpruntActifParEmail(CodeStatutEmprunt.ACCEPTE.name(), utilisateur.getEmail()).stream()
-                .map(EmpruntResponseDto::depuisEntite)
-                .toList();
+    public List<EmpruntResponseDto> obtenirDemandesEmpruntSelonRole(Utilisateur user) {
+        return isAdmin(user)
+                ? map(empruntRepository.retourneListeDemandeEmprunt(statutsDemandes()))
+                : map(empruntRepository.retourneListeDemandeEmpruntParEmail(statutsDemandes(), user.getEmail()));
     }
 
-    @Override
-    public List<EmpruntResponseDto> obtenirDemandesEmprunt() {
-        List<String> codes = List.of(
-                CodeStatutEmprunt.DEMANDE_EN_COURS.name(),
-                CodeStatutEmprunt.DEMANDE_PROLONGATION.name(),
-                CodeStatutEmprunt.DEMANDE_RETOUR_ANTICIPE.name()
-        );
-        return empruntRepository.retourneListeDemandeEmprunt(codes).stream()
-                .map(EmpruntResponseDto::depuisEntite)
-                .toList();
-    }
-
-    @Override
-    public List<EmpruntResponseDto> obtenirDemandesEmpruntSelonRole(Utilisateur utilisateur) {
-        String role = utilisateur.getCategorieUtilisateur().getLibelle();
-        List<String> codes = List.of(
-                CodeStatutEmprunt.DEMANDE_EN_COURS.name(),
-                CodeStatutEmprunt.DEMANDE_PROLONGATION.name(),
-                CodeStatutEmprunt.DEMANDE_RETOUR_ANTICIPE.name()
-        );
-
-        String code = utilisateur.getCategorieUtilisateur().getCode();
-        if (Role.ADMIN.name().equals(code))  {
-            return empruntRepository.retourneListeDemandeEmprunt(codes).stream()
-                    .map(EmpruntResponseDto::depuisEntite)
-                    .toList();
-        }
-        return empruntRepository.retourneListeDemandeEmpruntParEmail(codes, utilisateur.getEmail()).stream()
-                .map(EmpruntResponseDto::depuisEntite)
-                .toList();
-    }
-
-    @Override
-    public List<EmpruntResponseDto> obtenirEmpruntsRecents() {
-        return empruntRepository.retourneEmpruntRecent(LocalDate.now().minusDays(30)).stream()
-                .map(EmpruntResponseDto::depuisEntite)
-                .toList();
-    }
 
     @Override
     public List<EmpruntResponseDto> obtenirEmpruntsRecentsSelonRole(Utilisateur utilisateur) {
-        String code = utilisateur.getCategorieUtilisateur().getCode();
-        if (Role.ADMIN.name().equals(code)) {
-            return empruntRepository.retourneEmpruntRecent(LocalDate.now().minusDays(30)).stream()
-                    .map(EmpruntResponseDto::depuisEntite)
-                    .toList();
-        }
-        return empruntRepository.retourneEmpruntRecentParEmail(LocalDate.now().minusDays(30), utilisateur.getEmail()).stream()
-                .map(EmpruntResponseDto::depuisEntite)
-                .toList();
+        return List.of();
     }
 
-    @Override
-    public List<EmpruntResponseDto> obtenirListeEmpruntEnRetard() {
-        return empruntRepository.retourneEmpruntEnRetard().stream()
-                .map(EmpruntResponseDto::depuisEntite)
-                .toList();
-    }
 
     @Override
     public List<EmpruntResponseDto> obtenirListeEmpruntEnRetardSelonRole(Utilisateur utilisateur) {
-        String code = utilisateur.getCategorieUtilisateur().getCode();
-        if (Role.ADMIN.name().equals(code)) {
-            return empruntRepository.retourneEmpruntEnRetard().stream()
-                    .map(EmpruntResponseDto::depuisEntite)
-                    .toList();
-        }
-        return empruntRepository.retourneEmpruntEnRetardParEmail(utilisateur.getEmail()).stream()
-                .map(EmpruntResponseDto::depuisEntite)
-                .toList();
+        return List.of();
     }
 
-    @Override
-    public List<EmpruntResponseDto> obtenirHistoriqueEmprunt() {
-        return empruntRepository.retourneHistoriqueEmprunt().stream()
-                .map(EmpruntResponseDto::depuisEntite)
-                .toList();
-    }
 
     @Override
     public List<EmpruntResponseDto> obtenirHistoriqueEmpruntSelonRole(Utilisateur utilisateur) {
-        String code = utilisateur.getCategorieUtilisateur().getCode();
-        if (Role.ADMIN.name().equals(code)) {
-            return empruntRepository.retourneHistoriqueEmprunt().stream()
-                    .map(EmpruntResponseDto::depuisEntite)
-                    .toList();
-        }
-        return empruntRepository.retourneHistoriqueEmpruntParEmail(utilisateur.getEmail()).stream()
-                .map(EmpruntResponseDto::depuisEntite)
-                .toList();
+        return List.of();
     }
+
+    // =========================================================
+    // CREATE
+    // =========================================================
+
+    @Transactional
+    @Override
+    public EmpruntResponseDto creerEmprunt(EmpruntRequestDto dto) {
+
+        if (!dto.dateFin().isAfter(dto.dateDebut())) {
+            throw new MetierException("Dates invalides");
+        }
+
+        Materiel materiel = materielRepository.findById(dto.materielId())
+                .orElseThrow(() -> new MetierException("Matériel introuvable"));
+
+        Utilisateur utilisateur = utilisateurRepository.findById(dto.utilisateurId())
+                .orElseThrow(() -> new MetierException("Utilisateur introuvable"));
+
+        List<Materiel> disponibles =
+                materielRepository.retourneListeMaterielDisponiblePourPeriodeParIdCategorieModele(
+                        dto.dateDebut(),
+                        dto.dateFin(),
+                        materiel.getModele().getCategorieModele().getId()
+                );
+
+        boolean disponible = disponibles.stream().anyMatch(m -> m.getId().equals(dto.materielId()));
+        if (!disponible) {
+            throw new MetierException("Matériel indisponible");
+        }
+
+        Emprunt emprunt = new Emprunt();
+        emprunt.setUtilisateur(utilisateur);
+        emprunt.setMateriel(materiel);
+        emprunt.setDateDebut(dto.dateDebut());
+        emprunt.setDateFin(dto.dateFin());
+        emprunt.setStatutEmprunt(getStatutParCode(CodeStatutEmprunt.DEMANDE_EN_COURS));
+        emprunt.setNote(dto.note());
+
+        return EmpruntResponseDto.depuisEntite(empruntRepository.save(emprunt));
+    }
+
+    // =========================================================
+    // UPDATE SIMPLE
+    // =========================================================
+
+    @Transactional
+    @Override
+    public void modifierEmprunt(Integer id, EmpruntRequestDto dto) {
+
+        Emprunt emprunt = getEmprunt(id);
+
+        Materiel materiel = materielRepository.findById(dto.materielId())
+                .orElseThrow(() -> new MetierException("Matériel introuvable"));
+
+        Utilisateur utilisateur = utilisateurRepository.findById(dto.utilisateurId())
+                .orElseThrow(() -> new MetierException("Utilisateur introuvable"));
+
+        emprunt.setMateriel(materiel);
+        emprunt.setUtilisateur(utilisateur);
+        emprunt.setDateDebut(dto.dateDebut());
+        emprunt.setDateFin(dto.dateFin());
+        emprunt.setNote(dto.note());
+
+        empruntRepository.save(emprunt);
+    }
+
+    // =========================================================
+    // CHANGEMENT DE STATUT (point d'entrée unique)
+    // =========================================================
+
+    @Transactional
+    @Override
+    public void modifierStatutEmprunt(int empruntId, StatutUpdateRequestDto dto) {
+
+        Emprunt emprunt = getEmprunt(empruntId);
+
+        CodeStatutEmprunt code;
+        try {
+            code = CodeStatutEmprunt.valueOf(dto.code());
+        } catch (IllegalArgumentException e) {
+            throw new MetierException("Code statut inconnu : " + dto.code());
+        }
+
+        switch (code) {
+            // statuts simples : pas de logique métier supplémentaire
+            case ACCEPTE, REFUSE,
+                 PROLONGATION_REFUSE, DEMANDE_RETOUR_ANTICIPE_REFUSE -> { }
+
+            default -> throw new MetierException(
+                    "Utilisez les endpoints dédiés pour le statut : " + code
+            );
+        }
+
+        emprunt.setStatutEmprunt(getStatutParCode(code));
+        empruntRepository.save(emprunt);
+    }
+
+    // =========================================================
+    // DEMANDE PROLONGATION
+    // =========================================================
+
+    @Transactional
+    @Override
+    public void demanderProlongation(int id, DemandeProlongationRequestDto dto) {
+
+        Emprunt emprunt = getEmprunt(id);
+
+        if (dto.dateProlongation() == null) {
+            throw new MetierException("dateProlongation obligatoire");
+        }
+
+        empruntValidator.validerProlongation(emprunt, dto.dateProlongation());
+
+        emprunt.setDateProlongation(dto.dateProlongation());
+        emprunt.setStatutEmprunt(getStatutParCode(CodeStatutEmprunt.DEMANDE_PROLONGATION));
+
+        empruntRepository.save(emprunt);
+    }
+
+    // =========================================================
+    // ACCEPTER PROLONGATION (admin)
+    // =========================================================
+
+    @Transactional
+    @Override
+    public void accepterProlongation(int id) {
+
+        Emprunt emprunt = getEmprunt(id);
+
+        if (emprunt.getDateProlongation() == null) {
+            throw new MetierException("Aucune prolongation en attente");
+        }
+
+        emprunt.setDateFin(emprunt.getDateProlongation());
+        emprunt.setDateProlongation(null);
+        emprunt.setStatutEmprunt(getStatutParCode(CodeStatutEmprunt.PROLONGATION_ACCEPTE));
+
+        empruntRepository.save(emprunt);
+    }
+
+    // =========================================================
+    // DEMANDE RETOUR ANTICIPÉ
+    // =========================================================
+
+    @Transactional
+    @Override
+    public void demanderRetourAnticipe(int id, DemandeRetourAnticipeRequestDto dto) {
+
+        Emprunt emprunt = getEmprunt(id);
+
+        if (dto.dateRetourAnticipe() == null) {
+            throw new MetierException("dateRetourAnticipe obligatoire");
+        }
+
+        if (!dto.dateRetourAnticipe().isAfter(emprunt.getDateDebut())) {
+            throw new MetierException("La date de retour anticipé doit être après la date de début");
+        }
+
+        if (!dto.dateRetourAnticipe().isBefore(emprunt.getDateFin())) {
+            throw new MetierException("La date de retour anticipé doit être avant la date de fin");
+        }
+
+        emprunt.setDateRetourAnticipe(dto.dateRetourAnticipe());
+        emprunt.setStatutEmprunt(getStatutParCode(CodeStatutEmprunt.DEMANDE_RETOUR_ANTICIPE));
+
+        empruntRepository.save(emprunt);
+    }
+
+    // =========================================================
+    // ACCEPTER RETOUR ANTICIPÉ (admin)
+    // =========================================================
+
+    @Transactional
+    @Override
+    public void accepterRetourAnticipe(int id) {
+
+        Emprunt emprunt = getEmprunt(id);
+
+        if (emprunt.getDateRetourAnticipe() == null) {
+            throw new MetierException("Aucun retour anticipé demandé");
+        }
+
+        emprunt.setDateFin(emprunt.getDateRetourAnticipe());
+        emprunt.setDateRetourAnticipe(null);
+        emprunt.setStatutEmprunt(getStatutParCode(CodeStatutEmprunt.DEMANDE_RETOUR_ANTICIPE_ACCEPTE));
+
+        empruntRepository.save(emprunt);
+    }
+
+    // =========================================================
+    // DELETE
+    // =========================================================
 
     @Override
     public void supprimerEmprunt(Integer id) {
@@ -159,112 +314,4 @@ public class EmpruntService implements IEmpruntService {
         }
         empruntRepository.deleteById(id);
     }
-
-    @Transactional
-    @Override
-    public void modifierEmprunt(Integer id, EmpruntRequestDto empruntRequestDto) {
-        Emprunt emprunt = empruntRepository.findById(id)
-                .orElseThrow(() -> new RessourceIntrouvableException("Emprunt introuvable"));
-
-        Materiel materiel = materielRepository.findById(empruntRequestDto.materielId())
-                .orElseThrow(() -> new MetierException("Matériel introuvable"));
-
-        Utilisateur utilisateur = utilisateurRepository.findById(empruntRequestDto.utilisateurId())
-                .orElseThrow(() -> new MetierException("Utilisateur introuvable"));
-
-        emprunt.setMateriel(materiel);
-        emprunt.setUtilisateur(utilisateur);
-        emprunt.setDateDebut(empruntRequestDto.dateDebut());
-        emprunt.setDateFin(empruntRequestDto.dateFin());
-        emprunt.setNote(empruntRequestDto.note());
-        empruntRepository.save(emprunt);
-    }
-
-    @Transactional
-    @Override
-    public void modifierStatutEmpruntFromDto(int empruntId, StatutRequestDto statutRequestDto) {
-        Emprunt emprunt = empruntRepository.findById(empruntId)
-                .orElseThrow(() -> new RessourceIntrouvableException("Emprunt non trouvé : " + empruntId));
-
-        StatutEmprunt nouveauStatut = statutEmpruntRepository.findById(statutRequestDto.statutId())
-                .orElseThrow(() -> new RessourceIntrouvableException("Statut non trouvé : " + statutRequestDto.statutId()));
-
-        String code = statutRequestDto.code();
-        if (code == null || code.isBlank()) {
-            code = nouveauStatut.getCode();
-        }
-
-        LocalDate date = statutRequestDto.date();
-
-        if (CodeStatutEmprunt.DEMANDE_PROLONGATION.name().equals(code)) {
-            if (date == null) throw new MetierException("La date de prolongation est obligatoire");
-
-            if (!date.isAfter(emprunt.getDateFin())) throw new MetierException("La date de prolongation doit être postérieure à la date de fin de l'emprunt");
-
-            IMaterielService.verifierDisponibilitePourProlongation(empruntId, date);
-
-        } else if (CodeStatutEmprunt.DEMANDE_RETOUR_ANTICIPE.name().equals(code)) {
-            if (date == null) throw new MetierException("La date de retour anticipé est obligatoire");
-
-            if (!date.isBefore(emprunt.getDateFin())) throw new MetierException("La date de retour anticipé doit être antérieure à la date de fin de l'emprunt");
-        }
-        emprunt.setStatutEmprunt(nouveauStatut);
-        if (date != null) {
-            if (CodeStatutEmprunt.DEMANDE_PROLONGATION.name().equals(code)) {
-                emprunt.setDateProlongation(date);
-
-            } else if (CodeStatutEmprunt.DEMANDE_RETOUR_ANTICIPE.name().equals(code)) {
-                emprunt.setDateRetourAnticipe(date);
-            }
-        }
-        empruntRepository.save(emprunt);
-    }
-
-    @Transactional
-    @Override
-    public EmpruntResponseDto creerEmprunt(EmpruntRequestDto empruntRequestDto) {
-        if (!empruntRequestDto.dateFin().isAfter(empruntRequestDto.dateDebut()))
-            throw new MetierException("La date de fin doit être après la date de début");
-
-        if (empruntRequestDto.dateDebut().isBefore(LocalDate.now()))
-            throw new MetierException("La date de début ne peut pas être dans le passé");
-
-        if (empruntRequestDto.dateFin().isBefore(LocalDate.now()))
-            throw new MetierException("La date de fin ne peut pas être dans le passé");
-
-        Materiel materiel = materielRepository.findById(empruntRequestDto.materielId())
-                .orElseThrow(() -> new MetierException("Matériel introuvable"));
-
-        Utilisateur utilisateur = utilisateurRepository.findById(empruntRequestDto.utilisateurId())
-                .orElseThrow(() -> new MetierException("Utilisateur introuvable"));
-
-        List<Materiel> disponibles = materielRepository.retourneListeMaterielDisponiblePourPeriodeParIdCategorieModele(
-                empruntRequestDto.dateDebut(), empruntRequestDto.dateFin(), materiel.getModele().getCategorieModele().getId()
-        );
-
-        boolean materielDisponible = disponibles.stream()
-                .anyMatch(m -> m.getId().equals(empruntRequestDto.materielId()));
-
-        if (!materielDisponible)
-            throw new MetierException("Ce matériel n'est pas disponible sur cette période");
-
-        StatutEmprunt statutEmprunt = statutEmpruntRepository.findByCode(CodeStatutEmprunt.DEMANDE_EN_COURS.name())
-                .orElseThrow(() -> new MetierException("Statut emprunt introuvable"));
-
-        Emprunt emprunt = new Emprunt();
-        emprunt.setUtilisateur(utilisateur);
-        emprunt.setMateriel(materiel);
-        emprunt.setDateDebut(empruntRequestDto.dateDebut());
-        emprunt.setDateFin(empruntRequestDto.dateFin());
-        emprunt.setStatutEmprunt(statutEmprunt);
-        emprunt.setNote(empruntRequestDto.note());
-
-        return EmpruntResponseDto.depuisEntite(empruntRepository.save(emprunt));
-    }
-
-
-
-
-
-
 }

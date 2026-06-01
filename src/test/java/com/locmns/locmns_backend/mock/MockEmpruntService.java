@@ -1,7 +1,6 @@
 package com.locmns.locmns_backend.mock;
 
-import com.locmns.locmns_backend.dto.request.EmpruntRequestDto;
-import com.locmns.locmns_backend.dto.request.StatutRequestDto;
+import com.locmns.locmns_backend.dto.request.*;
 import com.locmns.locmns_backend.dto.response.EmpruntResponseDto;
 import com.locmns.locmns_backend.model.Utilisateur;
 import com.locmns.locmns_backend.services.IEmpruntService;
@@ -22,17 +21,7 @@ public class MockEmpruntService implements IEmpruntService {
     }
 
     @Override
-    public List<EmpruntResponseDto> obtenirEmpruntsActifs() {
-        return List.of();
-    }
-
-    @Override
     public List<EmpruntResponseDto> obtenirEmpruntSelonRole(Utilisateur utilisateur) {
-        return List.of();
-    }
-
-    @Override
-    public List<EmpruntResponseDto> obtenirDemandesEmprunt() {
         return List.of();
     }
 
@@ -42,17 +31,7 @@ public class MockEmpruntService implements IEmpruntService {
     }
 
     @Override
-    public List<EmpruntResponseDto> obtenirEmpruntsRecents() {
-        return List.of();
-    }
-
-    @Override
     public List<EmpruntResponseDto> obtenirEmpruntsRecentsSelonRole(Utilisateur utilisateur) {
-        return List.of();
-    }
-
-    @Override
-    public List<EmpruntResponseDto> obtenirListeEmpruntEnRetard() {
         return List.of();
     }
 
@@ -61,10 +40,6 @@ public class MockEmpruntService implements IEmpruntService {
         return List.of();
     }
 
-    @Override
-    public List<EmpruntResponseDto> obtenirHistoriqueEmprunt() {
-        return List.of();
-    }
 
     @Override
     public List<EmpruntResponseDto> obtenirHistoriqueEmpruntSelonRole(Utilisateur utilisateur) {
@@ -78,7 +53,29 @@ public class MockEmpruntService implements IEmpruntService {
     public void modifierEmprunt(Integer id, EmpruntRequestDto empruntRequestDto) {}
 
     @Override
-    public void modifierStatutEmpruntFromDto(int empruntId, StatutRequestDto statutRequestDto) {}
+    public void demanderProlongation(int id, DemandeProlongationRequestDto dto) {
+
+    }
+
+    @Override
+    public void accepterProlongation(int id) {
+
+    }
+
+    @Override
+    public void demanderRetourAnticipe(int id, DemandeRetourAnticipeRequestDto dto) {
+
+    }
+
+    @Override
+    public void accepterRetourAnticipe(int id) {
+
+    }
+
+    @Override
+    public void modifierStatutEmprunt(int empruntId, StatutUpdateRequestDto statutUpdateRequestDto) {
+
+    }
 
     @Override
     public EmpruntResponseDto creerEmprunt(EmpruntRequestDto empruntRequestDto) {

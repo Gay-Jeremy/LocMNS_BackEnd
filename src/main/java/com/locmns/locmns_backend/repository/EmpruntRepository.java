@@ -13,12 +13,11 @@ import java.util.List;
 @Repository
 public interface EmpruntRepository extends JpaRepository<Emprunt, Integer> {
 
-    @Query("SELECT e FROM Emprunt e WHERE e.statutEmprunt.code= :code AND e.dateFin >= CURRENT_DATE")
-    List<Emprunt> retourneListeEmpruntActif(@Param("code") String code);
+    @Query("SELECT e FROM Emprunt e WHERE e.statutEmprunt.code NOT IN :codes AND e.dateFin >= CURRENT_DATE")
+    List<Emprunt> retourneListeEmpruntActif(@Param("codes")  List<String> codes);
 
-    @Query("SELECT e FROM Emprunt e WHERE e.statutEmprunt.code= :code AND e.dateFin >= CURRENT_DATE AND e.utilisateur.email = :email")
-    List<Emprunt> retourneListeEmpruntActifParEmail(@Param("code") String code,
-                                                    @Param("email") String email);
+    @Query("SELECT e FROM Emprunt e WHERE e.statutEmprunt.code NOT IN :codes AND e.dateFin >= CURRENT_DATE AND e.utilisateur.email = :email")
+    List<Emprunt> retourneListeEmpruntActifParEmail(@Param("codes") List<String> codes, @Param("email") String email);
 
     @Query("SELECT e FROM Emprunt e WHERE e.statutEmprunt.code IN :codes")
     List<Emprunt> retourneListeDemandeEmprunt(@Param("codes") List<String> codes);

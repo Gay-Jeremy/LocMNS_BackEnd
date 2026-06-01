@@ -124,7 +124,10 @@ INSERT INTO statut_emprunt (libelle,code) VALUES
 ('Demande Prolongation','DEMANDE_PROLONGATION'),
 ('Demande Retour Anticipé','DEMANDE_RETOUR_ANTICIPE'),
 ('Prolongation Refusé', 'PROLONGATION_REFUSE'),
-('Retour Anticipé Refusé', 'DEMANDE_RETOUR_ANTICIPE_REFUSE');
+('Retour Anticipé Refusé', 'DEMANDE_RETOUR_ANTICIPE_REFUSE'),
+('Prolongation Acceptée', 'PROLONGATION_ACCEPTE'),
+('Retour Anticipé Accepté', 'DEMANDE_RETOUR_ANTICIPE_ACCEPTE');
+
 
 
 INSERT INTO emprunt (date_creation, date_debut, date_fin, date_prolongation, date_retour_anticipe, date_retour_reel, materiel_id, statut_emprunt_id, utilisateur_id) VALUES

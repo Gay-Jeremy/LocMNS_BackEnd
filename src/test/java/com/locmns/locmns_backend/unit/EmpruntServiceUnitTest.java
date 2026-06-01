@@ -10,6 +10,7 @@ import com.locmns.locmns_backend.model.*;
 import com.locmns.locmns_backend.services.EmpruntService;
 import com.locmns.locmns_backend.services.IEmpruntService;
 import com.locmns.locmns_backend.services.MaterielService;
+import com.locmns.locmns_backend.validator.emprunt.EmpruntValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -46,13 +47,15 @@ public class EmpruntServiceUnitTest {
         utilisateurRepository = Mockito.mock(UtilisateurRepository.class);
         statutEmpruntRepository = Mockito.mock(StatutEmpruntRepository.class);
         materielService = Mockito.mock(MaterielService.class);
+        EmpruntValidator mockEmpruntValidator = Mockito.mock(EmpruntValidator.class);
 
         IEmpruntService = new EmpruntService(
                 empruntRepository,
                 materielRepository,
                 utilisateurRepository,
                 statutEmpruntRepository,
-                materielService
+                materielService,
+                mockEmpruntValidator
         );
 
         // Données communes à tous les tests

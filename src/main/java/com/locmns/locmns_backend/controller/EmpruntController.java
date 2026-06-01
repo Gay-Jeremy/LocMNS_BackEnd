@@ -1,21 +1,16 @@
 package com.locmns.locmns_backend.controller;
 
-import com.locmns.locmns_backend.dto.request.EmpruntRequestDto;
-import com.locmns.locmns_backend.dto.request.StatutRequestDto;
+import com.locmns.locmns_backend.dto.request.*;
 import com.locmns.locmns_backend.dto.response.EmpruntResponseDto;
 import com.locmns.locmns_backend.model.Utilisateur;
-import com.locmns.locmns_backend.security.IsUser;
 import com.locmns.locmns_backend.security.UtilisateurDetails;
 import com.locmns.locmns_backend.services.IEmpruntService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
@@ -25,79 +20,132 @@ public class EmpruntController {
 
     private final IEmpruntService empruntService;
 
-    @GetMapping("/liste/recent")
-    public List<EmpruntResponseDto> obtenirEmpruntsRecents(
-            @AuthenticationPrincipal UtilisateurDetails utilisateurDetails) {
-        Utilisateur utilisateur = utilisateurDetails.getUtilisateur();
-        return empruntService.obtenirEmpruntsRecentsSelonRole(utilisateur);
+    // =========================
+    // UTILS
+    // =========================
+
+    private Utilisateur getUser(UtilisateurDetails details) {
+        return details.getUtilisateur();
     }
 
-    @GetMapping("/liste/actif")
-    public List<EmpruntResponseDto> obtenirEmpruntActif(
-            @AuthenticationPrincipal UtilisateurDetails utilisateurDetails) {
-        Utilisateur utilisateur = utilisateurDetails.getUtilisateur();
-        return empruntService.obtenirEmpruntSelonRole(utilisateur);
-    }
+    // =========================
+    // READ
+    // =========================
 
     @GetMapping("/liste")
-    public List<EmpruntResponseDto> obtenirTousLesEmprunts() {
+    public List<EmpruntResponseDto> all() {
         return empruntService.obtenirTousLesEmprunts();
     }
 
+    @GetMapping("/{id}")
+    public EmpruntResponseDto getById(@PathVariable int id) {
+        return empruntService.obtenirEmpruntsParId(id)
+                .orElseThrow(() -> new RuntimeException("Emprunt introuvable"));
+    }
+
+    @GetMapping("/liste/actif")
+    public List<EmpruntResponseDto> actifs(@AuthenticationPrincipal UtilisateurDetails user) {
+        return empruntService.obtenirEmpruntSelonRole(getUser(user));
+    }
+
     @GetMapping("/liste/demande")
-    public List<EmpruntResponseDto> obtenirDemandesEmprunt(
-            @AuthenticationPrincipal UtilisateurDetails utilisateurDetails) {
-        Utilisateur utilisateur = utilisateurDetails.getUtilisateur();
-        return empruntService.obtenirDemandesEmpruntSelonRole(utilisateur);
+    public List<EmpruntResponseDto> demandes(@AuthenticationPrincipal UtilisateurDetails user) {
+        return empruntService.obtenirDemandesEmpruntSelonRole(getUser(user));
+    }
+
+    @GetMapping("/liste/recent")
+    public List<EmpruntResponseDto> recent(@AuthenticationPrincipal UtilisateurDetails user) {
+        return empruntService.obtenirEmpruntsRecentsSelonRole(getUser(user));
     }
 
     @GetMapping("/liste/retard")
-    public List<EmpruntResponseDto> obtenirEmpruntEnRetard(
-            @AuthenticationPrincipal UtilisateurDetails utilisateurDetails) {
-        Utilisateur utilisateur = utilisateurDetails.getUtilisateur();
-        return empruntService.obtenirListeEmpruntEnRetardSelonRole(utilisateur);
+    public List<EmpruntResponseDto> retard(@AuthenticationPrincipal UtilisateurDetails user) {
+        return empruntService.obtenirListeEmpruntEnRetardSelonRole(getUser(user));
     }
 
     @GetMapping("/historique")
-    public List<EmpruntResponseDto> obtenirHistoriqueEmprunt(
-            @AuthenticationPrincipal UtilisateurDetails utilisateurDetails) {
-        Utilisateur utilisateur = utilisateurDetails.getUtilisateur();
-        return empruntService.obtenirHistoriqueEmpruntSelonRole(utilisateur);
+    public List<EmpruntResponseDto> historique(@AuthenticationPrincipal UtilisateurDetails user) {
+        return empruntService.obtenirHistoriqueEmpruntSelonRole(getUser(user));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<EmpruntResponseDto> obtenirEmpruntParId(@PathVariable int id) {
-        Optional<EmpruntResponseDto> optionalEmprunt = empruntService.obtenirEmpruntsParId(id);
-        if (optionalEmprunt.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(optionalEmprunt.get(), HttpStatus.OK);
+    // =========================
+    // CREATE
+    // =========================
+
+    @PostMapping
+    public EmpruntResponseDto create(@RequestBody @Valid EmpruntRequestDto dto) {
+        return empruntService.creerEmprunt(dto);
     }
 
-    @PostMapping("")
-    public ResponseEntity<EmpruntResponseDto> creerEmprunt(@RequestBody @Valid EmpruntRequestDto empruntRequestDto) {
-        EmpruntResponseDto emprunt = empruntService.creerEmprunt(empruntRequestDto);
-        return new ResponseEntity<>(emprunt, HttpStatus.CREATED);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> supprimerEmprunt(@PathVariable int id) {
-        empruntService.supprimerEmprunt(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
+    // =========================
+    // UPDATE EMPRUNT
+    // =========================
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> modifierEmprunt(@PathVariable int id, @RequestBody @Valid EmpruntRequestDto empruntRequestDto) {
-        empruntService.modifierEmprunt(id, empruntRequestDto);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public void update(@PathVariable int id, @RequestBody @Valid EmpruntRequestDto dto) {
+        empruntService.modifierEmprunt(id, dto);
     }
 
-    @PutMapping("/{id}/statut")
-    public ResponseEntity<Void> modifierStatutEmprunt(
+    // =========================
+    // CHANGEMENT DE STATUT SIMPLE (ACCEPTE, REFUSE, TERMINE...)
+    // =========================
+
+    @PatchMapping("/{id}/statut")
+    public void updateStatut(
             @PathVariable int id,
-            @RequestBody StatutRequestDto statutRequestDTO) {
-        empruntService.modifierStatutEmpruntFromDto(id, statutRequestDTO);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            @RequestBody StatutUpdateRequestDto dto
+    ) {
+        empruntService.modifierStatutEmprunt(id, dto);
     }
 
+    // =========================
+    // DEMANDE PROLONGATION (utilisateur)
+    // =========================
+
+    @PatchMapping("/{id}/prolongation/demande")
+    public void demanderProlongation(
+            @PathVariable int id,
+            @RequestBody DemandeProlongationRequestDto dto
+    ) {
+        empruntService.demanderProlongation(id, dto);
+    }
+
+    // =========================
+    // ACCEPTER PROLONGATION (admin)
+    // =========================
+
+    @PatchMapping("/{id}/prolongation/accepter")
+    public void accepterProlongation(@PathVariable int id) {
+        empruntService.accepterProlongation(id);
+    }
+
+    // =========================
+    // DEMANDE RETOUR ANTICIPÉ (utilisateur)
+    // =========================
+
+    @PatchMapping("/{id}/retour-anticipe/demande")
+    public void demanderRetourAnticipe(
+            @PathVariable int id,
+            @RequestBody DemandeRetourAnticipeRequestDto dto
+    ) {
+        empruntService.demanderRetourAnticipe(id, dto);
+    }
+
+    // =========================
+    // ACCEPTER RETOUR ANTICIPÉ (admin)
+    // =========================
+
+    @PatchMapping("/{id}/retour-anticipe/accepter")
+    public void accepterRetourAnticipe(@PathVariable int id) {
+        empruntService.accepterRetourAnticipe(id);
+    }
+
+    // =========================
+    // DELETE
+    // =========================
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable int id) {
+        empruntService.supprimerEmprunt(id);
+    }
 }

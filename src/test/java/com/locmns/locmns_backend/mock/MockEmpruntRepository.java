@@ -43,11 +43,15 @@ public class MockEmpruntRepository implements EmpruntRepository {
 
     // ── Méthodes custom du DAO ──────────────────────────
 
-    @Override
-    public List<Emprunt> retourneListeEmpruntActif(String code) { return List.of(); }
+
 
     @Override
-    public List<Emprunt> retourneListeEmpruntActifParEmail(String code, String email) {
+    public List<Emprunt> retourneListeEmpruntActif(List<String> codes) {
+        return List.of();
+    }
+
+    @Override
+    public List<Emprunt> retourneListeEmpruntActifParEmail(List<String> codes, String email) {
         return List.of();
     }
 
