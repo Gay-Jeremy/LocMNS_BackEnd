@@ -82,36 +82,42 @@ public class EmpruntService implements IEmpruntService {
 
 
     @Override
-    public List<EmpruntResponseDto> obtenirEmpruntSelonRole(Utilisateur user) {
-        return isAdmin(user)
+    public List<EmpruntResponseDto> obtenirEmpruntSelonRole(Utilisateur utilisateur) {
+        return isAdmin(utilisateur)
                 ? map(empruntRepository.retourneListeEmpruntActif(statutsExclus()))
-                : map(empruntRepository.retourneListeEmpruntActifParEmail(statutsExclus(), user.getEmail()));
+                : map(empruntRepository.retourneListeEmpruntActifParEmail(statutsExclus(), utilisateur.getEmail()));
     }
 
 
     @Override
-    public List<EmpruntResponseDto> obtenirDemandesEmpruntSelonRole(Utilisateur user) {
-        return isAdmin(user)
+    public List<EmpruntResponseDto> obtenirDemandesEmpruntSelonRole(Utilisateur utilisateur) {
+        return isAdmin(utilisateur)
                 ? map(empruntRepository.retourneListeDemandeEmprunt(statutsDemandes()))
-                : map(empruntRepository.retourneListeDemandeEmpruntParEmail(statutsDemandes(), user.getEmail()));
+                : map(empruntRepository.retourneListeDemandeEmpruntParEmail(statutsDemandes(), utilisateur.getEmail()));
     }
 
 
     @Override
     public List<EmpruntResponseDto> obtenirEmpruntsRecentsSelonRole(Utilisateur utilisateur) {
-        return List.of();
+        return isAdmin(utilisateur)
+                ? map(empruntRepository.retourneEmpruntRecent(LocalDate.now().minusDays(7)))
+                : map(empruntRepository.retourneEmpruntRecentParEmail(LocalDate.now().minusDays(7), utilisateur.getEmail()));
     }
 
 
     @Override
     public List<EmpruntResponseDto> obtenirListeEmpruntEnRetardSelonRole(Utilisateur utilisateur) {
-        return List.of();
+        return isAdmin(utilisateur)
+                ? map(empruntRepository.retourneEmpruntEnRetard())
+                : map(empruntRepository.retourneEmpruntEnRetardParEmail(utilisateur.getEmail()));
     }
 
 
     @Override
     public List<EmpruntResponseDto> obtenirHistoriqueEmpruntSelonRole(Utilisateur utilisateur) {
-        return List.of();
+        return isAdmin(utilisateur)
+                ? map(empruntRepository.retourneHistoriqueEmprunt())
+                : map(empruntRepository.retourneHistoriqueEmpruntParEmail(utilisateur.getEmail()));
     }
 
     // =========================================================
