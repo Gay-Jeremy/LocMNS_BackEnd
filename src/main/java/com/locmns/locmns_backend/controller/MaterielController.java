@@ -110,7 +110,7 @@ public class MaterielController {
     public ResponseEntity<Void> modifierStatutMateriel(
             @PathVariable Integer id,
             @RequestBody StatutRequestDto statutRequestDTO) {
-        IMaterielService.modifierStatutMateriel(id, statutRequestDTO.getStatutId());
+        IMaterielService.modifierStatutMateriel(id, statutRequestDTO.statutId());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

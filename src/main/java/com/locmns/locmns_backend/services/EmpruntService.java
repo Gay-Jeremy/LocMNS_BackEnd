@@ -186,15 +186,15 @@ public class EmpruntService implements IEmpruntService {
         Emprunt emprunt = empruntRepository.findById(empruntId)
                 .orElseThrow(() -> new RessourceIntrouvableException("Emprunt non trouvé : " + empruntId));
 
-        StatutEmprunt nouveauStatut = statutEmpruntRepository.findById(statutRequestDto.getStatutId())
-                .orElseThrow(() -> new RessourceIntrouvableException("Statut non trouvé : " + statutRequestDto.getStatutId()));
+        StatutEmprunt nouveauStatut = statutEmpruntRepository.findById(statutRequestDto.statutId())
+                .orElseThrow(() -> new RessourceIntrouvableException("Statut non trouvé : " + statutRequestDto.statutId()));
 
-        String code = statutRequestDto.getCode();
+        String code = statutRequestDto.code();
         if (code == null || code.isBlank()) {
             code = nouveauStatut.getCode();
         }
 
-        LocalDate date = statutRequestDto.getDate();
+        LocalDate date = statutRequestDto.date();
 
         if (CodeStatutEmprunt.DEMANDE_PROLONGATION.name().equals(code)) {
             if (date == null) throw new MetierException("La date de prolongation est obligatoire");
@@ -261,5 +261,10 @@ public class EmpruntService implements IEmpruntService {
 
         return EmpruntResponseDto.depuisEntite(empruntRepository.save(emprunt));
     }
+
+
+
+
+
 
 }
