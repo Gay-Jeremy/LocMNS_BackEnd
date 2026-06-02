@@ -128,9 +128,7 @@ public class EmpruntService implements IEmpruntService {
     @Override
     public EmpruntResponseDto creerEmprunt(EmpruntRequestDto dto) {
 
-        if (!dto.dateFin().isAfter(dto.dateDebut())) {
-            throw new MetierException("Dates invalides");
-        }
+        empruntValidator.validerCreationOuModification(dto);
 
         Materiel materiel = materielRepository.findById(dto.materielId())
                 .orElseThrow(() -> new MetierException("Matériel introuvable"));
@@ -169,6 +167,8 @@ public class EmpruntService implements IEmpruntService {
     @Override
     public void modifierEmprunt(Integer id, EmpruntRequestDto dto) {
 
+        empruntValidator.validerCreationOuModification(dto);
+
         Emprunt emprunt = getEmprunt(id);
 
         Materiel materiel = materielRepository.findById(dto.materielId())
@@ -187,7 +187,7 @@ public class EmpruntService implements IEmpruntService {
     }
 
     // =========================================================
-    // CHANGEMENT DE STATUT (point d'entrée unique)
+    // CHANGEMENT DE STATUT
     // =========================================================
 
     @Transactional

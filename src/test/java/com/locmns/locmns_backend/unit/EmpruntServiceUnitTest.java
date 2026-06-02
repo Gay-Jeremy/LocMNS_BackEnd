@@ -47,7 +47,8 @@ public class EmpruntServiceUnitTest {
         utilisateurRepository = Mockito.mock(UtilisateurRepository.class);
         statutEmpruntRepository = Mockito.mock(StatutEmpruntRepository.class);
         materielService = Mockito.mock(MaterielService.class);
-        EmpruntValidator mockEmpruntValidator = Mockito.mock(EmpruntValidator.class);
+
+        EmpruntValidator empruntValidator = new EmpruntValidator();
 
         IEmpruntService = new EmpruntService(
                 empruntRepository,
@@ -55,8 +56,9 @@ public class EmpruntServiceUnitTest {
                 utilisateurRepository,
                 statutEmpruntRepository,
                 materielService,
-                mockEmpruntValidator
+                empruntValidator
         );
+
 
         // Données communes à tous les tests
         CategorieModele categorieModele = new CategorieModele();
@@ -136,8 +138,15 @@ public class EmpruntServiceUnitTest {
 
     @Test
     public void creerEmpruntAvecDateDebutDansLePasse_devrait_LeverMetierException() {
+
+        when(materielRepository.findById(1))
+                .thenReturn(Optional.of(materielDisponible));
+
+        when(utilisateurRepository.findById(1))
+                .thenReturn(Optional.of(utilisateur));
+
         EmpruntRequestDto dtoInvalide = new EmpruntRequestDto(
-                LocalDate.now().minusDays(1), // hier
+                LocalDate.now().minusDays(1),
                 LocalDate.now().plusDays(7),
                 1,
                 1,
@@ -149,7 +158,10 @@ public class EmpruntServiceUnitTest {
                 () -> IEmpruntService.creerEmprunt(dtoInvalide)
         );
 
-        assertEquals("La date de début ne peut pas être dans le passé", exception.getMessage());
+        assertEquals(
+                "La date de début ne peut pas être dans le passé",
+                exception.getMessage()
+        );
     }
 
     @Test
@@ -231,6 +243,6 @@ public class EmpruntServiceUnitTest {
                 () -> IEmpruntService.creerEmprunt(dto)
         );
 
-        assertEquals("Ce matériel n'est pas disponible sur cette période", exception.getMessage());
+        assertEquals("Matériel indisponible", exception.getMessage());
     }
 }
