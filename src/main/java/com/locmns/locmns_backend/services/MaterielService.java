@@ -146,6 +146,7 @@ public class MaterielService implements IMaterielService {
             statutMateriel = statutMaterielRepository.findById(materielRequestDto.statutMaterielId())
                     .orElseThrow(() -> new RessourceIntrouvableException("Le statut matériel avec l'id " + materielRequestDto.statutMaterielId() + " est introuvable"));
         }
+        System.out.println(statutMateriel);
         Salle salle = null;
         if(materielRequestDto.salleId() != null) {
             salle = salleDao.findById(materielRequestDto.salleId())

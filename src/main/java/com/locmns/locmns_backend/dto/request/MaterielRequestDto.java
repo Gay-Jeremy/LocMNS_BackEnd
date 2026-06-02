@@ -14,7 +14,6 @@ public record MaterielRequestDto(
         @NotNull(message = "Le modèle est obligatoire")
         Integer modeleId,
 
-        @NotNull(message = "Le statut est obligatoire")
         Integer statutMaterielId,
 
         Integer salleId
