@@ -2,20 +2,33 @@ services:
   postgres:
     image: postgres:18
     container_name: postgres_container_locmns_BackEnd
-    environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: root
-      POSTGRES_DB: locmns_db
-      TZ: UTC
+    env_file:
+      - .env
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql
+    networks:
+      - backend
 
-  app:
-    image: jeremygaydev/locmns-back:latest
+  back:
+    image: jeremygaydev/locmns-back
     ports:
       - "8080:8080"
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+    networks:
+      - backend
+
+  front:
+    image: jeremygaydev/locmns-front
+    ports:
+      - "80:80"
 
 volumes:
   postgres_data:
+
+networks:
+  backend:

@@ -7,9 +7,6 @@ WORKDIR /app
 # Copier le fichier JAR de l'application dans le conteneur
 COPY target/app.jar app.jar
 
-# Copier le fichier .env dans le conteneur
-COPY .env .env
-
 # Exposer le port sur lequel l'application va tourner
 EXPOSE 8080
 
