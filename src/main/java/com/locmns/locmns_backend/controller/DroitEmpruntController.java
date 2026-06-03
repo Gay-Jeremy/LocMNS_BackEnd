@@ -26,11 +26,11 @@ public class DroitEmpruntController {
         return droitEmpruntRepository.findAll();
     }
 
-    @GetMapping("/{id_categorie_utilisateur}")
+    @GetMapping("/{idCategorieUtilisateur}")
     @JsonView(DroitEmpruntView.class)
-    public List<DroitEmprunt> obtenirTousLesDroitsEmpruntParIdCategorieUtilisateur(@PathVariable int id_categorie_utilisateur) {
+    public List<DroitEmprunt> obtenirTousLesDroitsEmpruntParIdCategorieUtilisateur(@PathVariable int idCategorieUtilisateur) {
 
-        return droitEmpruntRepository.findByCategorieUtilisateurId(id_categorie_utilisateur);
+        return droitEmpruntRepository.findByCategorieUtilisateurId(idCategorieUtilisateur);
     }
 
     @PostMapping("")

@@ -47,9 +47,9 @@ public class CategorieModeleController {
 
         categorieToInsert.setId(null);
 
-        CategorieModele NouvelleCategorie = categorieModeleRepository.save(categorieToInsert);
+        CategorieModele nouvelleCategorie = categorieModeleRepository.save(categorieToInsert);
         
-        return NouvelleCategorie;
+        return nouvelleCategorie;
     }
 
     @DeleteMapping("/{id}")
