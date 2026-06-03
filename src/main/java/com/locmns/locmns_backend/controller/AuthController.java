@@ -25,7 +25,6 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin
 public class AuthController {
 
     @Value("${jwt.secret}")
