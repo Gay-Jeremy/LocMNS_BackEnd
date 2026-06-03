@@ -15,7 +15,6 @@ import java.util.Optional;
 
 
 @RestController
-@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api/categories_modele")
 @RequiredArgsConstructor
 public class CategorieModeleController {
