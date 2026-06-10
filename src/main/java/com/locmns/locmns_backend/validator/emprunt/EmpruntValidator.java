@@ -32,9 +32,6 @@ public class EmpruntValidator {
             throw new MetierException("Le matériel est obligatoire");
         }
 
-        if (dto.utilisateurId() == null) {
-            throw new MetierException("L'utilisateur est obligatoire");
-        }
     }
 
     public void validerProlongation(Emprunt emprunt, LocalDate date) {

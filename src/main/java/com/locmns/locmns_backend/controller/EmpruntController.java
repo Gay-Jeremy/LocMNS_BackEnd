@@ -73,8 +73,8 @@ public class EmpruntController {
     // =========================
 
     @PostMapping
-    public EmpruntResponseDto create(@RequestBody @Valid EmpruntRequestDto dto) {
-        return empruntService.creerEmprunt(dto);
+    public EmpruntResponseDto create(@RequestBody @Valid EmpruntRequestDto dto, @AuthenticationPrincipal UtilisateurDetails utilisateurDetails) {
+        return empruntService.creerEmprunt(dto, getUser(utilisateurDetails));
     }
 
     // =========================

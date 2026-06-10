@@ -17,7 +17,7 @@ public interface IEmpruntService {
     List<EmpruntResponseDto> obtenirEmpruntsRecentsSelonRole(Utilisateur utilisateur);
     List<EmpruntResponseDto> obtenirListeEmpruntEnRetardSelonRole(Utilisateur utilisateur);
     List<EmpruntResponseDto> obtenirHistoriqueEmpruntSelonRole(Utilisateur utilisateur);
-    EmpruntResponseDto creerEmprunt(EmpruntRequestDto empruntRequestDto);
+    EmpruntResponseDto creerEmprunt(EmpruntRequestDto dto, Utilisateur connecte);
     void modifierEmprunt(Integer id, EmpruntRequestDto empruntRequestDto);
 
     @Transactional

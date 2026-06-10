@@ -1,66 +1,62 @@
 package com.locmns.locmns_backend.unit;
 
-import com.locmns.locmns_backend.repository.EmpruntRepository;
-import com.locmns.locmns_backend.repository.MaterielRepository;
-import com.locmns.locmns_backend.repository.StatutEmpruntRepository;
-import com.locmns.locmns_backend.repository.UtilisateurRepository;
+import com.locmns.locmns_backend.constants.Role;
 import com.locmns.locmns_backend.dto.request.EmpruntRequestDto;
+import com.locmns.locmns_backend.dto.response.EmpruntResponseDto;
 import com.locmns.locmns_backend.exception.MetierException;
+import com.locmns.locmns_backend.mapper.EmpruntMapper;
 import com.locmns.locmns_backend.model.*;
+import com.locmns.locmns_backend.repository.*;
 import com.locmns.locmns_backend.services.EmpruntService;
 import com.locmns.locmns_backend.services.IEmpruntService;
-import com.locmns.locmns_backend.services.MaterielService;
 import com.locmns.locmns_backend.validator.emprunt.EmpruntValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-public class EmpruntServiceUnitTest {
+class EmpruntServiceUnitTest {
 
-    // Les mocks — faux DAOs générés par Mockito
     private EmpruntRepository empruntRepository;
     private MaterielRepository materielRepository;
     private UtilisateurRepository utilisateurRepository;
     private StatutEmpruntRepository statutEmpruntRepository;
-    private MaterielService materielService;
+    private EmpruntMapper empruntMapper;
 
-    private IEmpruntService IEmpruntService;
+    private IEmpruntService empruntService;
 
-    // Données réutilisées dans plusieurs tests
     private Materiel materielDisponible;
     private Utilisateur utilisateur;
+    private Utilisateur admin;
     private StatutEmprunt statutEmprunt;
     private EmpruntRequestDto dto;
 
     @BeforeEach
-    public void init() {
-        // Mockito crée de faux DAOs — pas de base de données
-        empruntRepository = Mockito.mock(EmpruntRepository.class);
-        materielRepository = Mockito.mock(MaterielRepository.class);
-        utilisateurRepository = Mockito.mock(UtilisateurRepository.class);
-        statutEmpruntRepository = Mockito.mock(StatutEmpruntRepository.class);
-        materielService = Mockito.mock(MaterielService.class);
+    void init() {
+
+        empruntRepository = mock(EmpruntRepository.class);
+        materielRepository = mock(MaterielRepository.class);
+        utilisateurRepository = mock(UtilisateurRepository.class);
+        statutEmpruntRepository = mock(StatutEmpruntRepository.class);
+        empruntMapper = mock(EmpruntMapper.class);
 
         EmpruntValidator empruntValidator = new EmpruntValidator();
 
-        IEmpruntService = new EmpruntService(
+        empruntService = new EmpruntService(
                 empruntRepository,
                 materielRepository,
                 utilisateurRepository,
                 statutEmpruntRepository,
-                materielService,
-                empruntValidator
+                empruntValidator,
+                empruntMapper
         );
 
-
-        // Données communes à tous les tests
         CategorieModele categorieModele = new CategorieModele();
         categorieModele.setId(1);
 
@@ -71,8 +67,19 @@ public class EmpruntServiceUnitTest {
         materielDisponible.setId(1);
         materielDisponible.setModele(modele);
 
+        CategorieUtilisateur categorieUtilisateur = new CategorieUtilisateur();
+        categorieUtilisateur.setCode("UTILISATEUR");
+
         utilisateur = new Utilisateur();
         utilisateur.setId(1);
+        utilisateur.setCategorieUtilisateur(categorieUtilisateur);
+
+        CategorieUtilisateur categorieAdmin = new CategorieUtilisateur();
+        categorieAdmin.setCode(Role.ADMIN.name());
+
+        admin = new Utilisateur();
+        admin.setId(999);
+        admin.setCategorieUtilisateur(categorieAdmin);
 
         statutEmprunt = new StatutEmprunt();
         statutEmprunt.setId(3);
@@ -81,81 +88,82 @@ public class EmpruntServiceUnitTest {
                 LocalDate.now(),
                 LocalDate.now().plusDays(7),
                 1,
-                1,
+                null,
                 ""
         );
 
-        Emprunt empruntSauvegarde = new Emprunt();
-        empruntSauvegarde.setId(1);
-        empruntSauvegarde.setDateDebut(dto.dateDebut());
-        empruntSauvegarde.setDateFin(dto.dateFin());
-        empruntSauvegarde.setMateriel(materielDisponible);
-        empruntSauvegarde.setUtilisateur(utilisateur);
-        empruntSauvegarde.setStatutEmprunt(statutEmprunt);
+        Emprunt emprunt = new Emprunt();
 
-        when(empruntRepository.save(any())).thenReturn(empruntSauvegarde);
+        EmpruntResponseDto response = mock(EmpruntResponseDto.class);
 
+        when(empruntMapper.toEntity(any()))
+                .thenReturn(emprunt);
+
+        when(empruntMapper.toDto(any()))
+                .thenReturn(response);
+
+        when(empruntRepository.save(any()))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        when(statutEmpruntRepository.findByCode("DEMANDE_EN_COURS"))
+                .thenReturn(Optional.of(statutEmprunt));
     }
 
-    // ── CAS NOMINAL ──────────────────────────────────────
-
     @Test
-    public void creerEmpruntAvecDonneesValides_devrait_Reussir() {
+    void creerEmpruntAvecDonneesValides_devraitReussir() {
 
-        when(materielRepository.findById(1)).thenReturn(Optional.of(materielDisponible));
-        when(utilisateurRepository.findById(1)).thenReturn(Optional.of(utilisateur));
-        when(materielRepository.retourneListeMaterielDisponiblePourPeriodeParIdCategorieModele(
-                any(), any(), eq(1)
-        )).thenReturn(List.of(materielDisponible));
-        when(statutEmpruntRepository.findByCode("DEMANDE_EN_COURS")).thenReturn(Optional.of(statutEmprunt));
+        when(materielRepository.findById(1))
+                .thenReturn(Optional.of(materielDisponible));
 
-        // Act
-        assertDoesNotThrow(() -> IEmpruntService.creerEmprunt(dto));
+        when(materielRepository
+                .retourneListeMaterielDisponiblePourPeriodeParIdCategorieModele(
+                        any(),
+                        any(),
+                        eq(1)))
+                .thenReturn(List.of(materielDisponible));
 
-        // Assert — save() a bien été appelé une fois
-        verify(empruntRepository, times(1)).save(any(Emprunt.class));
+        assertDoesNotThrow(() ->
+                empruntService.creerEmprunt(dto, utilisateur));
+
+        verify(empruntRepository).save(any(Emprunt.class));
     }
 
-    // ── VALIDATION DES DATES ─────────────────────────────
-
     @Test
-    public void creerEmpruntAvecDateFinAvantDateDebut_devrait_LeverMetierException() {
+    void creerEmpruntAvecDateFinAvantDateDebut_devraitLeverMetierException() {
+
         EmpruntRequestDto dtoInvalide = new EmpruntRequestDto(
-                LocalDate.now().plusDays(7), // dateDebut après dateFin
+                LocalDate.now().plusDays(7),
                 LocalDate.now(),
                 1,
-                1,
+                null,
                 ""
         );
 
         MetierException exception = assertThrows(
                 MetierException.class,
-                () -> IEmpruntService.creerEmprunt(dtoInvalide)
+                () -> empruntService.creerEmprunt(dtoInvalide, utilisateur)
         );
 
-        assertEquals("La date de fin doit être après la date de début", exception.getMessage());
+        assertEquals(
+                "La date de fin doit être après la date de début",
+                exception.getMessage()
+        );
     }
 
     @Test
-    public void creerEmpruntAvecDateDebutDansLePasse_devrait_LeverMetierException() {
-
-        when(materielRepository.findById(1))
-                .thenReturn(Optional.of(materielDisponible));
-
-        when(utilisateurRepository.findById(1))
-                .thenReturn(Optional.of(utilisateur));
+    void creerEmpruntAvecDateDebutDansLePasse_devraitLeverMetierException() {
 
         EmpruntRequestDto dtoInvalide = new EmpruntRequestDto(
                 LocalDate.now().minusDays(1),
                 LocalDate.now().plusDays(7),
                 1,
-                1,
+                null,
                 ""
         );
 
         MetierException exception = assertThrows(
                 MetierException.class,
-                () -> IEmpruntService.creerEmprunt(dtoInvalide)
+                () -> empruntService.creerEmprunt(dtoInvalide, utilisateur)
         );
 
         assertEquals(
@@ -165,84 +173,128 @@ public class EmpruntServiceUnitTest {
     }
 
     @Test
-    public void creerEmpruntAvecDateFinDansLePasse_devrait_LeverMetierException() {
-        EmpruntRequestDto dtoInvalide = new EmpruntRequestDto(
-                LocalDate.now().minusDays(5),
-                LocalDate.now().minusDays(1), // aussi dans le passé
-                1,
-                1,
-                ""
-        );
+    void creerEmpruntAvecMaterielInexistant_devraitLeverMetierException() {
 
-        MetierException exception = assertThrows(
-                MetierException.class,
-                () -> IEmpruntService.creerEmprunt(dtoInvalide)
-        );
-
-        // dateDebut dans le passé est vérifiée en premier
-        assertEquals("La date de début ne peut pas être dans le passé", exception.getMessage());
-    }
-
-    // ── EXISTENCE DES ENTITÉS ────────────────────────────
-
-    @Test
-    public void creerEmpruntAvecMaterielInexistant_devrait_LeverMetierException() {
-        // Le mock retourne vide — matériel introuvable
-        when(materielRepository.findById(99)).thenReturn(Optional.empty());
+        when(materielRepository.findById(99))
+                .thenReturn(Optional.empty());
 
         EmpruntRequestDto dtoInvalide = new EmpruntRequestDto(
                 LocalDate.now(),
                 LocalDate.now().plusDays(7),
-                99, // id inexistant
-                1,
+                99,
+                null,
                 ""
         );
 
         MetierException exception = assertThrows(
                 MetierException.class,
-                () -> IEmpruntService.creerEmprunt(dtoInvalide)
+                () -> empruntService.creerEmprunt(dtoInvalide, utilisateur)
         );
 
-        assertEquals("Matériel introuvable", exception.getMessage());
+        assertEquals(
+                "Matériel introuvable",
+                exception.getMessage()
+        );
     }
 
     @Test
-    public void creerEmpruntAvecUtilisateurInexistant_devrait_LeverMetierException() {
-        when(materielRepository.findById(1)).thenReturn(Optional.of(materielDisponible));
-        when(utilisateurRepository.findById(99)).thenReturn(Optional.empty());
+    void creerEmpruntAvecMaterielIndisponible_devraitLeverMetierException() {
 
-        EmpruntRequestDto dtoInvalide = new EmpruntRequestDto(
+        when(materielRepository.findById(1))
+                .thenReturn(Optional.of(materielDisponible));
+
+        when(materielRepository
+                .retourneListeMaterielDisponiblePourPeriodeParIdCategorieModele(
+                        any(),
+                        any(),
+                        eq(1)))
+                .thenReturn(List.of());
+
+        MetierException exception = assertThrows(
+                MetierException.class,
+                () -> empruntService.creerEmprunt(dto, utilisateur)
+        );
+
+        assertEquals(
+                "Matériel indisponible sur la période demandée",
+                exception.getMessage()
+        );
+    }
+
+    @Test
+    void creerEmpruntAdminSansUtilisateurCible_devraitLeverMetierException() {
+
+        EmpruntRequestDto dtoAdmin = new EmpruntRequestDto(
                 LocalDate.now(),
                 LocalDate.now().plusDays(7),
                 1,
-                99, // id inexistant
+                null,
                 ""
         );
 
         MetierException exception = assertThrows(
                 MetierException.class,
-                () -> IEmpruntService.creerEmprunt(dtoInvalide)
+                () -> empruntService.creerEmprunt(dtoAdmin, admin)
         );
 
-        assertEquals("Utilisateur introuvable", exception.getMessage());
+        assertEquals(
+                "Un admin doit spécifier l'utilisateur cible",
+                exception.getMessage()
+        );
     }
 
-    // ── DISPONIBILITÉ ────────────────────────────────────
-
     @Test
-    public void creerEmpruntAvecMaterielIndisponible_devrait_LeverMetierException() {
-        when(materielRepository.findById(1)).thenReturn(Optional.of(materielDisponible));
-        when(utilisateurRepository.findById(1)).thenReturn(Optional.of(utilisateur));
-        // Liste vide — matériel non disponible sur la période
-        when(materielRepository.retourneListeMaterielDisponiblePourPeriodeParIdCategorieModele(
-                any(), any(), eq(1)
-        )).thenReturn(List.of());
+    void creerEmpruntAdminAvecUtilisateurInexistant_devraitLeverMetierException() {
+
+        EmpruntRequestDto dtoAdmin = new EmpruntRequestDto(
+                LocalDate.now(),
+                LocalDate.now().plusDays(7),
+                1,
+                999,
+                ""
+        );
+
+        when(utilisateurRepository.findById(999))
+                .thenReturn(Optional.empty());
 
         MetierException exception = assertThrows(
                 MetierException.class,
-                () -> IEmpruntService.creerEmprunt(dto)
+                () -> empruntService.creerEmprunt(dtoAdmin, admin)
         );
 
-        assertEquals("Matériel indisponible", exception.getMessage());
+        assertEquals(
+                "Utilisateur introuvable",
+                exception.getMessage()
+        );
+    }
+
+    @Test
+    void creerEmpruntAdminAvecUtilisateurValide_devraitReussir() {
+
+        EmpruntRequestDto dtoAdmin = new EmpruntRequestDto(
+                LocalDate.now(),
+                LocalDate.now().plusDays(7),
+                1,
+                1,
+                ""
+        );
+
+        when(utilisateurRepository.findById(1))
+                .thenReturn(Optional.of(utilisateur));
+
+        when(materielRepository.findById(1))
+                .thenReturn(Optional.of(materielDisponible));
+
+        when(materielRepository
+                .retourneListeMaterielDisponiblePourPeriodeParIdCategorieModele(
+                        any(),
+                        any(),
+                        eq(1)))
+                .thenReturn(List.of(materielDisponible));
+
+        assertDoesNotThrow(() ->
+                empruntService.creerEmprunt(dtoAdmin, admin));
+
+        verify(empruntRepository).save(any(Emprunt.class));
     }
 }

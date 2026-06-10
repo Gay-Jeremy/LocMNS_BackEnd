@@ -2,7 +2,6 @@ package com.locmns.locmns_backend.model;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.locmns.locmns_backend.view.MaterielView;
-import com.locmns.locmns_backend.view.StatutEmpruntView;
 import com.locmns.locmns_backend.view.StatutMaterielView;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;

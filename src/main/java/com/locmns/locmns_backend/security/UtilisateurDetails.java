@@ -3,7 +3,6 @@ package com.locmns.locmns_backend.security;
 import com.locmns.locmns_backend.model.Utilisateur;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
