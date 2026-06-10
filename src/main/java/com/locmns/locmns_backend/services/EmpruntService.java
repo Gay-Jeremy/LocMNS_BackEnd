@@ -4,6 +4,7 @@ import com.locmns.locmns_backend.constants.CodeStatutEmprunt;
 import com.locmns.locmns_backend.constants.Role;
 import com.locmns.locmns_backend.dto.request.*;
 import com.locmns.locmns_backend.dto.response.EmpruntResponseDto;
+import com.locmns.locmns_backend.exception.ConflitReservationException;
 import com.locmns.locmns_backend.exception.MetierException;
 import com.locmns.locmns_backend.exception.RessourceIntrouvableException;
 import com.locmns.locmns_backend.model.*;
@@ -131,10 +132,10 @@ public class EmpruntService implements IEmpruntService {
         empruntValidator.validerCreationOuModification(dto);
 
         Materiel materiel = materielRepository.findById(dto.materielId())
-                .orElseThrow(() -> new MetierException("Matériel introuvable"));
+                .orElseThrow(() -> new RessourceIntrouvableException("Matériel introuvable"));
 
         Utilisateur utilisateur = utilisateurRepository.findById(dto.utilisateurId())
-                .orElseThrow(() -> new MetierException("Utilisateur introuvable"));
+                .orElseThrow(() -> new RessourceIntrouvableException("Utilisateur introuvable"));
 
         List<Materiel> disponibles =
                 materielRepository.retourneListeMaterielDisponiblePourPeriodeParIdCategorieModele(
@@ -145,7 +146,7 @@ public class EmpruntService implements IEmpruntService {
 
         boolean disponible = disponibles.stream().anyMatch(m -> m.getId().equals(dto.materielId()));
         if (!disponible) {
-            throw new MetierException("Matériel indisponible");
+            throw new ConflitReservationException("Matériel indisponible");
         }
 
         Emprunt emprunt = new Emprunt();
@@ -172,10 +173,10 @@ public class EmpruntService implements IEmpruntService {
         Emprunt emprunt = getEmprunt(id);
 
         Materiel materiel = materielRepository.findById(dto.materielId())
-                .orElseThrow(() -> new MetierException("Matériel introuvable"));
+                .orElseThrow(() -> new RessourceIntrouvableException("Matériel introuvable"));
 
         Utilisateur utilisateur = utilisateurRepository.findById(dto.utilisateurId())
-                .orElseThrow(() -> new MetierException("Utilisateur introuvable"));
+                .orElseThrow(() -> new RessourceIntrouvableException("Utilisateur introuvable"));
 
         emprunt.setMateriel(materiel);
         emprunt.setUtilisateur(utilisateur);
@@ -200,7 +201,7 @@ public class EmpruntService implements IEmpruntService {
         try {
             code = CodeStatutEmprunt.valueOf(dto.code());
         } catch (IllegalArgumentException e) {
-            throw new MetierException("Code statut inconnu : " + dto.code());
+            throw new RessourceIntrouvableException("Code statut inconnu : " + dto.code());
         }
 
         switch (code) {
