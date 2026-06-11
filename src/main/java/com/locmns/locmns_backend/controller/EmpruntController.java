@@ -8,6 +8,7 @@ import com.locmns.locmns_backend.security.UtilisateurDetails;
 import com.locmns.locmns_backend.services.IEmpruntService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -74,6 +75,7 @@ public class EmpruntController {
     // =========================
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public EmpruntResponseDto creer(@RequestBody @Valid EmpruntRequestDto dto, @AuthenticationPrincipal UtilisateurDetails utilisateurDetails) {
         return empruntService.creerEmprunt(dto, obtenirUtilisateur(utilisateurDetails));
     }
