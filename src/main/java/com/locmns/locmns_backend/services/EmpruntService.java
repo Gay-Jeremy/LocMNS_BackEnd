@@ -4,6 +4,7 @@ import com.locmns.locmns_backend.constants.CodeStatutEmprunt;
 import com.locmns.locmns_backend.constants.Role;
 import com.locmns.locmns_backend.dto.request.*;
 import com.locmns.locmns_backend.dto.response.EmpruntResponseDto;
+import com.locmns.locmns_backend.exception.ConflitReservationException;
 import com.locmns.locmns_backend.exception.MetierException;
 import com.locmns.locmns_backend.exception.RessourceIntrouvableException;
 import com.locmns.locmns_backend.mapper.EmpruntMapper;
@@ -180,8 +181,8 @@ public class EmpruntService implements IEmpruntService {
      *
      * @param dto les données de la demande d'emprunt
      * @return le DTO de l'emprunt créé
-     * @throws MetierException si le matériel ou l'utilisateur est introuvable,
-     *                         ou si le matériel est indisponible sur la période
+     * @throws RessourceIntrouvableException si le matériel ou l'utilisateur est introuvable,
+     * @throws ConflitReservationException si le matériel est indisponible sur la période
      */
     @Transactional
     @Override
@@ -195,13 +196,13 @@ public class EmpruntService implements IEmpruntService {
                 throw new MetierException("Un admin doit spécifier l'utilisateur cible");
             }
             utilisateur = utilisateurRepository.findById(dto.utilisateurId())
-                    .orElseThrow(() -> new MetierException("Utilisateur introuvable"));
+                    .orElseThrow(() -> new RessourceIntrouvableException("Utilisateur introuvable"));
         } else {
             utilisateur = connecte;
         }
 
         Materiel materiel = materielRepository.findById(dto.materielId())
-                .orElseThrow(() -> new MetierException("Matériel introuvable"));
+                .orElseThrow(() -> new RessourceIntrouvableException("Matériel introuvable"));
 
 
         // Vérification de la disponibilité du matériel sur la période demandée
@@ -215,7 +216,7 @@ public class EmpruntService implements IEmpruntService {
                 .anyMatch(m -> m.getId().equals(dto.materielId()));
 
         if (!disponible) {
-            throw new MetierException("Matériel indisponible sur la période demandée");
+            throw new ConflitReservationException("Matériel indisponible sur la période demandée");
         }
 
         // Le mapper initialise les champs scalaires ; le service complète les associations
@@ -250,10 +251,10 @@ public class EmpruntService implements IEmpruntService {
         Emprunt emprunt = getEmpruntOuException(id);
 
         Materiel materiel = materielRepository.findById(dto.materielId())
-                .orElseThrow(() -> new MetierException("Matériel introuvable"));
+                .orElseThrow(() -> new RessourceIntrouvableException("Matériel introuvable"));
 
         Utilisateur utilisateur = utilisateurRepository.findById(dto.utilisateurId())
-                .orElseThrow(() -> new MetierException("Utilisateur introuvable"));
+                .orElseThrow(() -> new RessourceIntrouvableException("Utilisateur introuvable"));
 
         // Le mapper met à jour les champs scalaires ; le service met à jour les associations
         empruntMapper.update(dto, emprunt);
@@ -287,14 +288,16 @@ public class EmpruntService implements IEmpruntService {
         CodeStatutEmprunt code;
         try {
             code = CodeStatutEmprunt.valueOf(dto.code());
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException _) {
             throw new RessourceIntrouvableException("Code statut inconnu : " + dto.code());
         }
 
         // Seuls ces codes sont autorisés via cet endpoint générique
         switch (code) {
-            case ACCEPTE, REFUSE,
-                 PROLONGATION_REFUSE, DEMANDE_RETOUR_ANTICIPE_REFUSE -> { }
+            case DEMANDE_EN_COURS, ACCEPTE, REFUSE,
+                 PROLONGATION_REFUSE, DEMANDE_RETOUR_ANTICIPE_REFUSE -> {
+                // Statuts autorisés : aucune action supplémentaire nécessaire
+            }
             default -> throw new MetierException(
                     "Utilisez les endpoints dédiés pour la transition de statut : " + code
             );

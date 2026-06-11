@@ -67,4 +67,10 @@ public class GlobalExceptionHandler {
     public Map<String, String> conflitReservationInterceptor(ConflitReservationException ex) {
         return Map.of("message", ex.getMessage());
     }
+
+    @ExceptionHandler(ValidationMetierException.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_CONTENT)
+    public Map<String, String> validationMetierInterceptor(ValidationMetierException ex) {
+        return Map.of("erreur", ex.getMessage());
+    }
 }

@@ -132,27 +132,27 @@ INSERT INTO statut_emprunt (libelle,code) VALUES
 
 INSERT INTO emprunt (date_creation, date_debut, date_fin, date_prolongation, date_retour_anticipe, date_retour_reel, materiel_id, statut_emprunt_id, utilisateur_id) VALUES
 -- PC 1 : emprunté sur la période, statut ACCEPTÉ (id=3) → EXCLU
-('2026-05-01','2026-03-10','2026-04-20', null, null, null, 1, 3, 1),
+('2027-05-01','2027-03-10','2027-04-20', null, null, null, 1, 3, 1),
 
 -- PC 2 : emprunté sur la période, statut REFUSÉ (id=2) → INCLUS (car != 2 est faux, statut=2)
-('2026-05-01','2026-03-10','2026-04-20', null, null, null, 2, 2, 1),
+('2027-05-01','2027-03-10','2027-04-20', null, null, null, 2, 2, 1),
 
 -- PC 3 : emprunté MAIS date_retour_reel renseigné → INCLUS (déjà rendu)
-('2026-05-01','2026-03-10','2026-04-20', null, null, '2026-05-15', 3, 3, 1),
+('2027-05-01','2027-03-10','2027-04-20', null, null, '2027-05-15', 3, 3, 1),
 
 -- PC 4 : emprunté hors période (après) → INCLUS
-('2026-05-01','2026-05-25','2026-06-05', null, null, null, 4, 3, 1),
+('2027-05-01','2027-05-25','2027-06-05', null, null, null, 4, 3, 1),
 -- PC 1 : 2ème emprunt → chevauchement partiel gauche (commence avant, finit pendant)
-('2026-05-01','2026-05-08','2026-08-13', null, null, null, 1, 3, 2),
+('2027-05-01','2027-05-08','2027-08-13', null, null, null, 1, 3, 2),
 
 -- PC 3 : ré-emprunté après son retour (ne doit pas bloquer)
-('2026-05-16','2026-05-16','2026-05-30', null, null, null, 3, 1, 2),
+('2027-05-16','2027-05-16','2027-05-30', null, null, null, 3, 1, 2),
 
 -- PC 4 : emprunté avec statut "Demande en cours" sur la période → EXCLU (statut 1 != 2)
-('2026-05-01','2026-05-12','2026-05-18', null, null, null, 4, 1, 1),
+('2027-05-01','2027-05-12','2027-05-18', null, null, null, 4, 1, 1),
 
 -- PC 5 : emprunt dont la borne exacte touche la période (retour le 12 mai, demande le 12 mai)
-('2026-05-01','2026-05-05','2026-05-12', null, null, null, 5, 3, 1);
+('2027-05-01','2027-05-05','2027-05-12', null, null, null, 5, 3, 1);
 
 
 
