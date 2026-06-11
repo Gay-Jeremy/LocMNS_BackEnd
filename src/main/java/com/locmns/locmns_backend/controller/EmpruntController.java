@@ -94,7 +94,7 @@ public class EmpruntController {
     @PatchMapping("/{id}/statut")
     public void mettreAjourStatut(
             @PathVariable int id,
-            @RequestBody EmpruntStatutRequestDto dto
+            @RequestBody @Valid EmpruntStatutRequestDto dto
     ) {
         empruntService.modifierStatutEmprunt(id, dto);
     }
@@ -106,7 +106,7 @@ public class EmpruntController {
     @PatchMapping("/{id}/prolongation/demande")
     public void demanderProlongation(
             @PathVariable int id,
-            @RequestBody DemandeProlongationRequestDto dto
+            @RequestBody @Valid DemandeProlongationRequestDto dto
     ) {
         empruntService.demanderProlongation(id, dto);
     }
@@ -127,7 +127,7 @@ public class EmpruntController {
     @PatchMapping("/{id}/retour-anticipe/demande")
     public void demanderRetourAnticipe(
             @PathVariable int id,
-            @RequestBody DemandeRetourAnticipeRequestDto dto
+            @RequestBody @Valid DemandeRetourAnticipeRequestDto dto
     ) {
         empruntService.demanderRetourAnticipe(id, dto);
     }

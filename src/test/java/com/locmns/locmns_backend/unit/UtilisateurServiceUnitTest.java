@@ -3,6 +3,7 @@ package com.locmns.locmns_backend.unit;
 import com.locmns.locmns_backend.dto.request.UtilisateurRequestDto;
 import com.locmns.locmns_backend.dto.response.UtilisateurResponseDto;
 import com.locmns.locmns_backend.exception.RessourceIntrouvableException;
+import com.locmns.locmns_backend.mapper.UtilisateurMapper;
 import com.locmns.locmns_backend.model.CategorieUtilisateur;
 import com.locmns.locmns_backend.model.Utilisateur;
 import com.locmns.locmns_backend.repository.CategorieUtilisateurRepository;
@@ -28,6 +29,7 @@ public class UtilisateurServiceUnitTest {
     private CategorieUtilisateurRepository categorieUtilisateurRepository;
     private PromotionRepository promotionRepository;
     private PasswordEncoder passwordEncoder;
+    private UtilisateurMapper utilisateurMapper;
 
     // Le vrai service qu'on teste, alimenté avec les mocks
     private UtilisateurService utilisateurService;
@@ -44,13 +46,15 @@ public class UtilisateurServiceUnitTest {
         categorieUtilisateurRepository = Mockito.mock(CategorieUtilisateurRepository.class);
         promotionRepository            = Mockito.mock(PromotionRepository.class);
         passwordEncoder                = Mockito.mock(PasswordEncoder.class);
+        utilisateurMapper              = Mockito.mock(UtilisateurMapper.class);
 
         // On injecte les mocks dans le vrai service
         utilisateurService = new UtilisateurService(
                 passwordEncoder,
                 utilisateurRepository,
                 categorieUtilisateurRepository,
-                promotionRepository
+                promotionRepository,
+                utilisateurMapper
         );
 
         // Catégorie ADMIN réutilisée dans plusieurs tests
@@ -66,6 +70,34 @@ public class UtilisateurServiceUnitTest {
         utilisateurExistant.setPrenom("Jean");
         utilisateurExistant.setEmail("jean.dupont@locmns.fr");
         utilisateurExistant.setCategorieUtilisateur(categorieAdmin);
+
+        when(utilisateurMapper.toResponseDto(any(Utilisateur.class))).thenAnswer(invocation -> {
+            Utilisateur utilisateur = invocation.getArgument(0);
+            return new UtilisateurResponseDto(
+                    utilisateur.getId(),
+                    utilisateur.getNom(),
+                    utilisateur.getPrenom(),
+                    utilisateur.getEmail(),
+                    null,
+                    null
+            );
+        });
+        when(utilisateurMapper.toEntity(any(UtilisateurRequestDto.class))).thenAnswer(invocation -> {
+            UtilisateurRequestDto dto = invocation.getArgument(0);
+            Utilisateur utilisateur = new Utilisateur();
+            utilisateur.setNom(dto.nom());
+            utilisateur.setPrenom(dto.prenom());
+            utilisateur.setEmail(dto.email());
+            return utilisateur;
+        });
+        doAnswer(invocation -> {
+            UtilisateurRequestDto dto = invocation.getArgument(0);
+            Utilisateur utilisateur = invocation.getArgument(1);
+            utilisateur.setNom(dto.nom());
+            utilisateur.setPrenom(dto.prenom());
+            utilisateur.setEmail(dto.email());
+            return null;
+        }).when(utilisateurMapper).update(any(UtilisateurRequestDto.class), any(Utilisateur.class));
     }
 
     // ════════════════════════════════════════════════════════════════════════

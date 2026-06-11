@@ -6,6 +6,7 @@ import com.locmns.locmns_backend.dto.response.MaterielResponseDto;
 import com.locmns.locmns_backend.exception.ConflitReservationException;
 import com.locmns.locmns_backend.exception.MetierException;
 import com.locmns.locmns_backend.exception.RessourceIntrouvableException;
+import com.locmns.locmns_backend.mapper.MaterielMapper;
 import com.locmns.locmns_backend.model.*;
 import com.locmns.locmns_backend.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -25,17 +26,18 @@ public class MaterielService implements IMaterielService {
     private final StatutMaterielRepository statutMaterielRepository;
     private final SalleRepository salleDao;
     private final EmpruntRepository empruntRepository;
+    private final MaterielMapper materielMapper;
 
     @Override
     public Optional<MaterielResponseDto> obtenirMaterielParId(Integer id) {
         return materielRepository.findById(id)
-                .map(MaterielResponseDto::depuisEntite);
+                .map(materielMapper::toResponseDto);
     }
 
     @Override
     public List<MaterielResponseDto> obtenirTousLesMateriels() {
         return materielRepository.findAll().stream()
-                .map(MaterielResponseDto::depuisEntite)
+                .map(materielMapper::toResponseDto)
                 .toList();
     }
 
@@ -44,25 +46,25 @@ public class MaterielService implements IMaterielService {
         String code = utilisateur.getCategorieUtilisateur().getCode();
         if (Role.ADMIN.name().equals(code)) {
             return materielRepository.findAll().stream()
-                    .map(MaterielResponseDto::depuisEntite)
+                    .map(materielMapper::toResponseDto)
                     .toList();
         }
         return materielRepository.retourneListeMaterielEmpruntsEnCoursParEmail(utilisateur.getEmail()).stream()
-                .map(MaterielResponseDto::depuisEntite)
+                .map(materielMapper::toResponseDto)
                 .toList();
     }
 
     @Override
     public List<MaterielResponseDto> obtenirMaterielsDisponibles() {
         return materielRepository.retourneListeMaterielDisponible().stream()
-                .map(MaterielResponseDto::depuisEntite)
+                .map(materielMapper::toResponseDto)
                 .toList();
     }
 
     @Override
     public List<MaterielResponseDto> obtenirListeMaterielPanneSignalee() {
         return materielRepository.retourneListeMaterielPanneSignales().stream()
-                .map(MaterielResponseDto::depuisEntite)
+                .map(materielMapper::toResponseDto)
                 .toList();
     }
 
@@ -71,11 +73,11 @@ public class MaterielService implements IMaterielService {
         String code = utilisateur.getCategorieUtilisateur().getCode();
         if (Role.ADMIN.name().equals(code)) {
             return materielRepository.retourneListeMaterielPanneSignales().stream()
-                    .map(MaterielResponseDto::depuisEntite)
+                    .map(materielMapper::toResponseDto)
                     .toList();
         }
         return materielRepository.retourneListeMaterielPanneSignalesParEmail(utilisateur.getEmail()).stream()
-                .map(MaterielResponseDto::depuisEntite)
+                .map(materielMapper::toResponseDto)
                 .toList();
     }
 
@@ -83,7 +85,7 @@ public class MaterielService implements IMaterielService {
     public List<MaterielResponseDto> obtenirMaterielsDisponiblesPourPeriodeParIdCategorieModele(
             LocalDate dateDebut, LocalDate dateFin, int id) {
         return materielRepository.retourneListeMaterielDisponiblePourPeriodeParIdCategorieModele(dateDebut, dateFin, id).stream()
-                .map(MaterielResponseDto::depuisEntite)
+                .map(materielMapper::toResponseDto)
                 .toList();
     }
 
@@ -123,12 +125,11 @@ public class MaterielService implements IMaterielService {
                     .orElseThrow(() -> new RessourceIntrouvableException("La salle avec l'id " + materielRequestDto.salleId() + " est introuvable"));
         }
 
-        Materiel materiel = new Materiel();
-        materiel.setNumSerie(materielRequestDto.numSerie());
+        Materiel materiel = materielMapper.toEntity(materielRequestDto);
         materiel.setModele(modele);
         materiel.setStatutMateriel(statutMateriel);
         materiel.setSalle(salle);
-        return MaterielResponseDto.depuisEntite(materielRepository.save(materiel));
+        return materielMapper.toResponseDto(materielRepository.save(materiel));
     }
 
     @Transactional
@@ -153,6 +154,7 @@ public class MaterielService implements IMaterielService {
                     .orElseThrow(() -> new RessourceIntrouvableException("La salle avec l'id " + materielRequestDto.salleId() + " est introuvable"));
         }
 
+        materielMapper.update(materielRequestDto, materiel);
         materiel.setModele(modele);
         materiel.setStatutMateriel(statutMateriel);
         materiel.setSalle(salle);
@@ -172,6 +174,19 @@ public class MaterielService implements IMaterielService {
             materiel.setStatutMateriel(statutMateriel);
         }
         materielRepository.save(materiel);
+    }
+
+    @Transactional
+    @Override
+    public void supprimerMateriel(Integer id) {
+        if (!materielRepository.existsById(id)) {
+            throw new RessourceIntrouvableException("Matériel introuvable : " + id);
+        }
+        if (empruntRepository.existsEmpruntActifParMaterielId(id)) {
+            throw new ConflitReservationException("Impossible de supprimer un matériel lié à un emprunt actif");
+        }
+        empruntRepository.deleteByMaterielId(id);
+        materielRepository.deleteById(id);
     }
 
 }

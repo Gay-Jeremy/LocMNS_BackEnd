@@ -33,4 +33,6 @@ public interface IMaterielService {
     void modifierMateriel(Integer id, MaterielRequestDto materielRequestDto);
 
     void modifierStatutMateriel(Integer materielId, Integer statutId);
+
+    void supprimerMateriel(Integer id);
 }

@@ -4,6 +4,7 @@ import com.locmns.locmns_backend.dto.request.MaterielRequestDto;
 import com.locmns.locmns_backend.dto.response.MaterielResponseDto;
 import com.locmns.locmns_backend.exception.MetierException;
 import com.locmns.locmns_backend.exception.RessourceIntrouvableException;
+import com.locmns.locmns_backend.mapper.MaterielMapper;
 import com.locmns.locmns_backend.model.*;
 import com.locmns.locmns_backend.repository.*;
 import com.locmns.locmns_backend.services.MaterielService;
@@ -27,6 +28,7 @@ public class MaterielServiceUnitTest {
     private StatutMaterielRepository statutMaterielRepository;
     private SalleRepository         salleRepository;
     private EmpruntRepository       empruntRepository;
+    private MaterielMapper          materielMapper;
 
     // Le vrai service qu'on teste
     private MaterielService materielService;
@@ -44,13 +46,15 @@ public class MaterielServiceUnitTest {
         statutMaterielRepository = Mockito.mock(StatutMaterielRepository.class);
         salleRepository         = Mockito.mock(SalleRepository.class);
         empruntRepository       = Mockito.mock(EmpruntRepository.class);
+        materielMapper          = Mockito.mock(MaterielMapper.class);
 
         materielService = new MaterielService(
                 materielRepository,
                 modeleRepository,
                 statutMaterielRepository,
                 salleRepository,
-                empruntRepository
+                empruntRepository,
+                materielMapper
         );
 
         // Modèle fictif
@@ -83,6 +87,23 @@ public class MaterielServiceUnitTest {
         adminUtilisateur.setId(1);
         adminUtilisateur.setEmail("admin@locmns.fr");
         adminUtilisateur.setCategorieUtilisateur(categorieAdmin);
+
+        when(materielMapper.toResponseDto(any(Materiel.class))).thenAnswer(invocation -> {
+            Materiel materiel = invocation.getArgument(0);
+            return new MaterielResponseDto(materiel.getId(), materiel.getNumSerie(), null, null, null);
+        });
+        when(materielMapper.toEntity(any(MaterielRequestDto.class))).thenAnswer(invocation -> {
+            MaterielRequestDto dto = invocation.getArgument(0);
+            Materiel materiel = new Materiel();
+            materiel.setNumSerie(dto.numSerie());
+            return materiel;
+        });
+        doAnswer(invocation -> {
+            MaterielRequestDto dto = invocation.getArgument(0);
+            Materiel materiel = invocation.getArgument(1);
+            materiel.setNumSerie(dto.numSerie());
+            return null;
+        }).when(materielMapper).update(any(MaterielRequestDto.class), any(Materiel.class));
     }
 
     // ════════════════════════════════════════════════════════════════════════

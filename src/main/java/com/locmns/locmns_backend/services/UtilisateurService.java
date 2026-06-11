@@ -3,6 +3,7 @@ package com.locmns.locmns_backend.services;
 import com.locmns.locmns_backend.dto.request.UtilisateurRequestDto;
 import com.locmns.locmns_backend.dto.response.UtilisateurResponseDto;
 import com.locmns.locmns_backend.exception.RessourceIntrouvableException;
+import com.locmns.locmns_backend.mapper.UtilisateurMapper;
 import com.locmns.locmns_backend.model.*;
 import com.locmns.locmns_backend.repository.CategorieUtilisateurRepository;
 import com.locmns.locmns_backend.repository.PromotionRepository;
@@ -23,28 +24,26 @@ public class UtilisateurService implements IUtilisateurService {
     private final UtilisateurRepository utilisateurRepository;
     private final CategorieUtilisateurRepository categorieUtilisateurRepository;
     private final PromotionRepository promotionRepository;
+    private final UtilisateurMapper utilisateurMapper;
 
 
     @Override
     public List<UtilisateurResponseDto> obtenirTousLesUtilisateurs() {
         return utilisateurRepository.findAll().stream()
-                .map(UtilisateurResponseDto::depuisEntite)
+                .map(utilisateurMapper::toResponseDto)
                 .toList();
     }
 
     @Override
     public Optional<UtilisateurResponseDto> obtenirUtilisateurParId(Integer id) {
         return utilisateurRepository.findById(id)
-                .map(UtilisateurResponseDto::depuisEntite);
+                .map(utilisateurMapper::toResponseDto);
     }
 
     @Override
     public UtilisateurResponseDto creerUtilisateur(UtilisateurRequestDto dto) {
 
-        Utilisateur utilisateur = new Utilisateur();
-        utilisateur.setNom(dto.nom());
-        utilisateur.setPrenom(dto.prenom());
-        utilisateur.setEmail(dto.email());
+        Utilisateur utilisateur = utilisateurMapper.toEntity(dto);
         utilisateur.setPassword(encoder.encode(dto.password()));
 
         CategorieUtilisateur categorieUtilisateur = categorieUtilisateurRepository.findById(dto.categorieUtilisateurId())
@@ -60,7 +59,7 @@ public class UtilisateurService implements IUtilisateurService {
         utilisateur.setCategorieUtilisateur(categorieUtilisateur);
         utilisateur.setPromotion(promotion);
 
-        return UtilisateurResponseDto.depuisEntite(utilisateurRepository.save(utilisateur));
+        return utilisateurMapper.toResponseDto(utilisateurRepository.save(utilisateur));
 
     }
 
@@ -80,9 +79,7 @@ public class UtilisateurService implements IUtilisateurService {
                     .orElseThrow(() -> new RessourceIntrouvableException("Promotion introuvable"));
         }
 
-        utilisateur.setNom(dto.nom());
-        utilisateur.setPrenom(dto.prenom());
-        utilisateur.setEmail(dto.email());
+        utilisateurMapper.update(dto, utilisateur);
         utilisateur.setCategorieUtilisateur(categorieUtilisateur);
         utilisateur.setPromotion(promotion);
 

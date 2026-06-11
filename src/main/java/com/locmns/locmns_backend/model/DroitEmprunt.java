@@ -1,7 +1,5 @@
 package com.locmns.locmns_backend.model;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import com.locmns.locmns_backend.view.DroitEmpruntView;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,24 +14,19 @@ import java.io.Serializable;
 public class DroitEmprunt {
 
     @Id
-    @JsonView(DroitEmpruntView.class)
     private Integer categorieUtilisateurId;
 
     @Id
-    @JsonView(DroitEmpruntView.class)
     private Integer categorieModeleId;
 
-    @JsonView(DroitEmpruntView.class)
     private boolean peutEmprunter;
 
     @ManyToOne
     @JoinColumn(name = "categorie_utilisateur_id", insertable = false, updatable = false )
-    @JsonView(DroitEmpruntView.class)
     private CategorieUtilisateur categorieUtilisateur ;
 
     @ManyToOne
     @JoinColumn (name = "categorie_Modele_id", insertable = false, updatable = false )
-    @JsonView(DroitEmpruntView.class)
     private CategorieModele categorieModele ;
 
     @Embeddable

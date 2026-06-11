@@ -1,4 +1,6 @@
 package com.locmns.locmns_backend.dto.request;
 
-public record EmpruntStatutRequestDto(Integer id, String code) {
+import jakarta.validation.constraints.NotBlank;
+
+public record EmpruntStatutRequestDto(Integer id, @NotBlank(message = "Le code statut est obligatoire") String code) {
 }

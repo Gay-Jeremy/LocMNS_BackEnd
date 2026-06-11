@@ -2,7 +2,7 @@ package com.locmns.locmns_backend.controller;
 
 import com.locmns.locmns_backend.dto.request.UtilisateurRequestDto;
 import com.locmns.locmns_backend.dto.response.UtilisateurResponseDto;
-import com.locmns.locmns_backend.model.Utilisateur;
+import com.locmns.locmns_backend.dto.validation.ValidationGroups;
 import com.locmns.locmns_backend.services.IUtilisateurService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,17 +19,17 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UtilisateurController {
 
-    private final IUtilisateurService IUtilisateurService;
+    private final IUtilisateurService utilisateurService;
 
     @GetMapping("/liste")
     public List<UtilisateurResponseDto> obtenirTousLesUtilisateurs() {
-        return IUtilisateurService.obtenirTousLesUtilisateurs();
+        return utilisateurService.obtenirTousLesUtilisateurs();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<UtilisateurResponseDto> obtenirUtilisateurParId(@PathVariable int id) {
 
-        Optional<UtilisateurResponseDto> optionalUtilisateur = IUtilisateurService.obtenirUtilisateurParId(id);
+        Optional<UtilisateurResponseDto> optionalUtilisateur = utilisateurService.obtenirUtilisateurParId(id);
 
         if (optionalUtilisateur.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -40,23 +40,23 @@ public class UtilisateurController {
 
     @PostMapping("")
     public ResponseEntity<UtilisateurResponseDto> creerUtilisateur(
-            @RequestBody @Validated(Utilisateur.OnCreate.class) UtilisateurRequestDto utilisateurToInsert) {
+            @RequestBody @Validated(ValidationGroups.OnCreate.class) UtilisateurRequestDto utilisateurToInsert) {
 
-        UtilisateurResponseDto utilisateur = IUtilisateurService.creerUtilisateur(utilisateurToInsert);
+        UtilisateurResponseDto utilisateur = utilisateurService.creerUtilisateur(utilisateurToInsert);
 
         return new ResponseEntity<UtilisateurResponseDto>(utilisateur, HttpStatus.CREATED) ;
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> supprimerUtilisateur(@PathVariable int id) {
-        IUtilisateurService.supprimerUtilisateur(id);
+        utilisateurService.supprimerUtilisateur(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> modifierUtilisateur(@PathVariable int id, @RequestBody @Validated(Utilisateur.OnUpdate.class) UtilisateurRequestDto utilisateurToInsert ) {
+    public ResponseEntity<Void> modifierUtilisateur(@PathVariable int id, @RequestBody @Validated(ValidationGroups.OnUpdate.class) UtilisateurRequestDto utilisateurToInsert ) {
 
-        IUtilisateurService.modifierUtilisateur(id, utilisateurToInsert);
+        utilisateurService.modifierUtilisateur(id, utilisateurToInsert);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

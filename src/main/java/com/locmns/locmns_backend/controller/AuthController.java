@@ -1,11 +1,10 @@
 package com.locmns.locmns_backend.controller;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import com.locmns.locmns_backend.dto.request.UtilisateurRequestDto;
+import com.locmns.locmns_backend.dto.validation.ValidationGroups;
 import com.locmns.locmns_backend.model.Utilisateur;
 import com.locmns.locmns_backend.security.UtilisateurDetails;
 import com.locmns.locmns_backend.services.IUtilisateurService;
-import com.locmns.locmns_backend.view.UtilisateurView;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
@@ -29,21 +28,19 @@ public class AuthController {
     @Value("${jwt.secret}")
     protected String jwtSecret;
 
-    private final IUtilisateurService IUtilisateurService;
+    private final IUtilisateurService utilisateurService;
     private final AuthenticationProvider authenticationProvider;
 
     @PostMapping("/sign-in")
-    @JsonView( UtilisateurView.class )
     public ResponseEntity<UtilisateurRequestDto>  signIn(
-            @RequestBody @Validated(Utilisateur.OnCreate.class) UtilisateurRequestDto utilisateurToInsert) {
+            @RequestBody @Validated(ValidationGroups.OnCreate.class) UtilisateurRequestDto utilisateurToInsert) {
 
-        IUtilisateurService.creerUtilisateur(utilisateurToInsert);
+        utilisateurService.creerUtilisateur(utilisateurToInsert);
 
         return new ResponseEntity<>(utilisateurToInsert,HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
-    @JsonView( UtilisateurView.class )
     public ResponseEntity<String>  login (
             @RequestBody Utilisateur utilisateur) {
 

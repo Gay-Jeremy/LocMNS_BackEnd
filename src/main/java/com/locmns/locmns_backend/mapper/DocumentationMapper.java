@@ -2,18 +2,16 @@ package com.locmns.locmns_backend.mapper;
 
 import com.locmns.locmns_backend.dto.request.DocumentationRequestDto;
 import com.locmns.locmns_backend.dto.response.DocumentationResponseDto;
-import com.locmns.locmns_backend.dto.response.ModeleResumeDto;
 import com.locmns.locmns_backend.model.Documentation;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class DocumentationMapper implements Mapper<Documentation, DocumentationRequestDto, DocumentationResponseDto> {
 
     private final TypeDocumentMapper typeDocumentMapper;
-
-    public DocumentationMapper(TypeDocumentMapper typeDocumentMapper) {
-        this.typeDocumentMapper = typeDocumentMapper;
-    }
+    private final ModeleMapper modeleMapper;
 
     @Override
     public DocumentationResponseDto toDto(Documentation entity) {
@@ -27,7 +25,7 @@ public class DocumentationMapper implements Mapper<Documentation, DocumentationR
                 entity.getModeles() == null
                         ? java.util.List.of()
                         : entity.getModeles().stream()
-                        .map(ModeleResumeDto::depuisEntite)
+                        .map(modeleMapper::toDto)
                         .toList()
         );
     }

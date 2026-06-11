@@ -1,13 +1,16 @@
 package com.locmns.locmns_backend.mapper;
 
 import com.locmns.locmns_backend.dto.request.ComposantRequestDto;
-import com.locmns.locmns_backend.dto.response.CategorieModeleResumeDto;
 import com.locmns.locmns_backend.dto.response.ComposantResponseDto;
 import com.locmns.locmns_backend.model.Composant;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class ComposantMapper implements Mapper<Composant, ComposantRequestDto, ComposantResponseDto> {
+
+    private final CategorieModeleMapper categorieModeleMapper;
 
     @Override
     public ComposantResponseDto toDto(Composant entity) {
@@ -18,7 +21,7 @@ public class ComposantMapper implements Mapper<Composant, ComposantRequestDto, C
                 entity.getCategoriesModeles() == null
                         ? java.util.List.of()
                         : entity.getCategoriesModeles().stream()
-                        .map(CategorieModeleResumeDto::depuisEntite)
+                        .map(categorieModeleMapper::toDto)
                         .toList()
         );
     }

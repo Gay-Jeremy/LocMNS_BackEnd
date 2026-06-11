@@ -1,12 +1,14 @@
 package com.locmns.locmns_backend.model;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import com.locmns.locmns_backend.view.EmpruntView;
-import com.locmns.locmns_backend.view.MaterielView;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,28 +22,20 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-
 public class Materiel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonView({EmpruntView.class, MaterielView.class})
     private Integer id;
 
-    @NotBlank(message = "Le numéro de série est obligatoire")
-    @Column(nullable = false,unique = true,length = 50)
-    @Size(min = 2, max = 100, message = "Le numéro de série doit faire entre 2 et 100 caractères")
-    @JsonView({EmpruntView.class, MaterielView.class})
+    @Column(nullable = false, unique = true, length = 50)
     private String numSerie;
 
-
     @OneToMany(mappedBy = "materiel")
-    @JsonView(MaterielView.class)
     private List<Emprunt> emprunts;
 
     @ManyToOne
     @JoinColumn(name = "statut_materiel_id")
-    @JsonView(MaterielView.class)
     private StatutMateriel statutMateriel;
 
     @ManyToOne
@@ -49,9 +43,7 @@ public class Materiel {
     private Salle salle;
 
     @ManyToOne
-    @NotNull(message = "Le modèle est obligatoire")
     @JoinColumn(name = "modele_id")
-    @JsonView({EmpruntView.class, MaterielView.class})
     private Modele modele;
 
     @OneToMany(mappedBy = "materiel", cascade = CascadeType.ALL, orphanRemoval = true)

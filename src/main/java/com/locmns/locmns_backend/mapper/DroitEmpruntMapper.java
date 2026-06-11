@@ -1,14 +1,17 @@
 package com.locmns.locmns_backend.mapper;
 
 import com.locmns.locmns_backend.dto.request.DroitEmpruntRequestDto;
-import com.locmns.locmns_backend.dto.response.CategorieModeleResumeDto;
-import com.locmns.locmns_backend.dto.response.CategorieUtilisateurResumeDto;
 import com.locmns.locmns_backend.dto.response.DroitEmpruntResponseDto;
 import com.locmns.locmns_backend.model.DroitEmprunt;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class DroitEmpruntMapper implements Mapper<DroitEmprunt, DroitEmpruntRequestDto, DroitEmpruntResponseDto> {
+
+    private final CategorieUtilisateurMapper categorieUtilisateurMapper;
+    private final CategorieModeleMapper categorieModeleMapper;
 
     @Override
     public DroitEmpruntResponseDto toDto(DroitEmprunt entity) {
@@ -17,8 +20,8 @@ public class DroitEmpruntMapper implements Mapper<DroitEmprunt, DroitEmpruntRequ
                 entity.getCategorieUtilisateurId(),
                 entity.getCategorieModeleId(),
                 entity.isPeutEmprunter(),
-                CategorieUtilisateurResumeDto.depuisEntite(entity.getCategorieUtilisateur()),
-                CategorieModeleResumeDto.depuisEntite(entity.getCategorieModele())
+                categorieUtilisateurMapper.toDto(entity.getCategorieUtilisateur()),
+                categorieModeleMapper.toDto(entity.getCategorieModele())
         );
     }
 

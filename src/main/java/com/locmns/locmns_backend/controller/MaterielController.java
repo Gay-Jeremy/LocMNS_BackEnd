@@ -4,8 +4,6 @@ import com.locmns.locmns_backend.dto.request.MaterielRequestDto;
 import com.locmns.locmns_backend.dto.request.MaterielStatutRequestDto;
 import com.locmns.locmns_backend.dto.response.MaterielResponseDto;
 import com.locmns.locmns_backend.model.Utilisateur;
-import com.locmns.locmns_backend.repository.EmpruntRepository;
-import com.locmns.locmns_backend.repository.MaterielRepository;
 import com.locmns.locmns_backend.security.IsAdmin;
 import com.locmns.locmns_backend.security.IsUser;
 import com.locmns.locmns_backend.security.UtilisateurDetails;
@@ -27,8 +25,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MaterielController {
 
-    private final MaterielRepository materielRepository;
-    private final EmpruntRepository empruntRepository;
     private final IMaterielService materielService;
 
     @GetMapping("/liste")
@@ -85,14 +81,7 @@ public class MaterielController {
     @DeleteMapping("/{id}")
     @IsAdmin
     public ResponseEntity<Void> supprimerMateriel(@PathVariable int id) {
-        if (materielRepository.findById(id).isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        if (empruntRepository.existsEmpruntActifParMaterielId(id)) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        }
-        empruntRepository.deleteByMaterielId(id);
-        materielRepository.deleteById(id);
+        materielService.supprimerMateriel(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
