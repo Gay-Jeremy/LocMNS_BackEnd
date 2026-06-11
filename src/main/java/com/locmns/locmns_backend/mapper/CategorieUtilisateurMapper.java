@@ -1,6 +1,7 @@
 package com.locmns.locmns_backend.mapper;
 
-import com.locmns.locmns_backend.dto.response.CategorieUtilisateurResume;
+import com.locmns.locmns_backend.dto.request.CategorieUtilisateurRequestDto;
+import com.locmns.locmns_backend.dto.response.CategorieUtilisateurResumeDto;
 import com.locmns.locmns_backend.model.CategorieUtilisateur;
 import org.springframework.stereotype.Component;
 
@@ -15,13 +16,13 @@ import org.springframework.stereotype.Component;
  * à être exposé dans les réponses imbriquées.
  */
 @Component
-public class CategorieUtilisateurMapper implements Mapper<CategorieUtilisateur, Void, CategorieUtilisateurResume> {
+public class CategorieUtilisateurMapper implements Mapper<CategorieUtilisateur, CategorieUtilisateurRequestDto, CategorieUtilisateurResumeDto> {
 
     /** {@inheritDoc} */
     @Override
-    public CategorieUtilisateurResume toDto(CategorieUtilisateur entity) {
+    public CategorieUtilisateurResumeDto toDto(CategorieUtilisateur entity) {
         if (entity == null) return null;
-        return new CategorieUtilisateurResume(entity.getId(), entity.getLibelle());
+        return new CategorieUtilisateurResumeDto(entity.getId(), entity.getLibelle());
     }
 
     /**
@@ -30,8 +31,12 @@ public class CategorieUtilisateurMapper implements Mapper<CategorieUtilisateur, 
      * @throws UnsupportedOperationException toujours
      */
     @Override
-    public CategorieUtilisateur toEntity(Void requestDto) {
-        throw new UnsupportedOperationException("CategorieUtilisateur ne supporte pas toEntity via ce mapper");
+    public CategorieUtilisateur toEntity(CategorieUtilisateurRequestDto requestDto) {
+        if (requestDto == null) return null;
+        CategorieUtilisateur categorieUtilisateur = new CategorieUtilisateur();
+        categorieUtilisateur.setLibelle(requestDto.libelle());
+        categorieUtilisateur.setCode(requestDto.code());
+        return categorieUtilisateur;
     }
 
     /**
@@ -40,7 +45,8 @@ public class CategorieUtilisateurMapper implements Mapper<CategorieUtilisateur, 
      * @throws UnsupportedOperationException toujours
      */
     @Override
-    public void update(Void requestDto, CategorieUtilisateur entity) {
-        throw new UnsupportedOperationException("CategorieUtilisateur ne supporte pas update via ce mapper");
+    public void update(CategorieUtilisateurRequestDto requestDto, CategorieUtilisateur entity) {
+        if (requestDto == null || entity == null) return;
+        entity.setLibelle(requestDto.libelle());
     }
 }

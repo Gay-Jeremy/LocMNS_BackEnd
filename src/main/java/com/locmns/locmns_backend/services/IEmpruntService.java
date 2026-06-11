@@ -35,6 +35,6 @@ public interface IEmpruntService {
     void supprimerEmprunt(Integer id);
 
     @Transactional
-    void modifierStatutEmprunt(int empruntId, StatutUpdateRequestDto statutUpdateRequestDto);
+    void modifierStatutEmprunt(int empruntId, EmpruntStatutRequestDto empruntStatutRequestDto);
 
 }

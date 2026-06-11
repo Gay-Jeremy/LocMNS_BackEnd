@@ -12,9 +12,9 @@ public record EmpruntResponseDto(
         LocalDate dateProlongation,
         LocalDate dateRetourAnticipe,
         String note,
-        UtilisateurResume utilisateur,
-        StatutEmpruntResume statutEmprunt,
-        MaterielResume materiel
+        UtilisateurResumeDto utilisateur,
+        StatutEmpruntResumeDto statutEmprunt,
+        MaterielResumeDto materiel
 ) {
 
     public static EmpruntResponseDto depuisEntite(Emprunt emprunt) {
@@ -26,9 +26,9 @@ public record EmpruntResponseDto(
                 emprunt.getDateProlongation(),
                 emprunt.getDateRetourAnticipe(),
                 emprunt.getNote(),
-                UtilisateurResume.depuisEntite(emprunt.getUtilisateur()),
-                StatutEmpruntResume.depuisEntite(emprunt.getStatutEmprunt()),
-                MaterielResume.depuisEntite(emprunt.getMateriel())
+                UtilisateurResumeDto.depuisEntite(emprunt.getUtilisateur()),
+                StatutEmpruntResumeDto.depuisEntite(emprunt.getStatutEmprunt()),
+                MaterielResumeDto.depuisEntite(emprunt.getMateriel())
         );
     }
 

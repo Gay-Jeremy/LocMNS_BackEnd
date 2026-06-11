@@ -1,9 +1,8 @@
 package com.locmns.locmns_backend.controller;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import com.locmns.locmns_backend.repository.CategorieModeleRepository;
-import com.locmns.locmns_backend.model.CategorieModele;
-import com.locmns.locmns_backend.view.CategorieModeleView;
+import com.locmns.locmns_backend.dto.request.CategorieModeleRequestDto;
+import com.locmns.locmns_backend.dto.response.CategorieModeleResumeDto;
+import com.locmns.locmns_backend.services.ICategorieModeleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -11,78 +10,43 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
-
 
 @RestController
 @RequestMapping("/api/categories_modele")
 @RequiredArgsConstructor
 public class CategorieModeleController {
 
-    private final CategorieModeleRepository categorieModeleRepository;
+    private final ICategorieModeleService categorieModeleService;
 
     @GetMapping("/liste")
-    @JsonView(CategorieModeleView.class)
-    public List<CategorieModele> obtenirToutesLesCategoriesModele() {
-
-        return categorieModeleRepository.findAll();
+    public List<CategorieModeleResumeDto> obtenirToutesLesCategoriesModele() {
+        return categorieModeleService.obtenirToutesLesCategoriesModele();
     }
 
     @GetMapping("/{id}")
-    @JsonView(CategorieModeleView.class)
-    public ResponseEntity<CategorieModele> obtenirCategorieModeleParId(@PathVariable int id) {
-
-        Optional<CategorieModele> optionalCategorieModele = categorieModeleRepository.findById(id);
-
-        if(optionalCategorieModele.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        return new ResponseEntity<>(optionalCategorieModele.get(), HttpStatus.OK);
+    public ResponseEntity<CategorieModeleResumeDto> obtenirCategorieModeleParId(@PathVariable int id) {
+        return categorieModeleService.obtenirCategorieModeleParId(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PostMapping("")
-    public CategorieModele creerCategorieModele(@RequestBody @Valid CategorieModele categorieToInsert) {
-
-        categorieToInsert.setId(null);
-
-        CategorieModele nouvelleCategorie = categorieModeleRepository.save(categorieToInsert);
-        
-        return nouvelleCategorie;
+    @PostMapping
+    public ResponseEntity<CategorieModeleResumeDto> creerCategorieModele(
+            @RequestBody @Valid CategorieModeleRequestDto dto) {
+        return new ResponseEntity<>(categorieModeleService.creerCategorieModele(dto), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> supprimerCategorieModele(@PathVariable int id) {
-
-        Optional<CategorieModele> optionalCategorieModele = categorieModeleRepository.findById(id);
-
-        if (optionalCategorieModele.isEmpty()) {
-            return new ResponseEntity<>((HttpStatus.NOT_FOUND));
-        }
-        categorieModeleRepository.deleteById(id);
-
-        return new ResponseEntity<>((HttpStatus.NO_CONTENT));
-
+        categorieModeleService.supprimerCategorieModele(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> modifierCategorieModele(@PathVariable int id,
-                                                        @RequestBody  @Valid CategorieModele categorieToUpdate) {
-
-        // On écrase l'id du json par celui en paramètre
-        categorieToUpdate.setId(id);
-
-        Optional<CategorieModele> optionalCategorieModele = categorieModeleRepository.findById(id);
-
-        if (optionalCategorieModele.isEmpty()) {
-            return new ResponseEntity<>((HttpStatus.NOT_FOUND));
-        }
-
-        categorieModeleRepository.save(categorieToUpdate);
-
-        return new ResponseEntity<>((HttpStatus.NO_CONTENT));
-
+    public ResponseEntity<Void> modifierCategorieModele(
+            @PathVariable int id,
+            @RequestBody @Valid CategorieModeleRequestDto dto) {
+        categorieModeleService.modifierCategorieModele(id, dto);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
-
 }

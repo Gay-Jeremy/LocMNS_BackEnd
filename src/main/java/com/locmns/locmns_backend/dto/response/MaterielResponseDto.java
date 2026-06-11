@@ -2,7 +2,7 @@ package com.locmns.locmns_backend.dto.response;
 
 import com.locmns.locmns_backend.model.Materiel;
 
-public record MaterielResponseDto(Integer id, String numSerie, SalleResume salle,StatutMaterielResume statutMateriel, ModeleResume modele) {
+public record MaterielResponseDto(Integer id, String numSerie, SalleResumeDto salle, StatutMaterielResumeDto statutMateriel, ModeleResumeDto modele) {
 
     public static MaterielResponseDto depuisEntite(Materiel materiel) {
         if(materiel == null) return null;
@@ -10,9 +10,9 @@ public record MaterielResponseDto(Integer id, String numSerie, SalleResume salle
         return new MaterielResponseDto(
                 materiel.getId(),
                 materiel.getNumSerie(),
-                SalleResume.depuisEntite(materiel.getSalle()),
-                StatutMaterielResume.depuisEntite(materiel.getStatutMateriel()),
-                ModeleResume.depuisEntite(materiel.getModele())
+                SalleResumeDto.depuisEntite(materiel.getSalle()),
+                StatutMaterielResumeDto.depuisEntite(materiel.getStatutMateriel()),
+                ModeleResumeDto.depuisEntite(materiel.getModele())
         );
     }
 }

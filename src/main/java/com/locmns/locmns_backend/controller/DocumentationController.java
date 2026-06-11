@@ -1,7 +1,8 @@
 package com.locmns.locmns_backend.controller;
 
-import com.locmns.locmns_backend.repository.DocumentationRepository;
-import com.locmns.locmns_backend.model.Documentation;
+import com.locmns.locmns_backend.dto.request.DocumentationRequestDto;
+import com.locmns.locmns_backend.dto.response.DocumentationResponseDto;
+import com.locmns.locmns_backend.services.IDocumentationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -9,63 +10,43 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
-
 @RequestMapping("/api/documentations")
 @RequiredArgsConstructor
 public class DocumentationController {
 
-    private final DocumentationRepository documentationRepository;
+    private final IDocumentationService documentationService;
 
     @GetMapping("/liste")
-    public List<Documentation> obtenirToutesLesDocumentations() {
-
-        return documentationRepository.findAll();
+    public List<DocumentationResponseDto> obtenirToutesLesDocumentations() {
+        return documentationService.obtenirToutesLesDocumentations();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Documentation> obtenirDocumentationParId(@PathVariable int id) {
-        Optional<Documentation> optionalDocumentation = documentationRepository.findById(id);
-        if(optionalDocumentation.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(optionalDocumentation.get(),HttpStatus.OK);
+    public ResponseEntity<DocumentationResponseDto> obtenirDocumentationParId(@PathVariable int id) {
+        return documentationService.obtenirDocumentationParId(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PostMapping("")
-    public Documentation creerDocumentation(@RequestBody @Valid Documentation documentationToInsert) {
-        documentationToInsert.setId(null);
-        documentationRepository.save(documentationToInsert);
-        return documentationToInsert;
+    @PostMapping
+    public ResponseEntity<DocumentationResponseDto> creerDocumentation(
+            @RequestBody @Valid DocumentationRequestDto dto) {
+        return new ResponseEntity<>(documentationService.creerDocumentation(dto), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> supprimerDocumentation(@PathVariable int id) {
-        Optional<Documentation> optionalDocumentation = documentationRepository.findById(id);
-        if (optionalDocumentation.isEmpty()) {
-            return new ResponseEntity<>((HttpStatus.NOT_FOUND));
-        }
-        documentationRepository.deleteById(id);
-
-        return new ResponseEntity<>((HttpStatus.NO_CONTENT));
+        documentationService.supprimerDocumentation(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> modifierDocumentation(@PathVariable int id,
-                                                      @RequestBody @Valid Documentation documentationToUpdate) {
-
-        documentationToUpdate.setId(id);
-
-        Optional<Documentation> optionalDocumentation = documentationRepository.findById(id);
-        if (optionalDocumentation.isEmpty()) {
-            return new ResponseEntity<>((HttpStatus.NOT_FOUND));
-        }
-
-        documentationRepository.save(documentationToUpdate);
-
-        return new ResponseEntity<>((HttpStatus.NO_CONTENT));
+    public ResponseEntity<Void> modifierDocumentation(
+            @PathVariable int id,
+            @RequestBody @Valid DocumentationRequestDto dto) {
+        documentationService.modifierDocumentation(id, dto);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
 }

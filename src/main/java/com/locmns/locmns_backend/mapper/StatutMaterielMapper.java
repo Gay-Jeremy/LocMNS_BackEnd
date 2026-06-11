@@ -1,6 +1,7 @@
 package com.locmns.locmns_backend.mapper;
 
-import com.locmns.locmns_backend.dto.response.StatutMaterielResume;
+import com.locmns.locmns_backend.dto.request.StatutMaterielRequestDto;
+import com.locmns.locmns_backend.dto.response.StatutMaterielResumeDto;
 import com.locmns.locmns_backend.model.StatutMateriel;
 import org.springframework.stereotype.Component;
 
@@ -11,13 +12,13 @@ import org.springframework.stereotype.Component;
  * Les champs gérés : {@code id}, {@code libelle}, {@code code}.
  */
 @Component
-public class StatutMaterielMapper implements Mapper<StatutMateriel, Void, StatutMaterielResume> {
+public class StatutMaterielMapper implements Mapper<StatutMateriel, StatutMaterielRequestDto, StatutMaterielResumeDto> {
 
     /** {@inheritDoc} */
     @Override
-    public StatutMaterielResume toDto(StatutMateriel entity) {
+    public StatutMaterielResumeDto toDto(StatutMateriel entity) {
         if (entity == null) return null;
-        return new StatutMaterielResume(entity.getId(), entity.getLibelle(), entity.getCode());
+        return new StatutMaterielResumeDto(entity.getId(), entity.getLibelle(), entity.getCode());
     }
 
     /**
@@ -26,8 +27,12 @@ public class StatutMaterielMapper implements Mapper<StatutMateriel, Void, Statut
      * @throws UnsupportedOperationException toujours
      */
     @Override
-    public StatutMateriel toEntity(Void requestDto) {
-        throw new UnsupportedOperationException("StatutMateriel ne supporte pas toEntity via ce mapper");
+    public StatutMateriel toEntity(StatutMaterielRequestDto requestDto) {
+        if (requestDto == null) return null;
+        StatutMateriel statutMateriel = new StatutMateriel();
+        statutMateriel.setLibelle(requestDto.libelle());
+        statutMateriel.setCode(requestDto.code());
+        return statutMateriel;
     }
 
     /**
@@ -36,7 +41,8 @@ public class StatutMaterielMapper implements Mapper<StatutMateriel, Void, Statut
      * @throws UnsupportedOperationException toujours
      */
     @Override
-    public void update(Void requestDto, StatutMateriel entity) {
-        throw new UnsupportedOperationException("StatutMateriel ne supporte pas update via ce mapper");
+    public void update(StatutMaterielRequestDto requestDto, StatutMateriel entity) {
+        if (requestDto == null || entity == null) return;
+        entity.setLibelle(requestDto.libelle());
     }
 }

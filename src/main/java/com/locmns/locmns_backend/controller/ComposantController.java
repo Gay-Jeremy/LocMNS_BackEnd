@@ -1,8 +1,8 @@
 package com.locmns.locmns_backend.controller;
 
-
-import com.locmns.locmns_backend.repository.ComposantRepository;
-import com.locmns.locmns_backend.model.Composant;
+import com.locmns.locmns_backend.dto.request.ComposantRequestDto;
+import com.locmns.locmns_backend.dto.response.ComposantResponseDto;
+import com.locmns.locmns_backend.services.IComposantService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -10,76 +10,42 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
-
 @RequestMapping("/api/composants")
 @RequiredArgsConstructor
 public class ComposantController {
 
-    private final ComposantRepository composantRepository;
+    private final IComposantService composantService;
 
     @GetMapping("/liste")
-    public List<Composant> obtenirTousLesComposants() {
-
-        return composantRepository.findAll();
-
+    public List<ComposantResponseDto> obtenirTousLesComposants() {
+        return composantService.obtenirTousLesComposants();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Composant> obtenirComposantParId(@PathVariable int id) {
-
-        Optional<Composant> optionalComposant = composantRepository.findById(id);
-
-        if(optionalComposant.isEmpty()) {
-
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        return new ResponseEntity<>(optionalComposant.get(), HttpStatus.OK);
+    public ResponseEntity<ComposantResponseDto> obtenirComposantParId(@PathVariable int id) {
+        return composantService.obtenirComposantParId(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PostMapping("")
-    public Composant creerComposant(@RequestBody @Valid Composant categorieToInsert) {
-
-        categorieToInsert.setId(null);
-
-        composantRepository.save(categorieToInsert);
-
-        return categorieToInsert;
-
+    @PostMapping
+    public ResponseEntity<ComposantResponseDto> creerComposant(@RequestBody @Valid ComposantRequestDto dto) {
+        return new ResponseEntity<>(composantService.creerComposant(dto), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> supprimerComposant(@PathVariable int id) {
-
-        Optional<Composant> optionalComposant = composantRepository.findById(id);
-
-        if (optionalComposant.isEmpty()) {
-            return new ResponseEntity<>((HttpStatus.NOT_FOUND));
-        }
-        composantRepository.deleteById(id);
-
-        return new ResponseEntity<>((HttpStatus.NO_CONTENT));
-
+        composantService.supprimerComposant(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> modifierComposant(@PathVariable int id,
-                                                  @RequestBody @Valid Composant categorieToUpdate) {
-
-        // On écrase l'id du json par celui en paramètre
-        categorieToUpdate.setId(id);
-
-        Optional<Composant> optionalComposant = composantRepository.findById(id);
-
-        if (optionalComposant.isEmpty()) {
-            return new ResponseEntity<>((HttpStatus.NOT_FOUND));
-        }
-
-        composantRepository.save(categorieToUpdate);
-
-        return new ResponseEntity<>((HttpStatus.NO_CONTENT));
+    public ResponseEntity<Void> modifierComposant(
+            @PathVariable int id,
+            @RequestBody @Valid ComposantRequestDto dto) {
+        composantService.modifierComposant(id, dto);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

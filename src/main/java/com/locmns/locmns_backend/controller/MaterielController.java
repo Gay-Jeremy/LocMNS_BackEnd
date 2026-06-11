@@ -1,7 +1,7 @@
 package com.locmns.locmns_backend.controller;
 
 import com.locmns.locmns_backend.dto.request.MaterielRequestDto;
-import com.locmns.locmns_backend.dto.request.StatutRequestDto;
+import com.locmns.locmns_backend.dto.request.MaterielStatutRequestDto;
 import com.locmns.locmns_backend.dto.response.MaterielResponseDto;
 import com.locmns.locmns_backend.model.Utilisateur;
 import com.locmns.locmns_backend.repository.EmpruntRepository;
@@ -29,20 +29,20 @@ public class MaterielController {
 
     private final MaterielRepository materielRepository;
     private final EmpruntRepository empruntRepository;
-    private final IMaterielService IMaterielService;
+    private final IMaterielService materielService;
 
     @GetMapping("/liste")
     @IsUser
     public List<MaterielResponseDto> obtenirTousLesMateriels(
             @AuthenticationPrincipal UtilisateurDetails utilisateurDetails) {
         Utilisateur utilisateur = utilisateurDetails.getUtilisateur();
-        return IMaterielService.obtenirMaterielsSelonRole(utilisateur);
+        return materielService.obtenirMaterielsSelonRole(utilisateur);
     }
 
     @GetMapping("/liste/disponible")
     @IsUser
     public List<MaterielResponseDto> obtenirMaterielsDisponibles() {
-        return IMaterielService.obtenirMaterielsDisponibles();
+        return materielService.obtenirMaterielsDisponibles();
     }
 
     @GetMapping("/liste/disponible/categorie")
@@ -51,7 +51,7 @@ public class MaterielController {
             @RequestParam LocalDate dateDebut,
             @RequestParam LocalDate dateFin,
             @RequestParam int categorieModeleId) {
-        return IMaterielService.obtenirMaterielsDisponiblesPourPeriodeParIdCategorieModele(dateDebut, dateFin, categorieModeleId);
+        return materielService.obtenirMaterielsDisponiblesPourPeriodeParIdCategorieModele(dateDebut, dateFin, categorieModeleId);
     }
 
     @GetMapping("/liste/panne_signalee")
@@ -59,13 +59,13 @@ public class MaterielController {
     public List<MaterielResponseDto> obtenirListeMaterielPanneSignalee(
             @AuthenticationPrincipal UtilisateurDetails utilisateurDetails) {
         Utilisateur utilisateur = utilisateurDetails.getUtilisateur();
-        return IMaterielService.obtenirListeMaterielPanneSignaleeSelonRole(utilisateur);
+        return materielService.obtenirListeMaterielPanneSignaleeSelonRole(utilisateur);
     }
 
     @GetMapping("/{id}")
     @IsUser
     public ResponseEntity<MaterielResponseDto> obtenirMaterielParId(@PathVariable int id) {
-        Optional<MaterielResponseDto> optionalMateriel = IMaterielService.obtenirMaterielParId(id);
+        Optional<MaterielResponseDto> optionalMateriel = materielService.obtenirMaterielParId(id);
         if (optionalMateriel.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -78,7 +78,7 @@ public class MaterielController {
             @AuthenticationPrincipal UtilisateurDetails utilisateurDetails,
             @RequestBody @Valid MaterielRequestDto materielRequestDto) {
         Utilisateur utilisateur = utilisateurDetails.getUtilisateur();
-        MaterielResponseDto materiel = IMaterielService.creerMateriel(materielRequestDto, utilisateur);
+        MaterielResponseDto materiel = materielService.creerMateriel(materielRequestDto, utilisateur);
         return new ResponseEntity<>(materiel, HttpStatus.CREATED);
     }
 
@@ -101,7 +101,7 @@ public class MaterielController {
     public ResponseEntity<Void> modifierMateriel(
             @PathVariable int id,
             @RequestBody @Valid MaterielRequestDto materielRequestDto) {
-        IMaterielService.modifierMateriel(id, materielRequestDto);
+        materielService.modifierMateriel(id, materielRequestDto);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -109,8 +109,8 @@ public class MaterielController {
     @IsUser
     public ResponseEntity<Void> modifierStatutMateriel(
             @PathVariable Integer id,
-            @RequestBody StatutRequestDto statutRequestDTO) {
-        IMaterielService.modifierStatutMateriel(id, statutRequestDTO.statutId());
+            @RequestBody MaterielStatutRequestDto materielStatutRequestDTO) {
+        materielService.modifierStatutMateriel(id, materielStatutRequestDTO.statutId());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

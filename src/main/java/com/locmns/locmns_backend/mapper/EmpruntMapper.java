@@ -15,12 +15,12 @@ import org.springframework.stereotype.Component;
  * <h3>Arbre de délégation</h3>
  * <pre>
  * EmpruntMapper
- * ├── UtilisateurMapper   → UtilisateurResume
- * ├── StatutEmpruntMapper → StatutEmpruntResume
+ * ├── UtilisateurMapper   → UtilisateurResumeDto
+ * ├── StatutEmpruntMapper → StatutEmpruntResumeDto
  * └── MaterielMapper
- *     ├── StatutMaterielMapper → StatutMaterielResume
+ *     ├── StatutMaterielMapper → StatutMaterielResumeDto
  *     └── ModeleMapper
- *         └── CategorieModeleMapper → CategorieModeleResume
+ *         └── CategorieModeleMapper → CategorieModeleResumeDto
  * </pre>
  *
  * <h3>Champs non gérés par le mapper</h3>

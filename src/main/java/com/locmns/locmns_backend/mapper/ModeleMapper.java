@@ -1,7 +1,7 @@
 package com.locmns.locmns_backend.mapper;
 
 import com.locmns.locmns_backend.dto.request.ModeleRequestDto;
-import com.locmns.locmns_backend.dto.response.ModeleResume;
+import com.locmns.locmns_backend.dto.response.ModeleResumeDto;
 import com.locmns.locmns_backend.model.Modele;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
  *
  * <h3>Responsabilités</h3>
  * <ul>
- *   <li>{@code toDto}     — produit un {@link ModeleResume} avec sa catégorie imbriquée</li>
+ *   <li>{@code toDto}     — produit un {@link ModeleResumeDto} avec sa catégorie imbriquée</li>
  *   <li>{@code toEntity}  — initialise les champs scalaires ({@code libelle}) ;
  *       l'association {@code categorieModele} est résolue par le service</li>
  *   <li>{@code update}    — met à jour {@code libelle} uniquement ;
@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @RequiredArgsConstructor
-public class ModeleMapper implements Mapper<Modele, ModeleRequestDto, ModeleResume> {
+public class ModeleMapper implements Mapper<Modele, ModeleRequestDto, ModeleResumeDto> {
 
     private final CategorieModeleMapper categorieModeleMapper;
 
@@ -32,9 +32,9 @@ public class ModeleMapper implements Mapper<Modele, ModeleRequestDto, ModeleResu
      * <p>Délègue la conversion de {@code categorieModele} à {@link CategorieModeleMapper#toDto}.
      */
     @Override
-    public ModeleResume toDto(Modele entity) {
+    public ModeleResumeDto toDto(Modele entity) {
         if (entity == null) return null;
-        return new ModeleResume(
+        return new ModeleResumeDto(
                 entity.getId(),
                 entity.getLibelle(),
                 categorieModeleMapper.toDto(entity.getCategorieModele())

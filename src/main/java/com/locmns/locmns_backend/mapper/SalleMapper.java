@@ -1,6 +1,7 @@
 package com.locmns.locmns_backend.mapper;
 
-import com.locmns.locmns_backend.dto.response.SalleResume;
+import com.locmns.locmns_backend.dto.request.SalleRequestDto;
+import com.locmns.locmns_backend.dto.response.SalleResumeDto;
 import com.locmns.locmns_backend.model.Salle;
 import org.springframework.stereotype.Component;
 
@@ -11,13 +12,13 @@ import org.springframework.stereotype.Component;
  * Les champs gérés : {@code id}, {@code libelle}.
  */
 @Component
-public class SalleMapper implements Mapper<Salle, Void, SalleResume> {
+public class SalleMapper implements Mapper<Salle, SalleRequestDto, SalleResumeDto> {
 
     /** {@inheritDoc} */
     @Override
-    public SalleResume toDto(Salle entity) {
+    public SalleResumeDto toDto(Salle entity) {
         if (entity == null) return null;
-        return new SalleResume(entity.getId(), entity.getLibelle());
+        return new SalleResumeDto(entity.getId(), entity.getLibelle());
     }
 
     /**
@@ -26,8 +27,11 @@ public class SalleMapper implements Mapper<Salle, Void, SalleResume> {
      * @throws UnsupportedOperationException toujours
      */
     @Override
-    public Salle toEntity(Void requestDto) {
-        throw new UnsupportedOperationException("Salle ne supporte pas toEntity via ce mapper");
+    public Salle toEntity(SalleRequestDto requestDto) {
+        if (requestDto == null) return null;
+        Salle salle = new Salle();
+        salle.setLibelle(requestDto.libelle());
+        return salle;
     }
 
     /**
@@ -36,7 +40,8 @@ public class SalleMapper implements Mapper<Salle, Void, SalleResume> {
      * @throws UnsupportedOperationException toujours
      */
     @Override
-    public void update(Void requestDto, Salle entity) {
-        throw new UnsupportedOperationException("Salle ne supporte pas update via ce mapper");
+    public void update(SalleRequestDto requestDto, Salle entity) {
+        if (requestDto == null || entity == null) return;
+        entity.setLibelle(requestDto.libelle());
     }
 }

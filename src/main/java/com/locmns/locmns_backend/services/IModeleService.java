@@ -1,16 +1,21 @@
 package com.locmns.locmns_backend.services;
 
 import com.locmns.locmns_backend.dto.request.ModeleRequestDto;
-import com.locmns.locmns_backend.model.Modele;
-import org.springframework.transaction.annotation.Transactional;
+import com.locmns.locmns_backend.dto.response.ModeleResumeDto;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface IModeleService {
-    List<Modele> obtenirTousLesModeles();
+    List<ModeleResumeDto> obtenirTousLesModeles();
 
-    List<Modele> obtenirModeleParCategorie(int categorieModeleId);
+    List<ModeleResumeDto> obtenirModeleParCategorie(int categorieModeleId);
 
-    @Transactional
-    Modele creerModele(ModeleRequestDto dto);
+    Optional<ModeleResumeDto> obtenirModeleParId(Integer id);
+
+    ModeleResumeDto creerModele(ModeleRequestDto dto);
+
+    void modifierModele(Integer id, ModeleRequestDto dto);
+
+    void supprimerModele(Integer id);
 }

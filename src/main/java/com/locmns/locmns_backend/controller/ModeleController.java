@@ -1,12 +1,8 @@
 package com.locmns.locmns_backend.controller;
 
-
-import com.fasterxml.jackson.annotation.JsonView;
 import com.locmns.locmns_backend.dto.request.ModeleRequestDto;
-import com.locmns.locmns_backend.repository.ModeleRepository;
-import com.locmns.locmns_backend.model.Modele;
+import com.locmns.locmns_backend.dto.response.ModeleResumeDto;
 import com.locmns.locmns_backend.services.IModeleService;
-import com.locmns.locmns_backend.view.ModeleView;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,76 +10,47 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
-
 @RequestMapping("/api/modeles")
 @RequiredArgsConstructor
 public class ModeleController {
 
-    private final ModeleRepository modeleRepository;
+    private final IModeleService modeleService;
 
-    private final IModeleService IModeleService;
-
-    @JsonView(ModeleView.class)
     @GetMapping("/liste")
-    public List<Modele> obtenirTousLesModeles() {
-
-        return modeleRepository.findAll();
+    public List<ModeleResumeDto> obtenirTousLesModeles() {
+        return modeleService.obtenirTousLesModeles();
     }
 
-    @JsonView(ModeleView.class)
     @GetMapping("/liste/categorie/{categorieModeleId}")
-    public List<Modele> obtenirLesModelesParIdCategorieModele(@PathVariable int categorieModeleId) {
-        return modeleRepository.findByCategorieModeleId(categorieModeleId);
+    public List<ModeleResumeDto> obtenirLesModelesParIdCategorieModele(@PathVariable int categorieModeleId) {
+        return modeleService.obtenirModeleParCategorie(categorieModeleId);
     }
 
-    @JsonView(ModeleView.class)
     @GetMapping("/{id}")
-    public ResponseEntity<Modele> obtenirModeleParId(@PathVariable int id) {
-
-        Optional<Modele> optionalModele = modeleRepository.findById(id);
-
-        if (optionalModele.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        return new ResponseEntity<>(optionalModele.get(), HttpStatus.OK);
+    public ResponseEntity<ModeleResumeDto> obtenirModeleParId(@PathVariable int id) {
+        return modeleService.obtenirModeleParId(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @JsonView(ModeleView.class)
-    @PostMapping("")
-    public ResponseEntity<Modele> creerModele(@RequestBody @Valid ModeleRequestDto modeleRequestDto) {
-        Modele modele = IModeleService.creerModele(modeleRequestDto);
-        return new ResponseEntity<>(modele, HttpStatus.CREATED);
+    @PostMapping
+    public ResponseEntity<ModeleResumeDto> creerModele(@RequestBody @Valid ModeleRequestDto dto) {
+        return new ResponseEntity<>(modeleService.creerModele(dto), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> supprimerModele(@PathVariable int id) {
-
-        Optional<Modele> optionalModele = modeleRepository.findById(id);
-
-        if(optionalModele.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        modeleRepository.deleteById(id);
+        modeleService.supprimerModele(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> modifierModele(@PathVariable int id, @RequestBody @Valid Modele modeleToInsert) {
-
-        modeleToInsert.setId(id);
-
-        Optional<Modele> optionalModele = modeleRepository.findById(id);
-
-        if(optionalModele.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        modeleRepository.save(modeleToInsert);
+    public ResponseEntity<Void> modifierModele(
+            @PathVariable int id,
+            @RequestBody @Valid ModeleRequestDto dto) {
+        modeleService.modifierModele(id, dto);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

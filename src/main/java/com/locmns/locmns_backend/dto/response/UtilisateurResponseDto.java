@@ -7,8 +7,8 @@ public record UtilisateurResponseDto(
         String nom,
         String prenom,
         String email,
-        PromotionResume promotion,
-        CategorieUtilisateurResume categorie
+        PromotionResumeDto promotion,
+        CategorieUtilisateurResumeDto categorie
         ) {
 
     public static UtilisateurResponseDto depuisEntite(Utilisateur utilisateur) {
@@ -17,8 +17,8 @@ public record UtilisateurResponseDto(
                 utilisateur.getNom(),
                 utilisateur.getPrenom(),
                 utilisateur.getEmail(),
-                PromotionResume.depuisEntite(utilisateur.getPromotion()),
-                CategorieUtilisateurResume.depuisEntite(utilisateur.getCategorieUtilisateur())
+                PromotionResumeDto.depuisEntite(utilisateur.getPromotion()),
+                CategorieUtilisateurResumeDto.depuisEntite(utilisateur.getCategorieUtilisateur())
         );
     }
 }

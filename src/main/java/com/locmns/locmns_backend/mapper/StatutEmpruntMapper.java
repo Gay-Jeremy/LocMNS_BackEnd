@@ -1,6 +1,7 @@
 package com.locmns.locmns_backend.mapper;
 
-import com.locmns.locmns_backend.dto.response.StatutEmpruntResume;
+import com.locmns.locmns_backend.dto.request.StatutEmpruntRequestDto;
+import com.locmns.locmns_backend.dto.response.StatutEmpruntResumeDto;
 import com.locmns.locmns_backend.model.StatutEmprunt;
 import org.springframework.stereotype.Component;
 
@@ -15,13 +16,13 @@ import org.springframework.stereotype.Component;
  * (ex. bouton "Accepter" visible uniquement si {@code code = DEMANDE_EN_COURS}).
  */
 @Component
-public class StatutEmpruntMapper implements Mapper<StatutEmprunt, Void, StatutEmpruntResume> {
+public class StatutEmpruntMapper implements Mapper<StatutEmprunt, StatutEmpruntRequestDto, StatutEmpruntResumeDto> {
 
     /** {@inheritDoc} */
     @Override
-    public StatutEmpruntResume toDto(StatutEmprunt entity) {
+    public StatutEmpruntResumeDto toDto(StatutEmprunt entity) {
         if (entity == null) return null;
-        return new StatutEmpruntResume(entity.getId(), entity.getLibelle(), entity.getCode());
+        return new StatutEmpruntResumeDto(entity.getId(), entity.getLibelle(), entity.getCode());
     }
 
     /**
@@ -31,8 +32,12 @@ public class StatutEmpruntMapper implements Mapper<StatutEmprunt, Void, StatutEm
      * @throws UnsupportedOperationException toujours
      */
     @Override
-    public StatutEmprunt toEntity(Void requestDto) {
-        throw new UnsupportedOperationException("StatutEmprunt ne supporte pas toEntity via ce mapper");
+    public StatutEmprunt toEntity(StatutEmpruntRequestDto requestDto) {
+        if (requestDto == null) return null;
+        StatutEmprunt statutEmprunt = new StatutEmprunt();
+        statutEmprunt.setLibelle(requestDto.libelle());
+        statutEmprunt.setCode(requestDto.code());
+        return statutEmprunt;
     }
 
     /**
@@ -41,7 +46,8 @@ public class StatutEmpruntMapper implements Mapper<StatutEmprunt, Void, StatutEm
      * @throws UnsupportedOperationException toujours
      */
     @Override
-    public void update(Void requestDto, StatutEmprunt entity) {
-        throw new UnsupportedOperationException("StatutEmprunt ne supporte pas update via ce mapper");
+    public void update(StatutEmpruntRequestDto requestDto, StatutEmprunt entity) {
+        if (requestDto == null || entity == null) return;
+        entity.setLibelle(requestDto.libelle());
     }
 }

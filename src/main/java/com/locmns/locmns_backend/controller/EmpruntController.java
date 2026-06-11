@@ -2,6 +2,7 @@ package com.locmns.locmns_backend.controller;
 
 import com.locmns.locmns_backend.dto.request.*;
 import com.locmns.locmns_backend.dto.response.EmpruntResponseDto;
+import com.locmns.locmns_backend.exception.RessourceIntrouvableException;
 import com.locmns.locmns_backend.model.Utilisateur;
 import com.locmns.locmns_backend.security.UtilisateurDetails;
 import com.locmns.locmns_backend.services.IEmpruntService;
@@ -24,7 +25,7 @@ public class EmpruntController {
     // UTILS
     // =========================
 
-    private Utilisateur getUser(UtilisateurDetails details) {
+    private Utilisateur obtenirUtilisateur(UtilisateurDetails details) {
         return details.getUtilisateur();
     }
 
@@ -33,39 +34,39 @@ public class EmpruntController {
     // =========================
 
     @GetMapping("/liste")
-    public List<EmpruntResponseDto> all() {
+    public List<EmpruntResponseDto> obtenirTousLesEmprunts() {
         return empruntService.obtenirTousLesEmprunts();
     }
 
     @GetMapping("/{id}")
-    public EmpruntResponseDto getById(@PathVariable int id) {
+    public EmpruntResponseDto obtenirEmpruntParId(@PathVariable int id) {
         return empruntService.obtenirEmpruntsParId(id)
-                .orElseThrow(() -> new RuntimeException("Emprunt introuvable"));
+                .orElseThrow(() -> new RessourceIntrouvableException("Emprunt introuvable"));
     }
 
     @GetMapping("/liste/actif")
     public List<EmpruntResponseDto> actifs(@AuthenticationPrincipal UtilisateurDetails user) {
-        return empruntService.obtenirEmpruntSelonRole(getUser(user));
+        return empruntService.obtenirEmpruntSelonRole(obtenirUtilisateur(user));
     }
 
     @GetMapping("/liste/demande")
     public List<EmpruntResponseDto> demandes(@AuthenticationPrincipal UtilisateurDetails user) {
-        return empruntService.obtenirDemandesEmpruntSelonRole(getUser(user));
+        return empruntService.obtenirDemandesEmpruntSelonRole(obtenirUtilisateur(user));
     }
 
     @GetMapping("/liste/recent")
     public List<EmpruntResponseDto> recent(@AuthenticationPrincipal UtilisateurDetails user) {
-        return empruntService.obtenirEmpruntsRecentsSelonRole(getUser(user));
+        return empruntService.obtenirEmpruntsRecentsSelonRole(obtenirUtilisateur(user));
     }
 
     @GetMapping("/liste/retard")
     public List<EmpruntResponseDto> retard(@AuthenticationPrincipal UtilisateurDetails user) {
-        return empruntService.obtenirListeEmpruntEnRetardSelonRole(getUser(user));
+        return empruntService.obtenirListeEmpruntEnRetardSelonRole(obtenirUtilisateur(user));
     }
 
     @GetMapping("/historique")
     public List<EmpruntResponseDto> historique(@AuthenticationPrincipal UtilisateurDetails user) {
-        return empruntService.obtenirHistoriqueEmpruntSelonRole(getUser(user));
+        return empruntService.obtenirHistoriqueEmpruntSelonRole(obtenirUtilisateur(user));
     }
 
     // =========================
@@ -73,8 +74,8 @@ public class EmpruntController {
     // =========================
 
     @PostMapping
-    public EmpruntResponseDto create(@RequestBody @Valid EmpruntRequestDto dto, @AuthenticationPrincipal UtilisateurDetails utilisateurDetails) {
-        return empruntService.creerEmprunt(dto, getUser(utilisateurDetails));
+    public EmpruntResponseDto creer(@RequestBody @Valid EmpruntRequestDto dto, @AuthenticationPrincipal UtilisateurDetails utilisateurDetails) {
+        return empruntService.creerEmprunt(dto, obtenirUtilisateur(utilisateurDetails));
     }
 
     // =========================
@@ -82,7 +83,7 @@ public class EmpruntController {
     // =========================
 
     @PutMapping("/{id}")
-    public void update(@PathVariable int id, @RequestBody @Valid EmpruntRequestDto dto) {
+    public void mettreAjour(@PathVariable int id, @RequestBody @Valid EmpruntRequestDto dto) {
         empruntService.modifierEmprunt(id, dto);
     }
 
@@ -91,9 +92,9 @@ public class EmpruntController {
     // =========================
 
     @PatchMapping("/{id}/statut")
-    public void updateStatut(
+    public void mettreAjourStatut(
             @PathVariable int id,
-            @RequestBody StatutUpdateRequestDto dto
+            @RequestBody EmpruntStatutRequestDto dto
     ) {
         empruntService.modifierStatutEmprunt(id, dto);
     }
@@ -145,7 +146,7 @@ public class EmpruntController {
     // =========================
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable int id) {
+    public void supprimerParId(@PathVariable int id) {
         empruntService.supprimerEmprunt(id);
     }
 }

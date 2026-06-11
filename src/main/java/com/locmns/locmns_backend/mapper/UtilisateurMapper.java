@@ -1,7 +1,7 @@
 package com.locmns.locmns_backend.mapper;
 
 import com.locmns.locmns_backend.dto.request.UtilisateurRequestDto;
-import com.locmns.locmns_backend.dto.response.UtilisateurResume;
+import com.locmns.locmns_backend.dto.response.UtilisateurResumeDto;
 import com.locmns.locmns_backend.dto.response.UtilisateurResponseDto;
 import com.locmns.locmns_backend.model.Utilisateur;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
  *
  * <h3>Deux représentations de sortie</h3>
  * <ul>
- *   <li>{@link #toDto}         — {@link UtilisateurResume} (id, nom, prénom) :
+ *   <li>{@link #toDto}         — {@link UtilisateurResumeDto} (id, nom, prénom) :
  *       résumé léger utilisé comme objet imbriqué dans d'autres DTOs, ex. {@code EmpruntResponseDto}</li>
  *   <li>{@link #toResponseDto} — {@link UtilisateurResponseDto} (tous les champs) :
  *       représentation complète exposée par les endpoints {@code /utilisateurs}</li>
@@ -29,7 +29,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @RequiredArgsConstructor
-public class UtilisateurMapper implements Mapper<Utilisateur, UtilisateurRequestDto, UtilisateurResume> {
+public class UtilisateurMapper implements Mapper<Utilisateur, UtilisateurRequestDto, UtilisateurResumeDto> {
 
     private final PromotionMapper promotionMapper;
     private final CategorieUtilisateurMapper categorieUtilisateurMapper;
@@ -42,9 +42,9 @@ public class UtilisateurMapper implements Mapper<Utilisateur, UtilisateurRequest
      * (ex. {@code EmpruntResponseDto}).
      */
     @Override
-    public UtilisateurResume toDto(Utilisateur entity) {
+    public UtilisateurResumeDto toDto(Utilisateur entity) {
         if (entity == null) return null;
-        return new UtilisateurResume(entity.getId(), entity.getNom(), entity.getPrenom());
+        return new UtilisateurResumeDto(entity.getId(), entity.getNom(), entity.getPrenom());
     }
 
     /**

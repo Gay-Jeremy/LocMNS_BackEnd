@@ -1,7 +1,7 @@
 package com.locmns.locmns_backend.mapper;
 
 import com.locmns.locmns_backend.dto.request.MaterielRequestDto;
-import com.locmns.locmns_backend.dto.response.MaterielResume;
+import com.locmns.locmns_backend.dto.response.MaterielResumeDto;
 import com.locmns.locmns_backend.dto.response.MaterielResponseDto;
 import com.locmns.locmns_backend.model.Materiel;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
  *
  * <h3>Deux représentations de sortie</h3>
  * <ul>
- *   <li>{@link #toDto}         — {@link MaterielResume} (sans salle) :
+ *   <li>{@link #toDto}         — {@link MaterielResumeDto} (sans salle) :
  *       résumé utilisé comme objet imbriqué dans {@code EmpruntResponseDto}</li>
  *   <li>{@link #toResponseDto} — {@link MaterielResponseDto} (avec salle) :
  *       représentation complète exposée par les endpoints {@code /materiels}</li>
@@ -28,7 +28,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @RequiredArgsConstructor
-public class MaterielMapper implements Mapper<Materiel, MaterielRequestDto, MaterielResume> {
+public class MaterielMapper implements Mapper<Materiel, MaterielRequestDto, MaterielResumeDto> {
 
     private final StatutMaterielMapper statutMaterielMapper;
     private final ModeleMapper modeleMapper;
@@ -42,9 +42,9 @@ public class MaterielMapper implements Mapper<Materiel, MaterielRequestDto, Mate
      * Utilisé comme objet imbriqué dans {@code EmpruntResponseDto}.
      */
     @Override
-    public MaterielResume toDto(Materiel entity) {
+    public MaterielResumeDto toDto(Materiel entity) {
         if (entity == null) return null;
-        return new MaterielResume(
+        return new MaterielResumeDto(
                 entity.getId(),
                 entity.getNumSerie(),
                 statutMaterielMapper.toDto(entity.getStatutMateriel()),

@@ -1,59 +1,45 @@
 package com.locmns.locmns_backend.controller;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import com.locmns.locmns_backend.repository.DroitEmpruntRepository;
-import com.locmns.locmns_backend.model.DroitEmprunt;
-import com.locmns.locmns_backend.view.DroitEmpruntView;
+import com.locmns.locmns_backend.dto.request.DroitEmpruntRequestDto;
+import com.locmns.locmns_backend.dto.response.DroitEmpruntResponseDto;
+import com.locmns.locmns_backend.services.IDroitEmpruntService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
-
 @RequestMapping("/api/droits_emprunt")
 @RequiredArgsConstructor
 public class DroitEmpruntController {
 
-    private final DroitEmpruntRepository droitEmpruntRepository;
+    private final IDroitEmpruntService droitEmpruntService;
 
     @GetMapping("/liste")
-    @JsonView(DroitEmpruntView.class)
-    public List<DroitEmprunt> obtenirTousLesDroitsEmprunt() {
-
-        return droitEmpruntRepository.findAll();
+    public List<DroitEmpruntResponseDto> obtenirTousLesDroitsEmprunt() {
+        return droitEmpruntService.obtenirTousLesDroitsEmprunt();
     }
 
     @GetMapping("/{idCategorieUtilisateur}")
-    @JsonView(DroitEmpruntView.class)
-    public List<DroitEmprunt> obtenirTousLesDroitsEmpruntParIdCategorieUtilisateur(@PathVariable int idCategorieUtilisateur) {
-
-        return droitEmpruntRepository.findByCategorieUtilisateurId(idCategorieUtilisateur);
+    public List<DroitEmpruntResponseDto> obtenirTousLesDroitsEmpruntParIdCategorieUtilisateur(
+            @PathVariable int idCategorieUtilisateur) {
+        return droitEmpruntService.obtenirDroitsParCategorieUtilisateur(idCategorieUtilisateur);
     }
 
-    @PostMapping("")
-    public ResponseEntity<Void> creerDroitEmprunt(@RequestBody @Valid DroitEmprunt droitEmpruntToInsert) {
-        droitEmpruntRepository.save(droitEmpruntToInsert);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    @PostMapping
+    public ResponseEntity<DroitEmpruntResponseDto> creerDroitEmprunt(
+            @RequestBody @Valid DroitEmpruntRequestDto dto) {
+        return new ResponseEntity<>(droitEmpruntService.creerDroitEmprunt(dto), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{categorieUtilisateurId}/{categorieModeleId}")
-    public ResponseEntity<Void> supprimerDroitEmprunt(@PathVariable int categorieUtilisateurId,
-                                                      @PathVariable int categorieModeleId) {
-        DroitEmprunt.CleDroitEmpruntCategorieUtilisateurCategorieModele cle =
-                new DroitEmprunt.CleDroitEmpruntCategorieUtilisateurCategorieModele(categorieUtilisateurId,
-                        categorieModeleId);
-
-        if (!droitEmpruntRepository.existsById(cle)) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        droitEmpruntRepository.deleteById(cle);
+    public ResponseEntity<Void> supprimerDroitEmprunt(
+            @PathVariable int categorieUtilisateurId,
+            @PathVariable int categorieModeleId) {
+        droitEmpruntService.supprimerDroitEmprunt(categorieUtilisateurId, categorieModeleId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-
     }
-
-
 }

@@ -280,7 +280,7 @@ public class EmpruntService implements IEmpruntService {
      */
     @Transactional
     @Override
-    public void modifierStatutEmprunt(int empruntId, StatutUpdateRequestDto dto) {
+    public void modifierStatutEmprunt(int empruntId, EmpruntStatutRequestDto dto) {
 
         Emprunt emprunt = getEmpruntOuException(empruntId);
 

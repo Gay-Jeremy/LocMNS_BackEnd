@@ -1,9 +1,8 @@
 package com.locmns.locmns_backend.controller;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import com.locmns.locmns_backend.repository.CategorieUtilisateurRepository;
-import com.locmns.locmns_backend.model.CategorieUtilisateur;
-import com.locmns.locmns_backend.view.CategorieUtilisateurView;
+import com.locmns.locmns_backend.dto.request.CategorieUtilisateurRequestDto;
+import com.locmns.locmns_backend.dto.response.CategorieUtilisateurResumeDto;
+import com.locmns.locmns_backend.services.ICategorieUtilisateurService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -11,82 +10,43 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
-
 
 @RestController
-
 @RequestMapping("/api/categories_utilisateur")
 @RequiredArgsConstructor
 public class CategorieUtilisateurController {
 
-    private final CategorieUtilisateurRepository categorieUilisateurDao;
+    private final ICategorieUtilisateurService categorieUtilisateurService;
 
     @GetMapping("/liste")
-    @JsonView(CategorieUtilisateurView.class)
-    public List<CategorieUtilisateur> obtenirToutesLesCategoriesUtilisateur() {
-
-        return categorieUilisateurDao.findAll();
+    public List<CategorieUtilisateurResumeDto> obtenirToutesLesCategoriesUtilisateur() {
+        return categorieUtilisateurService.obtenirToutesLesCategoriesUtilisateur();
     }
 
-    // Récupère un utilisateur
     @GetMapping("/{id}")
-
-    public ResponseEntity<CategorieUtilisateur> obtenirCategorieUtilisateurParId(@PathVariable int id) {
-
-        Optional<CategorieUtilisateur> optionalCategorieUilisateur = categorieUilisateurDao.findById(id);
-
-        if(optionalCategorieUilisateur.isEmpty()) {
-
-            // return ResponseEntity.notFound().build()
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        // return ResponseEntity.ok(optionalUser.get())
-        return new ResponseEntity<>(optionalCategorieUilisateur.get(),HttpStatus.OK);
+    public ResponseEntity<CategorieUtilisateurResumeDto> obtenirCategorieUtilisateurParId(@PathVariable int id) {
+        return categorieUtilisateurService.obtenirCategorieUtilisateurParId(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PostMapping("")
-    public CategorieUtilisateur creerCategorieUtilisateur(@RequestBody @Valid CategorieUtilisateur categorieToInsert) {
-
-        categorieToInsert.setId(null);
-
-        categorieUilisateurDao.save(categorieToInsert);
-
-        return categorieToInsert;
-
+    @PostMapping
+    public ResponseEntity<CategorieUtilisateurResumeDto> creerCategorieUtilisateur(
+            @RequestBody @Valid CategorieUtilisateurRequestDto dto) {
+        return new ResponseEntity<>(categorieUtilisateurService.creerCategorieUtilisateur(dto), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> supprimerCategorieUtilisateur(@PathVariable int id) {
-
-        Optional<CategorieUtilisateur> optionalCategorieUilisateur = categorieUilisateurDao.findById(id);
-
-        if (optionalCategorieUilisateur.isEmpty()) {
-            return new ResponseEntity<>((HttpStatus.NOT_FOUND));
-        }
-        categorieUilisateurDao.deleteById(id);
-
-        return new ResponseEntity<>((HttpStatus.NO_CONTENT));
-
+        categorieUtilisateurService.supprimerCategorieUtilisateur(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> modifierCategorieUtilisateur(@PathVariable int id,
-                                                             @RequestBody @Valid CategorieUtilisateur categorieToUpdate) {
-
-        // On écrase l'id du json par celui en paramètre
-        categorieToUpdate.setId(id);
-
-        Optional<CategorieUtilisateur> optionalCategorieUilisateur = categorieUilisateurDao.findById(id);
-
-        if (optionalCategorieUilisateur.isEmpty()) {
-            return new ResponseEntity<>((HttpStatus.NOT_FOUND));
-        }
-
-        categorieUilisateurDao.save(categorieToUpdate);
-
-        return new ResponseEntity<>((HttpStatus.NO_CONTENT));
-
+    public ResponseEntity<Void> modifierCategorieUtilisateur(
+            @PathVariable int id,
+            @RequestBody @Valid CategorieUtilisateurRequestDto dto) {
+        categorieUtilisateurService.modifierCategorieUtilisateur(id, dto);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

@@ -1,9 +1,8 @@
 package com.locmns.locmns_backend.controller;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import com.locmns.locmns_backend.repository.StatutEmpruntRepository;
-import com.locmns.locmns_backend.model.StatutEmprunt;
-import com.locmns.locmns_backend.view.StatutEmpruntView;
+import com.locmns.locmns_backend.dto.request.StatutEmpruntRequestDto;
+import com.locmns.locmns_backend.dto.response.StatutEmpruntResumeDto;
+import com.locmns.locmns_backend.services.IStatutEmpruntService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -11,72 +10,48 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
-
 @RequestMapping("/api/statuts_emprunt")
 @RequiredArgsConstructor
 public class StatutEmpruntController {
 
-    private final StatutEmpruntRepository statutEmpruntRepository;
+    private final IStatutEmpruntService statutEmpruntService;
 
     @GetMapping("/liste")
-    @JsonView(StatutEmpruntView.class)
-    public List<StatutEmprunt> obtenirTousLesStatutsEmprunt() {
-        return statutEmpruntRepository.findAll();
+    public List<StatutEmpruntResumeDto> obtenirTousLesStatutsEmprunt() {
+        return statutEmpruntService.obtenirTousLesStatutsEmprunt();
     }
 
     @GetMapping("/liste/decision")
-    @JsonView(StatutEmpruntView.class)
-    public List<StatutEmprunt> obtenirToutesLesDecisions() {
-        return statutEmpruntRepository.retourneDecisionDemandeEmprunt();
+    public List<StatutEmpruntResumeDto> obtenirToutesLesDecisions() {
+        return statutEmpruntService.obtenirToutesLesDecisions();
     }
-
 
     @GetMapping("/{id}")
-    public ResponseEntity<StatutEmprunt> obtenirStatutEmpruntParId(@PathVariable int id) {
-        Optional<StatutEmprunt> optionalStatutEmprunt = statutEmpruntRepository.findById(id);
-        if(optionalStatutEmprunt.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(optionalStatutEmprunt.get(),HttpStatus.OK);
+    public ResponseEntity<StatutEmpruntResumeDto> obtenirStatutEmpruntParId(@PathVariable int id) {
+        return statutEmpruntService.obtenirStatutEmpruntParId(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PostMapping("")
-    public ResponseEntity<StatutEmprunt>  creerStatutEmprunt(
-            @RequestBody @Valid StatutEmprunt statutEmpruntToInsert) {
-
-        statutEmpruntRepository.save(statutEmpruntToInsert);
-
-        return new ResponseEntity<>(statutEmpruntToInsert, HttpStatus.CREATED) ;
+    @PostMapping
+    public ResponseEntity<StatutEmpruntResumeDto> creerStatutEmprunt(
+            @RequestBody @Valid StatutEmpruntRequestDto dto) {
+        return new ResponseEntity<>(statutEmpruntService.creerStatutEmprunt(dto), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> supprimerStatutEmprunt(@PathVariable int id) {
-        Optional<StatutEmprunt> optionalStatutEmprunt = statutEmpruntRepository.findById(id);
-        if (optionalStatutEmprunt.isEmpty()) {
-            return new ResponseEntity<>((HttpStatus.NOT_FOUND));
-        }
-        statutEmpruntRepository.deleteById(id);
-
-        return new ResponseEntity<>((HttpStatus.NO_CONTENT));
+        statutEmpruntService.supprimerStatutEmprunt(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> modifierStatutEmprunt(@PathVariable int id,
-                                                      @RequestBody @Valid StatutEmprunt statutEmpruntToUpdate) {
-
-        statutEmpruntToUpdate.setId(id);
-
-        Optional<StatutEmprunt> optionalStatutEmprunt = statutEmpruntRepository.findById(id);
-        if (optionalStatutEmprunt.isEmpty()) {
-            return new ResponseEntity<>((HttpStatus.NOT_FOUND));
-        }
-
-        statutEmpruntRepository.save(statutEmpruntToUpdate);
-
-        return new ResponseEntity<>((HttpStatus.NO_CONTENT));
+    public ResponseEntity<Void> modifierStatutEmprunt(
+            @PathVariable int id,
+            @RequestBody @Valid StatutEmpruntRequestDto dto) {
+        statutEmpruntService.modifierStatutEmprunt(id, dto);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
 }
