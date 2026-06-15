@@ -62,12 +62,13 @@ jobs:
 
       - name: Copie du docker-compose
         run: |
-          mkdir -p /opt/locmns
+          mkdir -p ~/locmns
           cp compose.yml ~/locmns/docker-compose.yml
 
       - name: Déploiement
         run: |
           echo ${{ secrets.DOCKER_PASSWORD }} | docker login --username ${{ secrets.DOCKER_USERNAME }} --password-stdin
           docker pull jeremygaydev/locmns-back:latest
-           cd ~/locmns
+          cd ~/locmns
+          docker compose down
           docker compose up -d
