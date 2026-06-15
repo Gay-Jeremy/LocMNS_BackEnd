@@ -63,7 +63,7 @@ jobs:
       - name: Copie du docker-compose
         run: |
           mkdir -p /opt/locmns
-          cp docker-compose.yml /opt/locmns/docker-compose.yml
+          cp compose.yml ~/locmns/docker-compose.yml
 
       - name: Déploiement
         run: |
