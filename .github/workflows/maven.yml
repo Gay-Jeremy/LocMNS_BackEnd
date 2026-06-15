@@ -1,3 +1,11 @@
+# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
+
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
 name: Java CI with Maven
 
 on:
@@ -7,86 +15,59 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build-test:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Récupération du code
         uses: actions/checkout@v4
 
-      - name: Set up JDK 26
+      - name: Installation JDK 26
         uses: actions/setup-java@v4
         with:
           java-version: '26'
           distribution: 'temurin'
           cache: maven
 
-      - name: Run tests
-        run: mvn test
+      - name: Compilation Maven
+        run: mvn -B package --file pom.xml
 
-      - name: Package application
-        run: mvn -B clean package --file pom.xml
+      - name: Construction image Docker
+        run: docker build -t jeremygaydev/locmns-back .
 
-      - name: Upload JAR artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: locmns-back-jar
-          path: target/*.jar
-
-  docker-build:
-    runs-on: ubuntu-latest
-    needs: build-test
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Build Docker image
-        run: docker build -t jeremygaydev/locmns-back:latest .
-
-  docker-push:
-    runs-on: ubuntu-latest
-    needs: docker-build
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Login to Docker Hub
+      - name: Connexion Docker Hub
         uses: docker/login-action@v4
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build image
-        run: docker build -t jeremygaydev/locmns-back:latest .
+      - name: Push image latest
+        run: docker push jeremygaydev/locmns-back
 
-      - name: Extract version from pom.xml
+      - name: Extraction version depuis pom.xml
         run: echo "VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
 
-      - name: Push image latest
-        run: docker push jeremygaydev/locmns-back:latest
+      - name: Tag image avec version
+        run: docker tag jeremygaydev/locmns-back jeremygaydev/locmns-back:${{ env.VERSION }}
 
-      - name: Tag image with version
-        run: docker tag jeremygaydev/locmns-back:latest jeremygaydev/locmns-back:${{ env.VERSION }}
-
-      - name: Push image versioned
+      - name: Push image versionnée
         run: docker push jeremygaydev/locmns-back:${{ env.VERSION }}
 
   deploy:
     runs-on: self-hosted
-    needs: docker-push
+    needs: build
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Copie du docker-compose
-        run: cp compose.yml ~/locmns/docker-compose.yml
+        run: |
+          mkdir -p /opt/locmns
+          cp compose.yml ~/locmns/docker-compose.yml
 
       - name: Déploiement
         run: |
           echo ${{ secrets.DOCKER_PASSWORD }} | docker login --username ${{ secrets.DOCKER_USERNAME }} --password-stdin
           docker pull jeremygaydev/locmns-back:latest
-          cd ~/locmns
+           cd ~/locmns
           docker compose up -d
