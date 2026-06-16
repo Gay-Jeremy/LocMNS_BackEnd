@@ -44,7 +44,7 @@ public class UtilisateurMapper implements Mapper<Utilisateur, UtilisateurRequest
     @Override
     public UtilisateurResumeDto toDto(Utilisateur entity) {
         if (entity == null) return null;
-        return new UtilisateurResumeDto(entity.getId(), entity.getNom(), entity.getPrenom());
+        return new UtilisateurResumeDto(entity.getId(), entity.getNom(), entity.getPrenom(), promotionMapper.toDto(entity.getPromotion()));
     }
 
     /**

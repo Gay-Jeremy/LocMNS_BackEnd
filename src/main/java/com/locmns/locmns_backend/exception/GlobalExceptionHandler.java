@@ -33,32 +33,32 @@ public class GlobalExceptionHandler {
         if (message != null) {
 
             if (message.contains("categorie_modele_libelle_key")) {
-                return Map.of("erreur", "Cette catégorie existe déjà");
+                return Map.of("message", "Cette catégorie existe déjà");
             }
             if (message.contains("modele_libelle_key")) {
-                return Map.of("erreur", "Ce modèle existe déjà");
+                return Map.of("message", "Ce modèle existe déjà");
             }
             if (message.contains("num_serie")) {
-                return Map.of("erreur", "Ce numéro de série existe déjà");
+                return Map.of("message", "Ce numéro de série existe déjà");
             }
             if (message.contains("utilisateur_email_key")) {
-                return Map.of("erreur", "Cet email est déjà utilisé");
+                return Map.of("message", "Cet email est déjà utilisé");
             }
         }
 
-        return Map.of("erreur", "Cette valeur existe déjà en base de données");
+        return Map.of("message", "Cette valeur existe déjà en base de données");
     }
 
     @ExceptionHandler(MetierException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> metierExceptionInterceptor(MetierException ex) {
-        return Map.of("erreur", ex.getMessage());
+        return Map.of("message", ex.getMessage());
     }
 
     @ExceptionHandler(RessourceIntrouvableException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map<String, String> ressourceIntrouvableInterceptor(RessourceIntrouvableException ex) {
-        return Map.of("erreur", ex.getMessage());
+        return Map.of("message", ex.getMessage());
 
     }
 
@@ -71,6 +71,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ValidationMetierException.class)
     @ResponseStatus(HttpStatus.UNPROCESSABLE_CONTENT)
     public Map<String, String> validationMetierInterceptor(ValidationMetierException ex) {
-        return Map.of("erreur", ex.getMessage());
+        return Map.of("message", ex.getMessage());
     }
 }
