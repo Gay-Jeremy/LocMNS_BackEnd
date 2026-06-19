@@ -31,7 +31,7 @@ public class AuthController {
     private final IUtilisateurService utilisateurService;
     private final AuthenticationProvider authenticationProvider;
 
-    @PostMapping("/sign-in")
+    @PostMapping("/api/sign-in")
     public ResponseEntity<UtilisateurRequestDto>  signIn(
             @RequestBody @Validated(ValidationGroups.OnCreate.class) UtilisateurRequestDto utilisateurToInsert) {
 
@@ -40,7 +40,7 @@ public class AuthController {
         return new ResponseEntity<>(utilisateurToInsert,HttpStatus.CREATED);
     }
 
-    @PostMapping("/login")
+    @PostMapping("/api/login")
     public ResponseEntity<String>  login (
             @RequestBody Utilisateur utilisateur) {
 
