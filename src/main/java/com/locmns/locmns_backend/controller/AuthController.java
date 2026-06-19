@@ -1,5 +1,6 @@
 package com.locmns.locmns_backend.controller;
 
+import com.locmns.locmns_backend.dto.request.LoginRequestDto;
 import com.locmns.locmns_backend.dto.request.UtilisateurRequestDto;
 import com.locmns.locmns_backend.dto.validation.ValidationGroups;
 import com.locmns.locmns_backend.model.Utilisateur;
@@ -43,18 +44,18 @@ public class AuthController {
     //à corriger
     @PostMapping("/api/login")
     public ResponseEntity<String>  login (
-            @RequestBody Utilisateur utilisateur) {
+            @RequestBody LoginRequestDto request) {
 
         try {
             UtilisateurDetails utilisateurDetails = (UtilisateurDetails) authenticationProvider
                     .authenticate(new UsernamePasswordAuthenticationToken(
-                            utilisateur.getEmail(),
-                            utilisateur.getPassword()
+                            request.email(),
+                            request.password()
                     ))
                     .getPrincipal();
 
         String jwt = Jwts.builder()
-                    .setSubject(utilisateur.getEmail())
+                    .setSubject(request.email())
                     .addClaims(Map.of(
                             "id", utilisateurDetails.getUtilisateur().getId(),
                             "role", utilisateurDetails.getUtilisateur().getCategorieUtilisateur().getLibelle(),
