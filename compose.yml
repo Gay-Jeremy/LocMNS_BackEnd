@@ -26,6 +26,8 @@ services:
     image: jeremygaydev/locmns-front
     ports:
       - "80:80"
+    networks:
+      - backend
 
 volumes:
   postgres_data:
