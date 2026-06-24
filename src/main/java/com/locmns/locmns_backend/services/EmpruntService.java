@@ -288,6 +288,7 @@ public class EmpruntService implements IEmpruntService {
         CodeStatutEmprunt code;
         try {
             code = CodeStatutEmprunt.valueOf(dto.code());
+
         } catch (IllegalArgumentException _) {
             throw new RessourceIntrouvableException("Code statut inconnu : " + dto.code());
         }

@@ -76,7 +76,8 @@ public class EmpruntController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public EmpruntResponseDto creer(@RequestBody @Valid EmpruntRequestDto dto, @AuthenticationPrincipal UtilisateurDetails utilisateurDetails) {
+    public EmpruntResponseDto creer(@RequestBody @Valid EmpruntRequestDto dto,
+                                    @AuthenticationPrincipal UtilisateurDetails utilisateurDetails) {
         return empruntService.creerEmprunt(dto, obtenirUtilisateur(utilisateurDetails));
     }
 
