@@ -41,7 +41,7 @@ public class AuthController {
         return new ResponseEntity<>(utilisateurToInsert,HttpStatus.CREATED);
     }
 
-    //à corriger
+
     @PostMapping("/api/login")
     public ResponseEntity<String>  login (
             @RequestBody LoginRequestDto request) {
@@ -59,7 +59,7 @@ public class AuthController {
                     .addClaims(Map.of(
                             "id", utilisateurDetails.getUtilisateur().getId(),
                             "role", utilisateurDetails.getUtilisateur().getCategorieUtilisateur().getLibelle()
-                           ))
+                        ))
                     .signWith(SignatureAlgorithm.HS256, jwtSecret)
                     .compact();
 

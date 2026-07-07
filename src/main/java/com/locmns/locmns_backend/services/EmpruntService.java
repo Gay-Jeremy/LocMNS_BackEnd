@@ -219,7 +219,6 @@ public class EmpruntService implements IEmpruntService {
             throw new ConflitReservationException("Matériel indisponible sur la période demandée");
         }
 
-        // Le mapper initialise les champs scalaires ; le service complète les associations
         Emprunt emprunt = empruntMapper.toEntity(dto);
         emprunt.setUtilisateur(utilisateur);
         emprunt.setMateriel(materiel);

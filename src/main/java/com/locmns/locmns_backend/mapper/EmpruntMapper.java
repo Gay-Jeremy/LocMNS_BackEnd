@@ -83,7 +83,7 @@ public class EmpruntMapper implements Mapper<Emprunt, EmpruntRequestDto, Emprunt
                         ? null
                         : dto.note()
         );
-        // utilisateur, materiel, statutEmprunt : résolution déléguée au service
+  
         return emprunt;
     }
 

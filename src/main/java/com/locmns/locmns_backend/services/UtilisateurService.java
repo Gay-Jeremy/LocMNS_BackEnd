@@ -19,7 +19,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UtilisateurService implements IUtilisateurService {
 
-    private final PasswordEncoder encoder ;
+    
 
     private final UtilisateurRepository utilisateurRepository;
     private final CategorieUtilisateurRepository categorieUtilisateurRepository;
@@ -40,27 +40,24 @@ public class UtilisateurService implements IUtilisateurService {
                 .map(utilisateurMapper::toResponseDto);
     }
 
+    private final PasswordEncoder encoder ;
+    
     @Override
     public UtilisateurResponseDto creerUtilisateur(UtilisateurRequestDto dto) {
-
         Utilisateur utilisateur = utilisateurMapper.toEntity(dto);
         utilisateur.setPassword(encoder.encode(dto.password()));
 
         CategorieUtilisateur categorieUtilisateur = categorieUtilisateurRepository.findById(dto.categorieUtilisateurId())
                 .orElseThrow(() -> new RessourceIntrouvableException("Catégorie utilisateur introuvable"));
 
-
         Promotion promotion = null;
         if (dto.promotionId() != null) {
             promotion = promotionRepository.findById(dto.promotionId())
                     .orElseThrow(() -> new RessourceIntrouvableException("Promotion introuvable"));
         }
-
         utilisateur.setCategorieUtilisateur(categorieUtilisateur);
         utilisateur.setPromotion(promotion);
-
         return utilisateurMapper.toResponseDto(utilisateurRepository.save(utilisateur));
-
     }
 
     @Override
