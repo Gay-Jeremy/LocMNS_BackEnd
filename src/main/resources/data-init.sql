@@ -68,13 +68,6 @@ INSERT INTO statut_materiel (libelle,code) VALUES
 ('En maintenance', 'MAINTENANCE'),
 ('Hors service', 'HORS_SERVICE');
 
-INSERT INTO materiel (num_serie, modele_id, salle_id, statut_materiel_id) VALUES
-('PC 1', 1, 3, null),
-('PC 2', 1, 3, 2),
-('PC 3', 1, 4, null),
-('PC 4', 1, 4, null),
-('PC 5', 1, 4, null);
-
 
 INSERT INTO composant (libelle) VALUES
 ('RAM 8 Go DDR4'),
@@ -129,30 +122,47 @@ INSERT INTO statut_emprunt (libelle,code) VALUES
 ('Retour Anticipé Accepté', 'DEMANDE_RETOUR_ANTICIPE_ACCEPTE');
 
 
+-- ============================================================
+-- Jeu d'essai pour la disponibilité et la création d'un emprunt
+-- Période de référence utilisée pour tester la disponibilité : du 2027-06-01 au 2027-06-10
+-- ============================================================
+INSERT INTO materiel (num_serie, modele_id, salle_id, statut_materiel_id) VALUES
+('PC 1', 1, 3, null),   -- Aucun emprunt, aucun statut technique -> DISPONIBLE
+('PC 2', 1, 3, 2),      -- Statut technique "Dysfonctionnement", aucun emprunt -> INDISPONIBLE
+('PC 3', 1, 4, null),   -- Emprunt ACCEPTE chevauchant totalement la période -> INDISPONIBLE
+('PC 4', 1, 4, null),   -- Emprunt REFUSE sur les mêmes dates -> DISPONIBLE
+('PC 5', 1, 4, null),   -- Emprunt ACCEPTE mais déjà rendu (date_retour_reel renseignée) -> DISPONIBLE
+('PC 6', 1, 4, null),   -- Emprunt ACCEPTE chevauchement partiel à gauche (commence avant, finit pendant) -> INDISPONIBLE
+('PC 7', 1, 4, null),   -- Emprunt ACCEPTE chevauchement partiel à droite (commence pendant, finit après) -> INDISPONIBLE
+('PC 8', 1, 4, null),   -- Emprunt ACCEPTE totalement hors période -> DISPONIBLE
+('PC 9', 1, 4, null),   -- Emprunt ACCEPTE dont la fin touche exactement le début de la période testée -> INDISPONIBLE
+('PC 10', 1, 4, null);  -- Demande d'emprunt en attente (DEMANDE_EN_COURS) sur la période -> INDISPONIBLE
 
 INSERT INTO emprunt (date_creation, date_debut, date_fin, date_prolongation, date_retour_anticipe, date_retour_reel, materiel_id, statut_emprunt_id, utilisateur_id) VALUES
--- PC 1 : emprunté sur la période, statut ACCEPTÉ (id=3) → EXCLU
-('2027-05-01','2027-03-10','2027-04-20', null, null, null, 1, 3, 1),
 
--- PC 2 : emprunté sur la période, statut REFUSÉ (id=2) → INCLUS (car != 2 est faux, statut=2)
-('2027-05-01','2027-03-10','2027-04-20', null, null, null, 2, 2, 1),
+-- PC 3 : chevauchement total avec la période de référence -> doit être EXCLU des disponibles
+('2027-05-20','2027-06-02','2027-06-08', null, null, null, 3, 3, 1),
 
--- PC 3 : emprunté MAIS date_retour_reel renseigné → INCLUS (déjà rendu)
-('2027-05-01','2027-03-10','2027-04-20', null, null, '2027-05-15', 3, 3, 1),
+-- PC 4 : mêmes dates que PC3, mais emprunt REFUSE (id=2) -> doit rester DISPONIBLE malgré le chevauchement
+('2027-05-20','2027-06-02','2027-06-08', null, null, null, 4, 2, 1),
 
--- PC 4 : emprunté hors période (après) → INCLUS
-('2027-05-01','2027-05-25','2027-06-05', null, null, null, 4, 3, 1),
--- PC 1 : 2ème emprunt → chevauchement partiel gauche (commence avant, finit pendant)
-('2027-05-01','2027-05-08','2027-08-13', null, null, null, 1, 3, 2),
+-- PC 5 : emprunt ACCEPTE mais déjà rendu -> doit rester DISPONIBLE, le retour effectif libère le matériel
+('2027-05-20','2027-06-02','2027-06-08', null, null, '2027-06-05', 5, 3, 1),
 
--- PC 3 : ré-emprunté après son retour (ne doit pas bloquer)
-('2027-05-16','2027-05-16','2027-05-30', null, null, null, 3, 1, 2),
+-- PC 6 : commence avant la période demandée, se termine pendant -> chevauchement partiel gauche, doit être EXCLU
+('2027-05-20','2027-05-28','2027-06-03', null, null, null, 6, 3, 1),
 
--- PC 4 : emprunté avec statut "Demande en cours" sur la période → EXCLU (statut 1 != 2)
-('2027-05-01','2027-05-12','2027-05-18', null, null, null, 4, 1, 1),
+-- PC 7 : commence pendant la période demandée, se termine après -> chevauchement partiel droit, doit être EXCLU
+('2027-05-20','2027-06-09','2027-06-15', null, null, null, 7, 3, 1),
 
--- PC 5 : emprunt dont la borne exacte touche la période (retour le 12 mai, demande le 12 mai)
-('2027-05-01','2027-05-05','2027-05-12', null, null, null, 5, 3, 1);
+-- PC 8 : entièrement terminé avant le début de la période testée -> doit rester DISPONIBLE
+('2027-05-01','2027-05-10','2027-05-18', null, null, null, 8, 3, 1),
+
+-- PC 9 : se termine exactement le jour où débute la période testée -> teste la borne inclusive (<=/>=), doit être EXCLU
+('2027-05-15','2027-05-25','2027-06-01', null, null, null, 9, 3, 1),
+
+-- PC 10 : demande encore en attente de validation (statut DEMANDE_EN_COURS, id=1) -> doit être EXCLU, une demande non tranchée bloque aussi
+('2027-06-01','2027-06-03','2027-06-07', null, null, null, 10, 1, 1);
 
 
 
