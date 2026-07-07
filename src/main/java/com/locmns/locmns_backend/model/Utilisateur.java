@@ -30,17 +30,17 @@ public class Utilisateur {
     private Integer id;
 
     @Column(nullable = false, length = 50)
-    @Size( max = 50)
+    @Size( max = 50, message = "Le nom ne doit pas dépasser 50 caractères")
     @NotBlank(message = "Le nom est obligatoire")
     private String nom;
 
     @Column(nullable = false, length = 50)
-    @Size(max = 50)
+    @Size(max = 50, message = "Le prénom ne doit pas dépasser 50 caractères")
     @NotBlank(message = "Le prénom est obligatoire")
     private String prenom;
 
     @Column(nullable = false, unique = true, length = 100)
-    @Size(max = 100)
+    @Size(max = 100, message = "L'email' ne doit pas dépasser 50 caractères")
     @Email(message = "L'email n'a pas un format correct")
     @NotBlank(message = "L'email est obligatoire")
     private String email;

@@ -6,11 +6,11 @@ import jakarta.validation.constraints.*;
 public record UtilisateurRequestDto(
 
         @NotBlank(groups = {ValidationGroups.OnCreate.class}, message = "Le nom est obligatoire")
-        @Size(min = 2, max = 50, groups = {ValidationGroups.OnCreate.class, ValidationGroups.OnUpdate.class}, message = "Le nom doit faire entre 2 et 50 caractères")
+        @Size( max = 50, groups = {ValidationGroups.OnCreate.class, ValidationGroups.OnUpdate.class}, message = "Le nom ne doit pas faire plus de 50 caractères")
         String nom,
 
         @NotBlank(groups = {ValidationGroups.OnCreate.class}, message = "Le prénom est obligatoire")
-        @Size(min = 2, max = 50, groups = {ValidationGroups.OnCreate.class, ValidationGroups.OnUpdate.class}, message = "Le prénom doit faire entre 2 et 50 caractères")
+        @Size( max = 50, groups = {ValidationGroups.OnCreate.class, ValidationGroups.OnUpdate.class}, message = "Le prénom ne doit pas faire plus de 50 caractères")
         String prenom,
 
         @NotBlank(groups = {ValidationGroups.OnCreate.class}, message = "L'email est obligatoire")
