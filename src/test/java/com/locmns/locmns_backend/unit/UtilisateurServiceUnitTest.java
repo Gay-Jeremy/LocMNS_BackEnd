@@ -50,11 +50,11 @@ public class UtilisateurServiceUnitTest {
 
         // On injecte les mocks dans le vrai service
         utilisateurService = new UtilisateurService(
-                passwordEncoder,
                 utilisateurRepository,
                 categorieUtilisateurRepository,
                 promotionRepository,
-                utilisateurMapper
+                utilisateurMapper,
+                passwordEncoder
         );
 
         // Catégorie ADMIN réutilisée dans plusieurs tests
