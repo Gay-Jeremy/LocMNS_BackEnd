@@ -58,7 +58,10 @@ public class AuthController {
                     .setSubject(request.email())
                     .addClaims(Map.of(
                             "id", utilisateurDetails.getUtilisateur().getId(),
-                            "role", utilisateurDetails.getUtilisateur().getCategorieUtilisateur().getLibelle()
+                            "role", utilisateurDetails
+                            .getUtilisateur()
+                            .getCategorieUtilisateur()
+                            .getLibelle()
                         ))
                     .signWith(SignatureAlgorithm.HS256, jwtSecret)
                     .compact();
