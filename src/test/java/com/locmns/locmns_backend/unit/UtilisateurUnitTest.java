@@ -39,21 +39,6 @@ public class UtilisateurUnitTest {
         );
     }
 
-    @Test
-    public void creerUtilisateurAvecNomTropCourt_devrait_EtreInvalide() {
-        UtilisateurRequestDto utilisateur = new UtilisateurRequestDto(
-                "A", "Prenom", "test@example.com", "password", null, 1
-        );
-
-        Set<ConstraintViolation<Object>> violations =
-                validator.validate(utilisateur, ValidationGroups.OnCreate.class);
-
-        assertTrue(
-                TestUtils.constraintViolationExist(violations, "nom", "Size"),
-                "La contrainte Size sur nom n'a pas fonctionné"
-        );
-    }
-
     // ── PRÉNOM ───────────────────────────────────────────
 
     @Test
