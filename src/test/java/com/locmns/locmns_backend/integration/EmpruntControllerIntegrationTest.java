@@ -43,8 +43,8 @@ class EmpruntControllerIntegrationTest {
 
     @Test
     @WithUserDetails(
-            value = "jean.dupont@entreprise.fr",
-            userDetailsServiceBeanName = "utilisateurDetailsService")
+        value = "jean.dupont@entreprise.fr",
+        userDetailsServiceBeanName = "utilisateurDetailsService")
     void creerEmprunt_avecMaterielDisponible_devraitRetournerCreated() throws Exception {
 
         EmpruntRequestDto dto = new EmpruntRequestDto(

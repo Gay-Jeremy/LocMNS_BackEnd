@@ -1,5 +1,5 @@
 # Utiliser une image de base officielle Java
-FROM eclipse-temurin:26-jre-alpine
+FROM eclipse-temurin:25-jre-alpine
 
 # Définir le répertoire de travail
 WORKDIR /app

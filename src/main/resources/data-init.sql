@@ -132,13 +132,21 @@ INSERT INTO materiel (num_serie, modele_id, salle_id, statut_materiel_id) VALUES
 ('PC 3', 1, 4, null),   -- Emprunt ACCEPTE chevauchant totalement la période -> INDISPONIBLE
 ('PC 4', 1, 4, null),   -- Emprunt REFUSE sur les mêmes dates -> DISPONIBLE
 ('PC 5', 1, 4, null),   -- Emprunt ACCEPTE mais déjà rendu (date_retour_reel renseignée) -> DISPONIBLE
-('PC 6', 1, 4, null),   -- Emprunt ACCEPTE chevauchement partiel à gauche (commence avant, finit pendant) -> INDISPONIBLE
-('PC 7', 1, 4, null),   -- Emprunt ACCEPTE chevauchement partiel à droite (commence pendant, finit après) -> INDISPONIBLE
+('PC 6', 1, 4, null),   -- Emprunt ACCEPTE chevauchement partiel (commence avant, finit pendant) -> INDISPONIBLE
+('PC 7', 1, 4, null),   -- Emprunt ACCEPTE chevauchement partiel (commence pendant, finit après) -> INDISPONIBLE
 ('PC 8', 1, 4, null),   -- Emprunt ACCEPTE totalement hors période -> DISPONIBLE
 ('PC 9', 1, 4, null),   -- Emprunt ACCEPTE dont la fin touche exactement le début de la période testée -> INDISPONIBLE
 ('PC 10', 1, 4, null);  -- Demande d'emprunt en attente (DEMANDE_EN_COURS) sur la période -> INDISPONIBLE
 
-INSERT INTO emprunt (date_creation, date_debut, date_fin, date_prolongation, date_retour_anticipe, date_retour_reel, materiel_id, statut_emprunt_id, utilisateur_id) VALUES
+INSERT INTO emprunt (date_creation, 
+                    date_debut, 
+                    date_fin, 
+                    date_prolongation, 
+                    date_retour_anticipe, 
+                    date_retour_reel, 
+                    materiel_id, 
+                    statut_emprunt_id, 
+                    utilisateur_id) VALUES
 
 -- PC 3 : chevauchement total avec la période de référence -> doit être EXCLU des disponibles
 ('2027-05-20','2027-06-02','2027-06-08', null, null, null, 3, 3, 1),
@@ -149,10 +157,10 @@ INSERT INTO emprunt (date_creation, date_debut, date_fin, date_prolongation, dat
 -- PC 5 : emprunt ACCEPTE mais déjà rendu -> doit rester DISPONIBLE, le retour effectif libère le matériel
 ('2027-05-20','2027-06-02','2027-06-08', null, null, '2027-06-05', 5, 3, 1),
 
--- PC 6 : commence avant la période demandée, se termine pendant -> chevauchement partiel gauche, doit être EXCLU
+-- PC 6 : commence avant la période demandée, se termine pendant -> chevauchement partiel, doit être EXCLU
 ('2027-05-20','2027-05-28','2027-06-03', null, null, null, 6, 3, 1),
 
--- PC 7 : commence pendant la période demandée, se termine après -> chevauchement partiel droit, doit être EXCLU
+-- PC 7 : commence pendant la période demandée, se termine après -> chevauchement partiel, doit être EXCLU
 ('2027-05-20','2027-06-09','2027-06-15', null, null, null, 7, 3, 1),
 
 -- PC 8 : entièrement terminé avant le début de la période testée -> doit rester DISPONIBLE
