@@ -48,11 +48,9 @@ public class SecurityConfig {
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(e -> e
                         .authenticationEntryPoint((req, res, ex) -> {
-                            logger.debug(">>> ENTRY POINT 401 sur {} : {}", req.getRequestURI(), ex.toString());
                             res.sendError(HttpStatus.UNAUTHORIZED.value());
                         })
                         .accessDeniedHandler((req, res, ex) -> {
-                            logger.debug(">>> ACCESS DENIED 403 sur {} : {}", req.getRequestURI(), ex.toString());
                             res.sendError(HttpStatus.FORBIDDEN.value());
                         }))
                 .cors(c -> c.configurationSource(corsConfigurationSource()))
