@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Date;
 import java.util.Map;
 
 @RestController
@@ -54,15 +55,17 @@ public class AuthController {
                     ))
                     .getPrincipal();
 
-        String jwt = Jwts.builder()
+            String jwt = Jwts.builder()
                     .setSubject(request.email())
                     .addClaims(Map.of(
                             "id", utilisateurDetails.getUtilisateur().getId(),
                             "role", utilisateurDetails
-                            .getUtilisateur()
-                            .getCategorieUtilisateur()
-                            .getLibelle()
-                        ))
+                                    .getUtilisateur()
+                                    .getCategorieUtilisateur()
+                                    .getLibelle()
+                    ))
+                    .setIssuedAt(new Date())
+                    .setExpiration(new Date(System.currentTimeMillis() + 86_400_000)) // 24 h
                     .signWith(SignatureAlgorithm.HS256, jwtSecret)
                     .compact();
 
