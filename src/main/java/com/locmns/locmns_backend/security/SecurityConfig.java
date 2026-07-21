@@ -3,6 +3,7 @@ package com.locmns.locmns_backend.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -11,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -28,6 +30,9 @@ public class SecurityConfig {
     protected final UtilisateurDetailsService utilisateurDetailsService;
     protected final JwtFilter filter;
 
+    private static final org.slf4j.Logger logger =
+            org.slf4j.LoggerFactory.getLogger(SecurityConfig.class);
+
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(utilisateurDetailsService);
@@ -41,9 +46,18 @@ public class SecurityConfig {
         return http
                 .csrf(c -> c.disable())
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(e -> e
+                        .authenticationEntryPoint((req, res, ex) -> {
+                            logger.warn(">>> ENTRY POINT 401 sur {} : {}", req.getRequestURI(), ex.toString());
+                            res.sendError(HttpStatus.UNAUTHORIZED.value());
+                        })
+                        .accessDeniedHandler((req, res, ex) -> {
+                            logger.warn(">>> ACCESS DENIED 403 sur {} : {}", req.getRequestURI(), ex.toString());
+                            res.sendError(HttpStatus.FORBIDDEN.value());
+                        }))
                 .cors(c -> c.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/sign-in", "/api/login", "/swagger-ui/**",
+                        .requestMatchers("/api/sign-in", "/api/login","/error", "/swagger-ui/**",
                                 "/swagger-ui.html",
                                 "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated()
