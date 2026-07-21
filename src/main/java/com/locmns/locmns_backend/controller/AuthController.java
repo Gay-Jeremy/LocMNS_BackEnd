@@ -65,7 +65,7 @@ public class AuthController {
                                     .getLibelle()
                     ))
                     .setIssuedAt(new Date())
-                    .setExpiration(new Date(System.currentTimeMillis() + 10_000)) // 24 h
+                    .setExpiration(new Date(System.currentTimeMillis() + 86_400_000)) // 24 h
                     .signWith(SignatureAlgorithm.HS256, jwtSecret)
                     .compact();
 

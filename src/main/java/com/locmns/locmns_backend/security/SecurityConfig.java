@@ -48,14 +48,18 @@ public class SecurityConfig {
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(e -> e
                         .authenticationEntryPoint((req, res, ex) -> {
-                            res.sendError(HttpStatus.UNAUTHORIZED.value());
+                            res.setStatus(HttpStatus.UNAUTHORIZED.value());
+                            res.setContentType("application/json");
+                            res.getWriter().write("{\"message\":\"Authentification requise\"}");
                         })
                         .accessDeniedHandler((req, res, ex) -> {
-                            res.sendError(HttpStatus.FORBIDDEN.value());
+                            res.setStatus(HttpStatus.FORBIDDEN.value());
+                            res.setContentType("application/json");
+                            res.getWriter().write("{\"message\":\"Accès refusé\"}");
                         }))
                 .cors(c -> c.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/sign-in", "/api/login","/error", "/swagger-ui/**",
+                        .requestMatchers("/api/sign-in", "/api/login", "/swagger-ui/**",
                                 "/swagger-ui.html",
                                 "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated()
