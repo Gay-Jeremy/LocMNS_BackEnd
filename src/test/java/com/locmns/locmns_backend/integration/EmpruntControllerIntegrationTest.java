@@ -85,26 +85,26 @@ class EmpruntControllerIntegrationTest {
     }
 
     @Test
-    void creerEmprunt_sansAuthentification_devraitRetournerForbidden() throws Exception {
+    void creerEmprunt_sansAuthentification_devraitRetournerIsUnauthorized() throws Exception {
 
         EmpruntRequestDto dto = new EmpruntRequestDto(
                 LocalDate.of(2027, 6, 1),
                 LocalDate.of(2027, 6, 10),
                 1,
                 1,
-                "Test 403"
+                "Test 401"
         );
 
         mvc.perform(post("/api/emprunts")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(dto)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
-    public void appelListeEmprunts_sansAuthentification_devraitRetourner403() throws Exception {
+    public void appelListeEmprunts_sansAuthentification_devraitRetourner401() throws Exception {
         mvc.perform(get("/api/emprunts/liste"))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
