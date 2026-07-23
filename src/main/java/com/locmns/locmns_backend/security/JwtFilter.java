@@ -54,8 +54,6 @@ public class JwtFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
 
             } catch (JwtException | UsernameNotFoundException | IllegalArgumentException e) {
-                // Token expiré, falsifié, malformé, ou utilisateur inexistant :
-                // on n'authentifie pas. Spring Security refusera si la route est protégée.
             }
         }
 

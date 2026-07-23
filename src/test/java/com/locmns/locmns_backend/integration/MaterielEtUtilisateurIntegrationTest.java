@@ -43,16 +43,16 @@ class MaterielEtUtilisateurIntegrationTest {
     // ════════════════════════════════════════════════════════════════════════
 
     @Test
-    public void appelListeMateriels_sansAuthentification_devraitRetourner403() throws Exception {
-        // Aucun utilisateur connecté → Spring Security doit bloquer la requête
+    public void appelListeMateriels_sansAuthentification_devraitRetourner401() throws Exception {
+
         mvc.perform(get("/api/materiels/liste"))
-                .andExpect(status().isForbidden()); // 403 Forbidden
+                .andExpect(status().isUnauthorized()); // 
     }
 
     @Test
-    public void appelListeMaterielsDisponibles_sansAuthentification_devraitRetourner403() throws Exception {
+    public void appelListeMaterielsDisponibles_sansAuthentification_devraitRetourner401() throws Exception {
         mvc.perform(get("/api/materiels/liste/disponible"))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isUnauthorized());
     }
 
     // ════════════════════════════════════════════════════════════════════════
@@ -81,6 +81,26 @@ class MaterielEtUtilisateurIntegrationTest {
         mvc.perform(get("/api/materiels/9999")) // id qui n'existe sûrement pas
                 .andExpect(status().isNotFound()); // 404 Not Found
     }
+
+    @Test
+    @WithMockUser(roles = "Étudiant")
+    public void appelCreerMateriel_avecRoleNonAutorise_devraitRetourner403() throws Exception {
+
+        String materiel = """
+                {
+                    "numSerie": "Test",
+                    "modeleId": "1",
+                    "statutMaterielId": "1",
+                    "salleId": "1"
+                }
+                """;
+
+        mvc.perform(post("/api/materiels")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(materiel))
+                .andExpect(status().isForbidden());
+    }
+
 
     // ════════════════════════════════════════════════════════════════════════
     // UTILISATEURS
