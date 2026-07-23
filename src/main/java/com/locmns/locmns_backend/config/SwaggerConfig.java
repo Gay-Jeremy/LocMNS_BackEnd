@@ -17,8 +17,8 @@ public class SwaggerConfig {
                 .addSecurityItem( new SecurityRequirement().addList( "Bearer Authentication" ))
                 .components( new Components()
                         .addSecuritySchemes( "Bearer Authentication" , createAPIKeyScheme()))
-                .info( new Info().title( "My REST API" )
-                        .description( "Some custom description of API." )
+                .info( new Info().title( "API LocMns" )
+                        .description( "API de gestion du parc de matériel empruntable de Metz Numeric School." )
                         .version( "1.0"));
     }
     private SecurityScheme createAPIKeyScheme () {
