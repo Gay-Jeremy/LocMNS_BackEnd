@@ -1,3 +1,5 @@
+[![Java CI with Maven](https://github.com/Gay-Jeremy/LocMNS_BackEnd/actions/workflows/ci.yml/badge.svg)](https://github.com/Gay-Jeremy/LocMNS_BackEnd/actions/workflows/ci.yml)
+
 # LocMns — Backend
 
 API REST de gestion du parc de matériel empruntable de Metz Numeric School (LocMns).
