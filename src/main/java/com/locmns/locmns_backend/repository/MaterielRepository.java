@@ -23,7 +23,7 @@ public interface MaterielRepository extends JpaRepository<Materiel, Integer> {
     """)
     List<Materiel> retourneListeMaterielEmpruntsEnCoursParEmail(@Param("email") String email);
 
-    @Query("FROM Materiel m WHERE m.emprunts IS EMPTY OR NOT EXISTS (SELECT e FROM m.emprunts e WHERE e.dateRetourReel IS NULL)")
+    @Query("FROM Materiel m WHERE NOT EXISTS (SELECT e FROM m.emprunts e WHERE e.dateRetourReel IS NULL)")
     List<Materiel> retourneListeMaterielDisponible();
 
     @Query("""
