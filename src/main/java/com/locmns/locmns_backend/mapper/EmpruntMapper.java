@@ -52,6 +52,7 @@ public class EmpruntMapper implements Mapper<Emprunt, EmpruntRequestDto, Emprunt
                 entity.getDateCreation(),
                 entity.getDateDebut(),
                 entity.getDateFin(),
+                entity.getDateRetourReel(),
                 entity.getDateProlongation(),
                 entity.getDateRetourAnticipe(),
                 entity.getNote(),
