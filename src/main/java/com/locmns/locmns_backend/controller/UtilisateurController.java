@@ -24,7 +24,7 @@ public class UtilisateurController {
     private final IUtilisateurService utilisateurService;
 
     @GetMapping("/liste")
-    @IsAdmin
+    @IsUser
     public List<UtilisateurResponseDto> obtenirTousLesUtilisateurs() {
         return utilisateurService.obtenirTousLesUtilisateurs();
     }
