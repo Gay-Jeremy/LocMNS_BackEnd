@@ -7,6 +7,7 @@ public record EmpruntResponseDto(
         LocalDate dateCreation,
         LocalDate dateDebut,
         LocalDate dateFin,
+        LocalDate dateRetourReel,
         LocalDate dateProlongation,
         LocalDate dateRetourAnticipe,
         String note,
