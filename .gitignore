@@ -33,3 +33,10 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Configuration locale, jamais versionnee
+.env
+.env.local
+
+# Fichiers mis de cote, a supprimer
+_to_delete\/

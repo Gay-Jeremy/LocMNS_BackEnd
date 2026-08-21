@@ -4,8 +4,10 @@ services:
     container_name: postgres_container_locmns_BackEnd
     env_file:
       - .env
+    # Port publie uniquement sur la boucle locale : necessaire pour lancer
+    # l'application depuis l'IDE, sans exposer la base sur le reseau.
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql
     networks:
@@ -17,6 +19,11 @@ services:
       - "8080:8080"
     env_file:
       - .env
+    # Dans le reseau Compose, la base se joint par le nom du service.
+    # Ces valeurs ecrasent celles du .env, qui decrivent un lancement hors conteneur.
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
     depends_on:
       - postgres
     networks:
