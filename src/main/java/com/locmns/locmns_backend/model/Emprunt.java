@@ -47,17 +47,17 @@ public class Emprunt {
 
     @ManyToOne
     @NotNull(message = "L'utilisateur est obligatoire")
-    @JoinColumn(name = "utilisateur_id")
+    @JoinColumn(name = "utilisateur_id", nullable = false)
     private Utilisateur utilisateur;
 
     @ManyToOne
     @NotNull(message = "Le statut est obligatoire")
-    @JoinColumn(name = "statut_emprunt_id")
+    @JoinColumn(name = "statut_emprunt_id", nullable = false)
     private StatutEmprunt statutEmprunt;
 
     @ManyToOne
     @NotNull(message = "Le matériel est obligatoire")
-    @JoinColumn(name = "materiel_id")
+    @JoinColumn(name = "materiel_id", nullable = false)
     private Materiel materiel;
 
 
