@@ -108,7 +108,7 @@ class EmpruntControllerIntegrationTest {
     }
 
     @Test
-    @WithMockUser
+    @WithMockUser(roles = "Étudiant")
     public void appelListeEmprunts_avecUtilisateurConnecte_devraitRetourner200() throws Exception {
         mvc.perform(get("/api/emprunts/liste"))
                 .andExpect(status().isOk());
