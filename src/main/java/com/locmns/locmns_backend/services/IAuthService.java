@@ -5,5 +5,5 @@ import org.springframework.http.ResponseEntity;
 
 public interface IAuthService {
 
-    ResponseEntity<String> creerJwt(LoginRequestDto request);
+    ResponseEntity<String> login(LoginRequestDto request);
 }

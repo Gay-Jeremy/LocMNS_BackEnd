@@ -27,7 +27,7 @@ public class AuthService implements IAuthService {
     private final AuthenticationProvider authenticationProvider;
 
     @Override
-    public ResponseEntity<String> creerJwt(LoginRequestDto request) {
+    public ResponseEntity<String> login(LoginRequestDto request) {
 
         try {
             UtilisateurDetails utilisateurDetails = (UtilisateurDetails) authenticationProvider

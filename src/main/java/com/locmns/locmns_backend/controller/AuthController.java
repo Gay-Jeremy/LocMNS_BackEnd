@@ -34,7 +34,7 @@ public class AuthController {
     public ResponseEntity<String>  login (
             @RequestBody LoginRequestDto request) {
 
-        return authService.creerJwt(request);
+        return authService.login(request);
 
     }
 }
