@@ -38,5 +38,3 @@ build/
 .env
 .env.local
 
-# Fichiers mis de cote, a supprimer
-_to_delete\/

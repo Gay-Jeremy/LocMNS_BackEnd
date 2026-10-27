@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -108,14 +107,18 @@ class EmpruntControllerIntegrationTest {
     }
 
     @Test
-    @WithMockUser
+    @WithUserDetails(
+        value = "lucas.bernard@entreprise.fr",
+        userDetailsServiceBeanName = "utilisateurDetailsService")
     public void appelListeEmprunts_avecUtilisateurConnecte_devraitRetourner200() throws Exception {
         mvc.perform(get("/api/emprunts/liste"))
                 .andExpect(status().isOk());
     }
 
     @Test
-    @WithMockUser
+    @WithUserDetails(
+        value = "jean.dupont@entreprise.fr",
+        userDetailsServiceBeanName = "utilisateurDetailsService")
     public void appelListeEmprunts_devraitNePasExposerLeMotDePasse() throws Exception {
         mvc.perform(get("/api/emprunts/liste"))
                 .andExpect(jsonPath("$[0].utilisateur.password").doesNotExist());

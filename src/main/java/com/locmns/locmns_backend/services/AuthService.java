@@ -4,9 +4,7 @@ package com.locmns.locmns_backend.services;
 import com.locmns.locmns_backend.dto.request.LoginRequestDto;
 import com.locmns.locmns_backend.security.UtilisateurDetails;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -14,6 +12,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.Map;
 
@@ -21,8 +20,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AuthService implements IAuthService {
 
-    @Value("${jwt.secret}")
-    protected String jwtSecret;
+    private final SecretKey jwtSigningKey;
 
     private final AuthenticationProvider authenticationProvider;
 
@@ -38,17 +36,17 @@ public class AuthService implements IAuthService {
                     .getPrincipal();
 
             String jwt = Jwts.builder()
-                    .setSubject(request.email())
-                    .addClaims(Map.of(
+                    .subject(request.email())
+                    .claims(Map.of(
                             "id", utilisateurDetails.getUtilisateur().getId(),
                             "role", utilisateurDetails
                                     .getUtilisateur()
                                     .getCategorieUtilisateur()
                                     .getLibelle()
                     ))
-                    .setIssuedAt(new Date())
-                    .setExpiration(new Date(System.currentTimeMillis() + 86_400_000)) // 24 h
-                    .signWith(SignatureAlgorithm.HS256, jwtSecret)
+                    .issuedAt(new Date())
+                    .expiration(new Date(System.currentTimeMillis() + 86_400_000)) // 24 h
+                    .signWith(jwtSigningKey)
                     .compact();
 
             return new ResponseEntity<>(jwt, HttpStatus.OK);
