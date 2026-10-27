@@ -30,10 +30,10 @@ des mappers et des validateurs pour isoler les responsabilités.
 ## Configuration
 
 L'application lit sa configuration depuis un fichier `.env` (non versionné).
-Un fichier `.example.env` est fourni comme modèle : copiez-le et renseignez vos valeurs.
+Un fichier `.env.example` est fourni comme modèle : copiez-le et renseignez vos valeurs.
 
 ```bash
-cp .example.env .env
+cp .env.example .env
 ```
 
 Variables attendues :
@@ -45,7 +45,7 @@ Variables attendues :
 | `DB_NAME`       | Nom de la base                             | `locmns`      |
 | `DB_USER`       | Utilisateur de la base                     | `postgres`    |
 | `DB_PASSWORD`   | Mot de passe de la base                    | *(à définir)* |
-| `JWT_SECRET`    | Clé secrète de signature des JWT (forte)   | *(à définir)* |
+| `JWT_SECRET`    | Clé de signature des JWT, **32 caractères minimum** | *(à définir)* |
 | `DDL_AUTO`      | Stratégie Hibernate (`create` en dev)      | `create`      |
 | `SQL_FILE`      | Plateforme d'initialisation SQL            | `init`        |
 | `SQL_INIT_MODE` | Mode d'exécution du jeu d'essai (`always`) | `always`      |
@@ -60,7 +60,7 @@ Variables attendues :
 Le fichier `compose.yml` orchestre trois conteneurs : PostgreSQL, l'API et le frontend.
 
 ```bash
-cp .example.env .env   # puis renseigner les valeurs
+cp .env.example .env   # puis renseigner les valeurs
 docker compose up -d
 ```
 

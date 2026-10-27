@@ -46,6 +46,8 @@ jobs:
         run: docker push jeremygaydev/locmns-back:${{ env.VERSION }}
 
   deploy:
+    # Déploiement uniquement après un push sur main (jamais sur une pull request)
+    if: github.event_name == 'push'
     runs-on: self-hosted
     needs: build
 
