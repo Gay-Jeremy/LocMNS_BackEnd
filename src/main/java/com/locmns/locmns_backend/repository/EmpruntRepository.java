@@ -13,6 +13,9 @@ import java.util.List;
 @Repository
 public interface EmpruntRepository extends JpaRepository<Emprunt, Integer> {
 
+    @Query("SELECT e FROM Emprunt e WHERE e.utilisateur.email = :email ORDER BY e.dateCreation")
+    List<Emprunt> retourneListeEmpruntParEmail(@Param("email") String email);
+
     @Query("SELECT e FROM Emprunt e WHERE e.statutEmprunt.code NOT IN :codes AND e.dateFin >= CURRENT_DATE")
     List<Emprunt> retourneListeEmpruntActif(@Param("codes")  List<String> codes);
 

@@ -37,14 +37,15 @@ public class EmpruntController {
 
     @GetMapping("/liste")
     @IsUser
-    public List<EmpruntResponseDto> obtenirTousLesEmprunts() {
-        return empruntService.obtenirTousLesEmprunts();
+    public List<EmpruntResponseDto> obtenirTousLesEmprunts(@AuthenticationPrincipal UtilisateurDetails user) {
+        return empruntService.obtenirTousLesEmprunts(obtenirUtilisateur(user));
     }
 
     @GetMapping("/{id}")
     @IsUser
-    public EmpruntResponseDto obtenirEmpruntParId(@PathVariable int id) {
-        return empruntService.obtenirEmpruntsParId(id)
+    public EmpruntResponseDto obtenirEmpruntParId(@PathVariable int id,
+                                                  @AuthenticationPrincipal UtilisateurDetails user) {
+        return empruntService.obtenirEmpruntsParId(id, obtenirUtilisateur(user))
                 .orElseThrow(() -> new RessourceIntrouvableException("Emprunt introuvable"));
     }
 
@@ -99,8 +100,9 @@ public class EmpruntController {
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @IsUser
-    public void mettreAjour(@PathVariable int id, @RequestBody @Valid EmpruntRequestDto dto) {
-        empruntService.modifierEmprunt(id, dto);
+    public void mettreAjour(@PathVariable int id, @RequestBody @Valid EmpruntRequestDto dto,
+                            @AuthenticationPrincipal UtilisateurDetails user) {
+        empruntService.modifierEmprunt(id, dto, obtenirUtilisateur(user));
     }
 
     // =========================
@@ -126,9 +128,10 @@ public class EmpruntController {
     @IsUser
     public void demanderProlongation(
             @PathVariable int id,
-            @RequestBody @Valid DemandeProlongationRequestDto dto
+            @RequestBody @Valid DemandeProlongationRequestDto dto,
+            @AuthenticationPrincipal UtilisateurDetails user
     ) {
-        empruntService.demanderProlongation(id, dto);
+        empruntService.demanderProlongation(id, dto, obtenirUtilisateur(user));
     }
 
     // =========================
@@ -151,9 +154,10 @@ public class EmpruntController {
     @IsUser
     public void demanderRetourAnticipe(
             @PathVariable int id,
-            @RequestBody @Valid DemandeRetourAnticipeRequestDto dto
+            @RequestBody @Valid DemandeRetourAnticipeRequestDto dto,
+            @AuthenticationPrincipal UtilisateurDetails user
     ) {
-        empruntService.demanderRetourAnticipe(id, dto);
+        empruntService.demanderRetourAnticipe(id, dto, obtenirUtilisateur(user));
     }
 
     // =========================

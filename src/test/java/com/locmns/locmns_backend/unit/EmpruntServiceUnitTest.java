@@ -21,6 +21,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.AccessDeniedException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -63,6 +64,12 @@ class EmpruntServiceTest {
         return u;
     }
 
+    private Utilisateur utilisateurAvecId(int id) {
+        Utilisateur u = regularUser();
+        u.setId(id);
+        return u;
+    }
+
     private StatutEmprunt statut(CodeStatutEmprunt code) {
         StatutEmprunt s = new StatutEmprunt();
         s.setCode(code.name());
@@ -93,9 +100,32 @@ class EmpruntServiceTest {
             when(empruntRepository.findById(1)).thenReturn(Optional.of(emprunt));
             when(empruntMapper.toDto(emprunt)).thenReturn(dto);
 
-            Optional<EmpruntResponseDto> result = empruntService.obtenirEmpruntsParId(1);
+            Optional<EmpruntResponseDto> result = empruntService.obtenirEmpruntsParId(1, adminUser());
 
             assertThat(result).contains(dto);
+        }
+
+        @Test
+        @DisplayName("Utilisateur : l'emprunt d'un autre utilisateur est invisible")
+        void empruntDUnAutreUtilisateur() {
+            Emprunt emprunt = new Emprunt();
+            emprunt.setUtilisateur(utilisateurAvecId(2));
+            when(empruntRepository.findById(1)).thenReturn(Optional.of(emprunt));
+
+            assertThat(empruntService.obtenirEmpruntsParId(1, utilisateurAvecId(3))).isEmpty();
+            verify(empruntMapper, never()).toDto(any());
+        }
+
+        @Test
+        @DisplayName("Utilisateur : voit son propre emprunt")
+        void sonPropreEmprunt() {
+            Emprunt emprunt = new Emprunt();
+            emprunt.setUtilisateur(utilisateurAvecId(3));
+            EmpruntResponseDto dto = mock(EmpruntResponseDto.class);
+            when(empruntRepository.findById(1)).thenReturn(Optional.of(emprunt));
+            when(empruntMapper.toDto(emprunt)).thenReturn(dto);
+
+            assertThat(empruntService.obtenirEmpruntsParId(1, utilisateurAvecId(3))).contains(dto);
         }
 
         @Test
@@ -103,7 +133,7 @@ class EmpruntServiceTest {
         void absent() {
             when(empruntRepository.findById(99)).thenReturn(Optional.empty());
 
-            assertThat(empruntService.obtenirEmpruntsParId(99)).isEmpty();
+            assertThat(empruntService.obtenirEmpruntsParId(99, adminUser())).isEmpty();
         }
     }
 
@@ -112,14 +142,28 @@ class EmpruntServiceTest {
     class ObtenirTous {
 
         @Test
-        @DisplayName("Retourne la liste complète triée par dateCreation")
+        @DisplayName("Admin : retourne la liste complète triée par dateCreation")
         void retourneListe() {
             List<Emprunt> emprunts = List.of(new Emprunt());
             List<EmpruntResponseDto> dtos = List.of(mock(EmpruntResponseDto.class));
             when(empruntRepository.findAll(any(Sort.class))).thenReturn(emprunts);
             when(empruntMapper.toDtoList(emprunts)).thenReturn(dtos);
 
-            assertThat(empruntService.obtenirTousLesEmprunts()).isEqualTo(dtos);
+            assertThat(empruntService.obtenirTousLesEmprunts(adminUser())).isEqualTo(dtos);
+        }
+
+        @Test
+        @DisplayName("Utilisateur : retourne uniquement ses propres emprunts")
+        void utilisateurVoitSesEmprunts() {
+            Utilisateur user = regularUser();
+            List<Emprunt> emprunts = List.of(new Emprunt());
+            when(empruntRepository.retourneListeEmpruntParEmail(user.getEmail())).thenReturn(emprunts);
+            when(empruntMapper.toDtoList(emprunts)).thenReturn(List.of());
+
+            empruntService.obtenirTousLesEmprunts(user);
+
+            verify(empruntRepository).retourneListeEmpruntParEmail(user.getEmail());
+            verify(empruntRepository, never()).findAll(any(Sort.class));
         }
     }
 
@@ -351,7 +395,7 @@ class EmpruntServiceTest {
             when(empruntRepository.findById(99)).thenReturn(Optional.empty());
             DemandeProlongationRequestDto dto = mock(DemandeProlongationRequestDto.class);
 
-            assertThatThrownBy(() -> empruntService.demanderProlongation(99, dto))
+            assertThatThrownBy(() -> empruntService.demanderProlongation(99, dto, adminUser()))
                     .isInstanceOf(RessourceIntrouvableException.class);
         }
 
@@ -368,11 +412,24 @@ class EmpruntServiceTest {
             when(statutEmpruntRepository.findByCode(CodeStatutEmprunt.DEMANDE_PROLONGATION.name()))
                     .thenReturn(Optional.of(statutProlongation));
 
-            empruntService.demanderProlongation(1, dto);
+            empruntService.demanderProlongation(1, dto, adminUser());
 
             assertThat(emprunt.getDateProlongation()).isEqualTo(dateProlongation);
             assertThat(emprunt.getStatutEmprunt()).isEqualTo(statutProlongation);
             verify(empruntRepository).save(emprunt);
+        }
+
+        @Test
+        @DisplayName("Emprunt d'un autre utilisateur → AccessDeniedException, rien n'est modifié")
+        void empruntDUnAutreUtilisateur() {
+            Emprunt emprunt = empruntAvecStatut(CodeStatutEmprunt.ACCEPTE);
+            emprunt.setUtilisateur(utilisateurAvecId(2));
+            when(empruntRepository.findById(1)).thenReturn(Optional.of(emprunt));
+            DemandeProlongationRequestDto dto = mock(DemandeProlongationRequestDto.class);
+
+            assertThatThrownBy(() -> empruntService.demanderProlongation(1, dto, utilisateurAvecId(3)))
+                    .isInstanceOf(AccessDeniedException.class);
+            verify(empruntRepository, never()).save(any());
         }
     }
 
@@ -426,7 +483,7 @@ class EmpruntServiceTest {
             when(empruntRepository.findById(99)).thenReturn(Optional.empty());
             DemandeRetourAnticipeRequestDto dto = mock(DemandeRetourAnticipeRequestDto.class);
 
-            assertThatThrownBy(() -> empruntService.demanderRetourAnticipe(99, dto))
+            assertThatThrownBy(() -> empruntService.demanderRetourAnticipe(99, dto, adminUser()))
                     .isInstanceOf(RessourceIntrouvableException.class);
         }
 
@@ -443,7 +500,7 @@ class EmpruntServiceTest {
             when(statutEmpruntRepository.findByCode(CodeStatutEmprunt.DEMANDE_RETOUR_ANTICIPE.name()))
                     .thenReturn(Optional.of(statutRetour));
 
-            empruntService.demanderRetourAnticipe(1, dto);
+            empruntService.demanderRetourAnticipe(1, dto, adminUser());
 
             assertThat(emprunt.getDateRetourAnticipe()).isEqualTo(dateRetour);
             assertThat(emprunt.getStatutEmprunt()).isEqualTo(statutRetour);
