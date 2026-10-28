@@ -25,6 +25,12 @@ jobs:
       - name: Compilation et tests
         run: mvn -B package --file pom.xml
 
+      # Bloque la CI si une dépendance (directe ou transitive) a une faille connue (base OSV.dev)
+      - name: Audit de sécurité des dépendances
+        uses: google/osv-scanner-action/osv-scanner-action@v2.6.0
+        with:
+          scan-args: --lockfile=./pom.xml
+
       - name: Conservation du jar pour la publication
         uses: actions/upload-artifact@v4
         with:

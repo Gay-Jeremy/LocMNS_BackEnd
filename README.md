@@ -106,6 +106,34 @@ mvn verify            # tests unitaires + build
 
 Les tests d'intégration (contexte Spring complet + base de données) sont exécutés
 en local ; la pipeline d'intégration continue exécute les tests unitaires.
+Ils nécessitent PostgreSQL (`docker compose up -d postgres`) :
+
+```bash
+mvn test "-Dtest=**/integration/*Test" "-Dsurefire.failIfNoSpecifiedTests=false"
+```
+
+## Sécurité des dépendances
+
+### Mises à jour automatiques (Dependabot)
+
+Dependabot (`.github/dependabot.yml`) ouvre chaque lundi une pull request vers `dev` :
+
+- les dépendances Spring Boot sont regroupées : la version de Spring Boot fixe celles de Spring,
+  Tomcat, Jackson, Hibernate et du pilote PostgreSQL, qui évoluent donc ensemble ;
+- seules les versions **mineures et correctives** sont proposées ; les versions majeures
+  se font à la main, avec les guides de migration ;
+- les actions GitHub de la CI sont aussi mises à jour (une fois par mois) ;
+- la CI exécute les tests sur chaque pull request avant toute fusion.
+
+### Contrôle dans la CI
+
+La CI analyse le `pom.xml` avec [OSV-Scanner](https://google.github.io/osv-scanner/) (base de
+vulnérabilités OSV.dev, maintenue par Google) : elle échoue si une dépendance, directe ou
+transitive, présente une faille connue. Pour lancer la même analyse en local :
+
+```bash
+docker run --rm -v "${PWD}:/src:ro" -w /src ghcr.io/google/osv-scanner-action:v2.6.0 --lockfile=./pom.xml
+```
 
 ## Déploiement
 
