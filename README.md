@@ -30,10 +30,10 @@ des mappers et des validateurs pour isoler les responsabilités.
 ## Configuration
 
 L'application lit sa configuration depuis un fichier `.env` (non versionné).
-Un fichier `.env.example` est fourni comme modèle : copiez-le et renseignez vos valeurs.
+Un fichier `.example.env` est fourni comme modèle : copiez-le et renseignez vos valeurs.
 
 ```bash
-cp .env.example .env
+cp .example.env .env
 ```
 
 Variables attendues :
@@ -45,22 +45,10 @@ Variables attendues :
 | `DB_NAME`       | Nom de la base                             | `locmns`      |
 | `DB_USER`       | Utilisateur de la base                     | `postgres`    |
 | `DB_PASSWORD`   | Mot de passe de la base                    | *(à définir)* |
-| `JWT_SECRET`    | Clé de signature des JWT, **32 caractères minimum** (voir ci-dessous) | *(généré)* |
+| `JWT_SECRET`    | Clé secrète de signature des JWT (forte)   | *(à définir)* |
 | `DDL_AUTO`      | Stratégie Hibernate (`create` en dev)      | `create`      |
 | `SQL_FILE`      | Plateforme d'initialisation SQL            | `init`        |
 | `SQL_INIT_MODE` | Mode d'exécution du jeu d'essai (`always`) | `always`      |
-
-### Clé JWT
-
-Générez une valeur aléatoire et collez-la dans `JWT_SECRET` :
-
-```bash
-openssl rand -base64 48
-```
-
-Si `JWT_SECRET` est laissé vide, l'application génère elle-même une clé aléatoire au démarrage
-(`SecureRandom`, 256 bits). Pratique en développement, mais les utilisateurs devront se reconnecter
-après chaque redémarrage : en production, renseignez toujours une valeur fixe.
 
 > **Sécurité :** ne committez jamais votre `.env`. En production, utilisez un `JWT_SECRET`
 > à forte entropie (jamais une valeur triviale) et `DDL_AUTO=update`.
@@ -72,7 +60,7 @@ après chaque redémarrage : en production, renseignez toujours une valeur fixe.
 Le fichier `compose.yml` orchestre trois conteneurs : PostgreSQL, l'API et le frontend.
 
 ```bash
-cp .env.example .env   # puis renseigner les valeurs
+cp .example.env .env   # puis renseigner les valeurs
 docker compose up -d
 ```
 

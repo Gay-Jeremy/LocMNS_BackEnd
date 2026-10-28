@@ -33,6 +33,9 @@ public class SecurityConfig {
     protected final UtilisateurDetailsService utilisateurDetailsService;
     protected final JwtFilter filter;
 
+    private static final org.slf4j.Logger logger =
+            org.slf4j.LoggerFactory.getLogger(SecurityConfig.class);
+
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(utilisateurDetailsService);

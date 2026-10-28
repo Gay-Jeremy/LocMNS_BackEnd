@@ -13,13 +13,11 @@ import com.locmns.locmns_backend.repository.*;
 import com.locmns.locmns_backend.validator.emprunt.EmpruntValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -107,46 +105,20 @@ public class EmpruntService implements IEmpruntService {
         return Role.ADMIN.name().equals(utilisateur.getCategorieUtilisateur().getCode());
     }
 
-    /**
-     * Indique si l'utilisateur connecté peut agir sur cet emprunt :
-     * un admin peut tout faire, un utilisateur uniquement sur ses propres emprunts.
-     */
-    private boolean peutAcceder(Emprunt emprunt, Utilisateur connecte) {
-        return isAdmin(connecte)
-                || (emprunt.getUtilisateur() != null
-                    && Objects.equals(emprunt.getUtilisateur().getId(), connecte.getId()));
-    }
-
-    /**
-     * Vérifie que l'utilisateur connecté peut agir sur cet emprunt.
-     *
-     * @throws AccessDeniedException si l'emprunt appartient à un autre utilisateur (HTTP 403)
-     */
-    private void verifierAcces(Emprunt emprunt, Utilisateur connecte) {
-        if (!peutAcceder(emprunt, connecte)) {
-            throw new AccessDeniedException("Cet emprunt ne vous appartient pas");
-        }
-    }
-
     // =========================================================
     // Lecture
     // =========================================================
 
     @Override
-    public Optional<EmpruntResponseDto> obtenirEmpruntsParId(Integer id, Utilisateur connecte) {
-        // L'emprunt d'un autre utilisateur est traité comme introuvable (404),
-        // pour ne pas révéler son existence
-        return empruntRepository.findById(id)
-                .filter(emprunt -> peutAcceder(emprunt, connecte))
-                .map(empruntMapper::toDto);
+    public Optional<EmpruntResponseDto> obtenirEmpruntsParId(Integer id) {
+        return empruntRepository.findById(id).map(empruntMapper::toDto);
     }
 
     @Override
-    public List<EmpruntResponseDto> obtenirTousLesEmprunts(Utilisateur connecte) {
-        List<Emprunt> emprunts = isAdmin(connecte)
-                ? empruntRepository.findAll(Sort.by("dateCreation"))
-                : empruntRepository.retourneListeEmpruntParEmail(connecte.getEmail());
-        return empruntMapper.toDtoList(emprunts);
+    public List<EmpruntResponseDto> obtenirTousLesEmprunts() {
+        return empruntMapper.toDtoList(
+                empruntRepository.findAll(Sort.by("dateCreation"))
+        );
     }
 
     @Override
@@ -271,21 +243,17 @@ public class EmpruntService implements IEmpruntService {
      */
     @Transactional
     @Override
-    public void modifierEmprunt(Integer id, EmpruntRequestDto dto, Utilisateur connecte) {
+    public void modifierEmprunt(Integer id, EmpruntRequestDto dto) {
 
         empruntValidator.validerCreationOuModification(dto);
 
         Emprunt emprunt = getEmpruntOuException(id);
-        verifierAcces(emprunt, connecte);
 
         Materiel materiel = materielRepository.findById(dto.materielId())
                 .orElseThrow(() -> new RessourceIntrouvableException("Matériel introuvable"));
 
-        // Seul un admin peut réattribuer un emprunt à un autre utilisateur
-        Utilisateur utilisateur = isAdmin(connecte)
-                ? utilisateurRepository.findById(dto.utilisateurId())
-                        .orElseThrow(() -> new RessourceIntrouvableException("Utilisateur introuvable"))
-                : emprunt.getUtilisateur();
+        Utilisateur utilisateur = utilisateurRepository.findById(dto.utilisateurId())
+                .orElseThrow(() -> new RessourceIntrouvableException("Utilisateur introuvable"));
 
         // Le mapper met à jour les champs scalaires ; le service met à jour les associations
         empruntMapper.update(dto, emprunt);
@@ -352,10 +320,9 @@ public class EmpruntService implements IEmpruntService {
      */
     @Transactional
     @Override
-    public void demanderProlongation(int id, DemandeProlongationRequestDto dto, Utilisateur connecte) {
+    public void demanderProlongation(int id, DemandeProlongationRequestDto dto) {
 
         Emprunt emprunt = getEmpruntOuException(id);
-        verifierAcces(emprunt, connecte);
 
         empruntValidator.validerProlongation(emprunt, dto.dateProlongation());
 
@@ -402,10 +369,9 @@ public class EmpruntService implements IEmpruntService {
      */
     @Transactional
     @Override
-    public void demanderRetourAnticipe(int id, DemandeRetourAnticipeRequestDto dto, Utilisateur connecte) {
+    public void demanderRetourAnticipe(int id, DemandeRetourAnticipeRequestDto dto) {
 
         Emprunt emprunt = getEmpruntOuException(id);
-        verifierAcces(emprunt, connecte);
 
         empruntValidator.validerRetourAnticipe(emprunt, dto.dateRetourAnticipe());
 
