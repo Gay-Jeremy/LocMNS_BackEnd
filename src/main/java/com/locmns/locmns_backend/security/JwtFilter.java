@@ -7,7 +7,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,14 +16,17 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import javax.crypto.SecretKey;
 import java.io.IOException;
 
 @Component
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
-    @Value("${jwt.secret}")
-    protected String jwtSecret;
+    private static final org.slf4j.Logger logger =
+            org.slf4j.LoggerFactory.getLogger(JwtFilter.class);
+
+    private final SecretKey jwtSigningKey;
 
     protected final UserDetailsService userDetailsService;
 
@@ -40,9 +42,10 @@ public class JwtFilter extends OncePerRequestFilter {
 
             try {
                 String email = Jwts.parser()
-                        .setSigningKey(jwtSecret)
-                        .parseClaimsJws(jwt)
-                        .getBody()
+                        .verifyWith(jwtSigningKey)
+                        .build()
+                        .parseSignedClaims(jwt)
+                        .getPayload()
                         .getSubject();
 
                 UserDetails userDetails = userDetailsService.loadUserByUsername(email);
@@ -54,6 +57,9 @@ public class JwtFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
 
             } catch (JwtException | UsernameNotFoundException | IllegalArgumentException e) {
+                // Jeton invalide ou expiré : la requête continue sans authentification
+                // (Spring Security renverra 401 si la ressource est protégée)
+                logger.debug("JWT rejeté : {}", e.getMessage());
             }
         }
 
