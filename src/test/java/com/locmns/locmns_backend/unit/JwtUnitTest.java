@@ -69,6 +69,39 @@ class JwtUnitTest {
     }
 
     @Test
+    @DisplayName("JWT_SECRET vide : une clé aléatoire de 256 bits est générée")
+    void secretVideGenereUneCleAleatoire() {
+        SecretKey cle1 = new JwtConfig().jwtSigningKey("");
+        SecretKey cle2 = new JwtConfig().jwtSigningKey("   ");
+
+        assertThat(cle1.getEncoded()).hasSize(32);
+        assertThat(cle2.getEncoded()).hasSize(32);
+        // Deux générations successives ne doivent jamais produire la même clé
+        assertThat(cle1.getEncoded()).isNotEqualTo(cle2.getEncoded());
+    }
+
+    @Test
+    @DisplayName("Clé aléatoire : un jeton signé avec elle est bien accepté par le filtre")
+    void cleAleatoireFonctionneDeBoutEnBout() throws Exception {
+        SecretKey cleAleatoire = new JwtConfig().jwtSigningKey(null);
+        String jwt = Jwts.builder()
+                .subject("lucas.bernard@locmns.fr")
+                .expiration(new Date(System.currentTimeMillis() + 60_000))
+                .signWith(cleAleatoire)
+                .compact();
+
+        UserDetailsService userDetailsService = mock(UserDetailsService.class);
+        when(userDetailsService.loadUserByUsername("lucas.bernard@locmns.fr")).thenReturn(details);
+        JwtFilter filtre = new JwtFilter(cleAleatoire, userDetailsService);
+        MockHttpServletRequest requete = new MockHttpServletRequest();
+        requete.addHeader("Authorization", "Bearer " + jwt);
+
+        filtre.doFilter(requete, new MockHttpServletResponse(), mock(FilterChain.class));
+
+        assertThat(SecurityContextHolder.getContext().getAuthentication()).isNotNull();
+    }
+
+    @Test
     @DisplayName("Login valide : le jeton émis est accepté par le filtre et authentifie l'utilisateur")
     void loginPuisRequeteAuthentifiee() throws Exception {
         // Connexion
