@@ -32,7 +32,7 @@ jobs:
           scan-args: --lockfile=./pom.xml
 
       - name: Conservation du jar pour la publication
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: app-jar
           path: target/app.jar
