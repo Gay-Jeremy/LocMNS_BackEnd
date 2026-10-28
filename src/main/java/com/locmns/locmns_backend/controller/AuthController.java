@@ -2,7 +2,6 @@ package com.locmns.locmns_backend.controller;
 
 import com.locmns.locmns_backend.dto.request.LoginRequestDto;
 import com.locmns.locmns_backend.dto.request.UtilisateurRequestDto;
-import com.locmns.locmns_backend.dto.response.UtilisateurResponseDto;
 import com.locmns.locmns_backend.dto.validation.ValidationGroups;
 import com.locmns.locmns_backend.services.IAuthService;
 import com.locmns.locmns_backend.services.IUtilisateurService;
@@ -22,13 +21,12 @@ public class AuthController {
     private final IAuthService authService;
 
     @PostMapping("/api/sign-in")
-    public ResponseEntity<UtilisateurResponseDto> signIn(
+    public ResponseEntity<UtilisateurRequestDto>  signIn(
             @RequestBody @Validated(ValidationGroups.OnCreate.class) UtilisateurRequestDto utilisateurToInsert) {
 
-        // On renvoie le DTO de réponse (sans mot de passe), et non la requête reçue
-        UtilisateurResponseDto cree = utilisateurService.inscrireUtilisateur(utilisateurToInsert);
+        utilisateurService.creerUtilisateur(utilisateurToInsert);
 
-        return new ResponseEntity<>(cree, HttpStatus.CREATED);
+        return new ResponseEntity<>(utilisateurToInsert,HttpStatus.CREATED);
     }
 
 

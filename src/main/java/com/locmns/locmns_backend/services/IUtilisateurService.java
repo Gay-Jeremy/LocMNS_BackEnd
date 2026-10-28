@@ -11,8 +11,6 @@ public interface IUtilisateurService {
     List<UtilisateurResponseDto> obtenirTousLesUtilisateurs();
     Optional<UtilisateurResponseDto> obtenirUtilisateurParId(Integer id);
     UtilisateurResponseDto creerUtilisateur(UtilisateurRequestDto dto);
-
-    UtilisateurResponseDto inscrireUtilisateur(UtilisateurRequestDto dto);
     void modifierUtilisateur(Integer id, UtilisateurRequestDto dto);
     void supprimerUtilisateur(Integer id);
 

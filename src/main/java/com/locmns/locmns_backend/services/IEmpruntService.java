@@ -10,24 +10,24 @@ import java.util.Optional;
 
 public interface IEmpruntService {
 
-    Optional<EmpruntResponseDto> obtenirEmpruntsParId(Integer id, Utilisateur connecte);
-    List<EmpruntResponseDto> obtenirTousLesEmprunts(Utilisateur connecte);
+    Optional<EmpruntResponseDto> obtenirEmpruntsParId(Integer id);
+    List<EmpruntResponseDto> obtenirTousLesEmprunts();
     List<EmpruntResponseDto> obtenirEmpruntSelonRole(Utilisateur utilisateur);
     List<EmpruntResponseDto> obtenirDemandesEmpruntSelonRole(Utilisateur utilisateur);
     List<EmpruntResponseDto> obtenirEmpruntsRecentsSelonRole(Utilisateur utilisateur);
     List<EmpruntResponseDto> obtenirListeEmpruntEnRetardSelonRole(Utilisateur utilisateur);
     List<EmpruntResponseDto> obtenirHistoriqueEmpruntSelonRole(Utilisateur utilisateur);
     EmpruntResponseDto creerEmprunt(EmpruntRequestDto dto, Utilisateur connecte);
-    void modifierEmprunt(Integer id, EmpruntRequestDto empruntRequestDto, Utilisateur connecte);
+    void modifierEmprunt(Integer id, EmpruntRequestDto empruntRequestDto);
 
     @Transactional
-    void demanderProlongation(int id, DemandeProlongationRequestDto dto, Utilisateur connecte);
+    void demanderProlongation(int id, DemandeProlongationRequestDto dto);
 
     @Transactional
     void accepterProlongation(int id);
 
     @Transactional
-    void demanderRetourAnticipe(int id, DemandeRetourAnticipeRequestDto dto, Utilisateur connecte);
+    void demanderRetourAnticipe(int id, DemandeRetourAnticipeRequestDto dto);
 
     @Transactional
     void accepterRetourAnticipe(int id);

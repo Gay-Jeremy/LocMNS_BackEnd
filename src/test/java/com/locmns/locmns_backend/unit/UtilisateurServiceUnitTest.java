@@ -2,7 +2,6 @@ package com.locmns.locmns_backend.unit;
 
 import com.locmns.locmns_backend.dto.request.UtilisateurRequestDto;
 import com.locmns.locmns_backend.dto.response.UtilisateurResponseDto;
-import com.locmns.locmns_backend.exception.MetierException;
 import com.locmns.locmns_backend.exception.RessourceIntrouvableException;
 import com.locmns.locmns_backend.mapper.UtilisateurMapper;
 import com.locmns.locmns_backend.model.CategorieUtilisateur;
@@ -205,59 +204,6 @@ public class UtilisateurServiceUnitTest {
                 () -> utilisateurService.creerUtilisateur(dto),
                 "Doit lever une exception si la catégorie n'existe pas"
         );
-    }
-
-    // ════════════════════════════════════════════════════════════════════════
-    // INSCRIPTION PUBLIQUE
-    // ════════════════════════════════════════════════════════════════════════
-
-    @Test
-    public void inscrireUtilisateur_avecCategorieAdmin_devraitLeverExceptionSansSauvegarder() {
-        // ARRANGE — quelqu'un tente de s'inscrire en tant qu'administrateur
-        UtilisateurRequestDto dto = new UtilisateurRequestDto(
-                "Pirate", "Paul", "pirate@locmns.fr",
-                "mdp", null, 1
-        );
-        when(categorieUtilisateurRepository.findById(1)).thenReturn(Optional.of(categorieAdmin));
-
-        // ACT + ASSERT
-        assertThrows(
-                MetierException.class,
-                () -> utilisateurService.inscrireUtilisateur(dto),
-                "L'inscription publique ne doit pas permettre de devenir administrateur"
-        );
-        verify(utilisateurRepository, never()).save(any());
-    }
-
-    @Test
-    public void inscrireUtilisateur_avecCategorieUtilisateur_devraitCreerLeCompte() {
-        // ARRANGE — inscription d'un étudiant
-        CategorieUtilisateur categorieEtudiant = new CategorieUtilisateur();
-        categorieEtudiant.setId(3);
-        categorieEtudiant.setLibelle("Étudiant");
-        categorieEtudiant.setCode("USER");
-
-        UtilisateurRequestDto dto = new UtilisateurRequestDto(
-                "Bernard", "Lucas", "lucas.bernard@locmns.fr",
-                "motdepasse123", null, 3
-        );
-        when(categorieUtilisateurRepository.findById(3)).thenReturn(Optional.of(categorieEtudiant));
-        when(passwordEncoder.encode("motdepasse123")).thenReturn("$2a$HASH");
-
-        Utilisateur sauvegarde = new Utilisateur();
-        sauvegarde.setId(3);
-        sauvegarde.setNom("Bernard");
-        sauvegarde.setPrenom("Lucas");
-        sauvegarde.setEmail("lucas.bernard@locmns.fr");
-        sauvegarde.setCategorieUtilisateur(categorieEtudiant);
-        when(utilisateurRepository.save(any())).thenReturn(sauvegarde);
-
-        // ACT
-        UtilisateurResponseDto resultat = utilisateurService.inscrireUtilisateur(dto);
-
-        // ASSERT
-        verify(utilisateurRepository, times(1)).save(any(Utilisateur.class));
-        assertEquals("Bernard", resultat.nom());
     }
 
     // ════════════════════════════════════════════════════════════════════════

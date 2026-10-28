@@ -2,8 +2,6 @@ package com.locmns.locmns_backend.services;
 
 import com.locmns.locmns_backend.dto.request.UtilisateurRequestDto;
 import com.locmns.locmns_backend.dto.response.UtilisateurResponseDto;
-import com.locmns.locmns_backend.constants.Role;
-import com.locmns.locmns_backend.exception.MetierException;
 import com.locmns.locmns_backend.exception.RessourceIntrouvableException;
 import com.locmns.locmns_backend.mapper.UtilisateurMapper;
 import com.locmns.locmns_backend.model.*;
@@ -93,23 +91,5 @@ public class UtilisateurService implements IUtilisateurService {
         }
         utilisateurRepository.deleteById(id);
 
-    }
-
-    /**
-     * Inscription publique : identique à la création, mais interdit de s'attribuer
-     * la catégorie administrateur. Seul un admin peut créer un autre admin
-     * (via {@link #creerUtilisateur}, endpoint protégé).
-     *
-     * @throws MetierException si la catégorie demandée est une catégorie administrateur
-     */
-    @Override
-    public UtilisateurResponseDto inscrireUtilisateur(UtilisateurRequestDto dto) {
-        CategorieUtilisateur categorie = categorieUtilisateurRepository.findById(dto.categorieUtilisateurId())
-                .orElseThrow(() -> new RessourceIntrouvableException("Catégorie utilisateur introuvable"));
-
-        if (Role.ADMIN.name().equals(categorie.getCode())) {
-            throw new MetierException("Inscription impossible avec cette catégorie d'utilisateur");
-        }
-        return creerUtilisateur(dto);
     }
 }
