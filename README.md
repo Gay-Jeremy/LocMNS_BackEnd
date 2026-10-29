@@ -27,8 +27,9 @@ d'Applications** (RNCP niveau 6), de la conception au déploiement.
 
 - Mots de passe chiffrés avec **BCrypt**, jamais renvoyés par l'API.
 - API **sans état** (*stateless*) : chaque requête porte son jeton JWT, vérifié par un filtre dédié.
-- **Contrôle d'accès par rôle** sur les emprunts, le matériel et les utilisateurs
-  (`@PreAuthorize`, annotations `@IsAdmin` / `@IsUser`).
+- **Contrôle d'accès par rôle** sur chaque route (`@PreAuthorize`, annotations `@IsAdmin` / `@IsUser`) :
+  lecture pour tout utilisateur connecté, création, modification et suppression des référentiels
+  réservées aux administrateurs.
 - **Contrôle d'appartenance** : un utilisateur ne voit et ne modifie que ses propres emprunts
   (404 en lecture, 403 en modification pour l'emprunt d'un autre) ; l'administrateur garde tous les droits.
 - **Clé JWT** : l'application refuse de démarrer si `JWT_SECRET` fait moins de 32 caractères,
@@ -135,7 +136,7 @@ le bouton **Authorize** (schéma *Bearer*).
 | Type | Nombre | Contenu |
 |---|---|---|
 | Unitaires (`src/test/.../unit`) | 58 | Services (emprunts, matériel, utilisateurs) et JWT, avec Mockito |
-| Intégration (`src/test/.../integration`) | 17 | Contexte Spring complet, sécurité et base PostgreSQL réelle |
+| Intégration (`src/test/.../integration`) | 135 | Contexte Spring complet et base PostgreSQL réelle, dont 118 cas de contrôle d'accès par rôle |
 
 ```bash
 ./mvnw test       # tests unitaires (exécutés par la CI)
