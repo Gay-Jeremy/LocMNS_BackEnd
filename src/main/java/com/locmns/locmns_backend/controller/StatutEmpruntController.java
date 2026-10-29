@@ -2,6 +2,8 @@ package com.locmns.locmns_backend.controller;
 
 import com.locmns.locmns_backend.dto.request.StatutEmpruntRequestDto;
 import com.locmns.locmns_backend.dto.response.StatutEmpruntResumeDto;
+import com.locmns.locmns_backend.security.IsAdmin;
+import com.locmns.locmns_backend.security.IsUser;
 import com.locmns.locmns_backend.services.IStatutEmpruntService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,16 +21,19 @@ public class StatutEmpruntController {
     private final IStatutEmpruntService statutEmpruntService;
 
     @GetMapping("/liste")
+    @IsUser
     public List<StatutEmpruntResumeDto> obtenirTousLesStatutsEmprunt() {
         return statutEmpruntService.obtenirTousLesStatutsEmprunt();
     }
 
     @GetMapping("/liste/decision")
+    @IsUser
     public List<StatutEmpruntResumeDto> obtenirToutesLesDecisions() {
         return statutEmpruntService.obtenirToutesLesDecisions();
     }
 
     @GetMapping("/{id}")
+    @IsUser
     public ResponseEntity<StatutEmpruntResumeDto> obtenirStatutEmpruntParId(@PathVariable int id) {
         return statutEmpruntService.obtenirStatutEmpruntParId(id)
                 .map(ResponseEntity::ok)
@@ -36,18 +41,21 @@ public class StatutEmpruntController {
     }
 
     @PostMapping
+    @IsAdmin
     public ResponseEntity<StatutEmpruntResumeDto> creerStatutEmprunt(
             @RequestBody @Valid StatutEmpruntRequestDto dto) {
         return new ResponseEntity<>(statutEmpruntService.creerStatutEmprunt(dto), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
+    @IsAdmin
     public ResponseEntity<Void> supprimerStatutEmprunt(@PathVariable int id) {
         statutEmpruntService.supprimerStatutEmprunt(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("/{id}")
+    @IsAdmin
     public ResponseEntity<Void> modifierStatutEmprunt(
             @PathVariable int id,
             @RequestBody @Valid StatutEmpruntRequestDto dto) {
