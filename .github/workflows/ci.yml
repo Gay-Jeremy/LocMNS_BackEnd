@@ -7,9 +7,36 @@ on:
     branches: [ "main", "dev" ]
 
 jobs:
-  # Compilation + tests unitaires : à chaque push et pull request (main et dev)
+  # Compilation + tests unitaires et d'intégration : à chaque push et pull request (main et dev)
   build:
     runs-on: ubuntu-latest
+
+    # Base PostgreSQL éphémère, créée pour ce job puis détruite (aucun lien avec la production)
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_DB: locmns
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    # Configuration de test (remplace le .env, absent de la CI) ; JWT_SECRET vide = clé aléatoire
+    env:
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_NAME: locmns
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DDL_AUTO: create
+      SQL_FILE: init
+      SQL_INIT_MODE: always
 
     steps:
       - name: Récupération du code
@@ -22,8 +49,12 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Compilation et tests
+      - name: Compilation et tests unitaires
         run: mvn -B package --file pom.xml
+
+      # Contexte Spring complet sur la base PostgreSQL du service (contrôle d'accès, emprunts...)
+      - name: Tests d'intégration
+        run: mvn -B test --file pom.xml "-Dtest=**/integration/*Test" "-Dsurefire.failIfNoSpecifiedTests=false"
 
       # Bloque la CI si une dépendance (directe ou transitive) a une faille connue (base OSV.dev)
       - name: Audit de sécurité des dépendances

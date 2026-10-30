@@ -138,12 +138,14 @@ le bouton **Authorize** (schéma *Bearer*).
 | Unitaires (`src/test/.../unit`) | 58 | Services (emprunts, matériel, utilisateurs) et JWT, avec Mockito |
 | Intégration (`src/test/.../integration`) | 135 | Contexte Spring complet et base PostgreSQL réelle, dont 118 cas de contrôle d'accès par rôle |
 
+Les deux types de tests sont exécutés par la CI à chaque pull request.
+
 ```bash
-./mvnw test       # tests unitaires (exécutés par la CI)
+./mvnw test       # tests unitaires
 ./mvnw verify     # tests unitaires + construction du jar
 ```
 
-Les tests d'intégration nécessitent PostgreSQL (`docker compose up -d postgres`) :
+En local, les tests d'intégration nécessitent PostgreSQL (`docker compose up -d postgres`) :
 
 ```bash
 ./mvnw test "-Dtest=**/integration/*Test" "-Dsurefire.failIfNoSpecifiedTests=false"
@@ -155,7 +157,7 @@ Pipeline GitHub Actions (`.github/workflows/ci.yml`) :
 
 | Job | Quand | Ce qu'il fait |
 |---|---|---|
-| `build` | Chaque push et pull request sur `main` et `dev` | Compilation, tests unitaires, audit de sécurité des dépendances |
+| `build` | Chaque push et pull request sur `main` et `dev` | Compilation, tests unitaires, tests d'intégration (base PostgreSQL éphémère), audit de sécurité des dépendances |
 | `publish` | Après un push sur `main` | Construction de l'image Docker et publication sur Docker Hub |
 | `deploy` | Après `publish` | Déploiement sur le serveur (runner auto-hébergé, `docker compose`) |
 
