@@ -110,16 +110,18 @@ INSERT INTO utilisateur (nom, prenom, email,categorie_utilisateur_id,promotion_i
 ('Bernard', 'Lucas', 'lucas.bernard@entreprise.fr', 3, 3, '$2a$10$N6SDVhhWyff0judQiQpZDOrV8HtUYbNOcP0IgG1BRg3mR5YhDvgA2');
 
 
+-- Le libellé décrit l'état de l'emprunt (« Accepté »), affiché dans les listes.
+-- Le texte des actions (« Accepter ») est défini par le frontend à partir du code.
 INSERT INTO statut_emprunt (libelle,code) VALUES
 ('Demande en cours','DEMANDE_EN_COURS'),
-('Refuser','REFUSE'),
-('Accepter','ACCEPTE'),
-('Demande Prolongation','DEMANDE_PROLONGATION'),
-('Demande Retour Anticipé','DEMANDE_RETOUR_ANTICIPE'),
-('Prolongation Refusé', 'PROLONGATION_REFUSE'),
-('Retour Anticipé Refusé', 'DEMANDE_RETOUR_ANTICIPE_REFUSE'),
-('Prolongation Acceptée', 'PROLONGATION_ACCEPTE'),
-('Retour Anticipé Accepté', 'DEMANDE_RETOUR_ANTICIPE_ACCEPTE');
+('Refusé','REFUSE'),
+('Accepté','ACCEPTE'),
+('Prolongation demandée','DEMANDE_PROLONGATION'),
+('Retour anticipé demandé','DEMANDE_RETOUR_ANTICIPE'),
+('Prolongation refusée', 'PROLONGATION_REFUSE'),
+('Retour anticipé refusé', 'DEMANDE_RETOUR_ANTICIPE_REFUSE'),
+('Prolongation acceptée', 'PROLONGATION_ACCEPTE'),
+('Retour anticipé accepté', 'DEMANDE_RETOUR_ANTICIPE_ACCEPTE');
 
 
 -- ============================================================
